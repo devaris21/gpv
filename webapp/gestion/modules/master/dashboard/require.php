@@ -14,11 +14,11 @@ $tableau = [];
 foreach (PRIXDEVENTE::getAll() as $key => $pdv) {
 	$pdv->actualise();
 	$data = new \stdclass();
-	$data->name = $pdv->produit->name()." -- ".$pdv->prix->price()/*." ".$params->devise*/;
-	$data->livrable = $pdv->livrable();
-	$data->attente = $pdv->enAttente();
+	$data->name = $pdv->produit->name()." // ".$pdv->prix->price()/*." ".$params->devise*/;
+	$data->boutique = $pdv->enBoutique();
+	$data->stock = $pdv->enStock();
 	$data->commande = $pdv->commandee();
-	if (!($data->livrable==0 && $data->attente==0 && $data->commande==0)) {
+	if (!($data->boutique==0 && $data->stock==0 && $data->commande==0)) {
 		$tableau[] = $data;
 	}	
 }

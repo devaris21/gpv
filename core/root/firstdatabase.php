@@ -350,25 +350,34 @@ $item->setProtected(1);
 $item->save();
 
 
+$datas = [200, 250, 300, 500, 1000, 1500, 2000];
+foreach ($datas as $key => $value) {
+	$item = new PRIX();
+	$item->price = $value;
+	$item->setProtected(1);
+	$item->enregistre();
+}
+
+
 $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
 $item->name = "Jus de passion";
-$item->class = "Hourdis";
+$item->description = "Hourdis";
 $item->enregistre();
 
 $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
-$item->name = "AC 15";
-$item->class = "Jus d'orange";
+$item->name = "Jus d'orange";
+$item->description = "AC 15";
 $item->enregistre();
 
 $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
-$item->name = "AP 15";
-$item->class = "Jus de bissap";
+$item->name = "Jus de bissap";
+$item->description = "AP 15";
 $item->enregistre();
 
 

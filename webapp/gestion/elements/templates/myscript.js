@@ -4,8 +4,8 @@
     		Loader.start();
     		var url = "../../webapp/gestion/elements/templates/traitement.php";
     		var formdata = new FormData($(this)[0]);
-    		var val = $(this).find("select[name=manoeuvre_id]").val();
-    		formdata.append('manoeuvres', val);
+    		// var val = $(this).find("select[name=manoeuvre_id]").val();
+    		// formdata.append('manoeuvres', val);
     		formdata.append('action', "productionjour");
     		$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
     			if (data.status) {

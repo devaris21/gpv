@@ -53,7 +53,7 @@
                         <ul class="nav nav-second-level collapse">
                             <li class="" id="production"><a href="<?= $this->url("gestion", "production", "production", 7) ?>">Stock de production</a></li>
                             <li class="" id="ressources"><a href="<?= $this->url("gestion", "production", "ressources", 7) ?>">Stock de ressources</a></li>
-                            <li class="" id="rangement"><a href="<?= $this->url("gestion", "production", "rangement") ?>">Rangements</a></li>
+                            <li class="" id="miseenboutique"><a href="<?= $this->url("gestion", "production", "miseenboutique") ?>">Mise en boutique</a></li>
                         </ul>
                     </li>
                     <li class="" id="commandes">

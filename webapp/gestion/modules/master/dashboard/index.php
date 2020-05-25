@@ -30,7 +30,7 @@
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Livrable actuellement</h5>
+                                <h5>boutique actuellement</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
@@ -91,7 +91,8 @@
                                     <li class="list-group-item">
                                         <i class="fa fa-cubes"></i>&nbsp;&nbsp;&nbsp; <?= $pdv->name ?>
                                         <span class="float-right">
-                                            <span class="label label-success"><?= money($pdv->livrable) ?></span>
+                                            <span class="label label-success"><?= money($pdv->boutique) ?></span>
+                                            <small class=""><?= money($pdv->stock) ?></small>
                                         </span>
                                     </li>
                                 <?php } ?>
@@ -151,6 +152,7 @@
 
                             <?php if ($employe->isAutoriser("production")) { ?>
                                 <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
+                                <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Mise en boutique</button>
                             <?php } ?>
                             
 
@@ -254,6 +256,7 @@
             <?php include($this->rootPath("composants/assets/modals/modal-client.php")); ?> 
             <?php include($this->rootPath("composants/assets/modals/modal-vente.php")); ?> 
             <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
+            <?php include($this->rootPath("composants/assets/modals/modal-miseenboutique.php")); ?> 
 
         </div>
     </div>
@@ -263,6 +266,7 @@
 
     <script type="text/javascript" src="<?= $this->relativePath("../../production/programmes/script.js") ?>"></script>
     <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
+    <script type="text/javascript" src="<?= $this->relativePath("../../production/miseenboutique/script.js") ?>"></script>
 
     <script>
         $(document).ready(function() {
@@ -286,8 +290,8 @@
  new Chartist.Bar('#ct-chart', {
     labels: [<?php foreach ($tableau as $key => $data){ ?>"<?= $data->name ?>", " ", " ",<?php } ?>],
     series: [
-    [<?php foreach ($tableau as $key => $data){ ?><?= $data->attente ?>, 0, 0,<?php } ?>],
-    [<?php foreach ($tableau as $key => $data){ ?><?= $data->livrable ?> , 0, 0,<?php } ?>],
+    [<?php foreach ($tableau as $key => $data){ ?><?= $data->stock ?>, 0, 0,<?php } ?>],
+    [<?php foreach ($tableau as $key => $data){ ?><?= $data->boutique ?> , 0, 0,<?php } ?>],
     [<?php foreach ($tableau as $key => $data){ ?>0, <?= $data->commande ?>, 0,<?php } ?>],
     ]
 }, {

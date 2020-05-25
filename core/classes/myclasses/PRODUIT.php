@@ -47,22 +47,15 @@ class PRODUIT extends TABLE
 					}					
 				}
 
-				$ligne = new PAYE_PRODUIT();
-				$ligne->produit_id = $data->lastid;
-				$ligne->price = 0;
-				$ligne->enregistre();
+				// $ligne = new PAYE_PRODUIT();
+				// $ligne->produit_id = $data->lastid;
+				// $ligne->price = 0;
+				// $ligne->enregistre();
 
-				$ligne = new PAYEFERIE_PRODUIT();
-				$ligne->produit_id = $data->lastid;
-				$ligne->price = 0;
-				$ligne->enregistre();
-
-				$ligne = new LIGNEPRODUCTIONJOUR();
-				$ligne->productionjour_id = 1;
-				$ligne->produit_id = $data->lastid;
-				$ligne->production = $this->stock;
-				$ligne->setCreated(PARAMS::DATE_DEFAULT);
-				$ligne->save();
+				// $ligne = new PAYEFERIE_PRODUIT();
+				// $ligne->produit_id = $data->lastid;
+				// $ligne->price = 0;
+				// $ligne->enregistre();
 
 			}
 		}else{

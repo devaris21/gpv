@@ -89,17 +89,17 @@ if ($action == "get_data") {
 			if ($table == "productionjour") {
 				$data->fourni("ligneproductionjour");
 				foreach ($data->ligneproductionjours as $key => $value) {
-					$prod = "prod-".$value->produit_id;
-					$data->$prod = $value->production;
+					$prod = "prod-".$value->prixdevente_id;
+					$data->$prod = ($value->production == 0)?"":$value->production;
 
-					$perte = "perte-".$value->produit_id;
-					$data->$perte = $value->perte;
+					// $perte = "perte-".$value->produit_id;
+					// $data->$perte = $value->perte;
 				}
 
 				$data->fourni("ligneconsommationjour");
 				foreach ($data->ligneconsommationjours as $key => $value) {
 					$conso = "conso-".$value->ressource_id;
-					$data->$conso = $value->consommation;
+					$data->$conso = ($value->consommation == 0)?"":$value->consommation;
 				}
 			}
 		}

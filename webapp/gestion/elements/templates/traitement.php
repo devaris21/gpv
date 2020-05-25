@@ -10,7 +10,7 @@ $data = new RESPONSE;
 
 
 if ($action === "productionjour") {
-	if ($manoeuvres != "" || (isset($groupemanoeuvre_id) && $groupemanoeuvre_id != "")) {
+//	if ($manoeuvres != "" || (isset($groupemanoeuvre_id) && $groupemanoeuvre_id != "")) {
 		$productionjour = PRODUCTIONJOUR::today();
 		$test = true;
 		foreach (RESSOURCE::getAll() as $key => $ressource) {
@@ -28,12 +28,12 @@ if ($action === "productionjour") {
 			$montant = 0;
 			$productionjour->fourni("ligneproductionjour");
 			foreach ($productionjour->ligneproductionjours as $cle => $ligne) {
-				$ligne->production = intval($_POST["prod-".$ligne->produit_id]);
-				$ligne->perte = intval($_POST["perte-".$ligne->produit_id]);
+				$ligne->production = intval($_POST["prod-".$ligne->prixdevente_id]);
+				//$ligne->perte = intval($_POST["perte-".$ligne->produit_id]);
 				$ligne->save();
 
-				$ligne->actualise();
-				$montant += $ligne->produit->coutProduction("production", $ligne->production);
+				//$ligne->actualise();
+				//$montant += $ligne->prixdevente->coutProduction("production", $ligne->production);
 			}
 
 			$productionjour->fourni("ligneconsommationjour");
@@ -43,30 +43,30 @@ if ($action === "productionjour") {
 			}
 
 
-			$datas = $productionjour->fourni("manoeuvredujour");
-			foreach ($datas as $cle => $ligne) {
-				$ligne->delete();
-			}
+			// $datas = $productionjour->fourni("manoeuvredujour");
+			// foreach ($datas as $cle => $ligne) {
+			// 	$ligne->delete();
+			// }
 
-			if (isset($manoeuvres) && $manoeuvres != "") {
-				$datas = explode(",", $manoeuvres);
-				foreach ($datas as $key => $value) {
-					$item = new MANOEUVREDUJOUR();
-					$item->productionjour_id = $productionjour->getId();
-					$item->manoeuvre_id = $value;
-					$item->price = $montant / count($datas);
-					$item->enregistre();
-				}
-			}else{
-				$datas = MANOEUVRE::findBy(["groupemanoeuvre_id ="=>$groupemanoeuvre_id]);
-				foreach ($datas as $key => $value) {
-					$item = new MANOEUVREDUJOUR();
-					$item->productionjour_id = $productionjour->getId();
-					$item->manoeuvre_id = $value->getId();
-					$item->price = $montant / count($datas);
-					$item->enregistre();
-				}
-			}
+			// if (isset($manoeuvres) && $manoeuvres != "") {
+			// 	$datas = explode(",", $manoeuvres);
+			// 	foreach ($datas as $key => $value) {
+			// 		$item = new MANOEUVREDUJOUR();
+			// 		$item->productionjour_id = $productionjour->getId();
+			// 		$item->manoeuvre_id = $value;
+			// 		$item->price = $montant / count($datas);
+			// 		$item->enregistre();
+			// 	}
+			// }else{
+			// 	$datas = MANOEUVRE::findBy(["groupemanoeuvre_id ="=>$groupemanoeuvre_id]);
+			// 	foreach ($datas as $key => $value) {
+			// 		$item = new MANOEUVREDUJOUR();
+			// 		$item->productionjour_id = $productionjour->getId();
+			// 		$item->manoeuvre_id = $value->getId();
+			// 		$item->price = $montant / count($datas);
+			// 		$item->enregistre();
+			// 	}
+			// }
 
 			$productionjour->hydrater($_POST);
 			$productionjour->etat_id = ETAT::PARTIEL;
@@ -77,10 +77,10 @@ if ($action === "productionjour") {
 			$data->status = false;
 			$data->message = "Vous ne pouvez pas consommé plus de quantité d'une ressource que ce que vous n'en possédez !";
 		}
-	}else{
-		$data->status = false;
-		$data->message = "Veuillez définir les manoeuvres qui ont travaillé aujourd'hui !";
-	}
+	// }else{
+	// 	$data->status = false;
+	// 	$data->message = "Veuillez définir les manoeuvres qui ont travaillé aujourd'hui !";
+	// }
 	echo json_encode($data);
 }
 

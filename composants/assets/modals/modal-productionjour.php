@@ -5,8 +5,9 @@
             <div class="modal-body">
                 <div class="ibox-content">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <div class="">
-                        <h2 class="title text-uppercase gras text-center">Nouvelle vente directe au client</h2>
+                    <div class="text-center">
+                        <h2 class="title text-uppercase gras text-center">Nouvelle production</h2>
+                        <small>Veuillez renseigner la quantité de chaque type de produit que vous avez produit !</small>
                     </div><hr>
 
                     <form id="formProductionJour" classname="productionjour">
@@ -22,8 +23,8 @@
                                         foreach ($produit->prixdeventes as $key => $prixdv) {
                                             $prixdv->actualise(); ?>
                                             <div class="col-md col-sm">
-                                                <label><b><?= money($prixdv->prix->price) ?></b> <?= $params->devise  ?></label>
-                                                <input type="number" data-produit="" data-prix="" data-toggle="tooltip" value="0" min=0 number class="gras form-control text-center" name="prod-<?= $prixdv->getId() ?>">
+                                                <label class="text-muted"><?= money($prixdv->prix->price) ?> <?= $params->devise  ?></label>
+                                                <input type="text" data-id="<?= $prixdv->getId() ?>" data-toggle="tooltip" min=0 number class="gras form-control text-green text-center" name="prod-<?= $prixdv->getId() ?>">
                                             </div>
                                         <?php } ?>
                                     </div>
@@ -31,19 +32,27 @@
                             </div><hr>
                         <?php } ?>
 
-                       <hr>
+                        <hr>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="text-uppercase"><u>Montant total</u></h5>
-                                <h1 class="gras">300 Fcfa</h1>
+                            <div class="col-md-9">
+                                <h5 class="text-uppercase"><u>Ressources consommées</u></h5><br>
+
+                                <div class="row">
+                                    <?php foreach (Home\RESSOURCE::getAll() as $key => $ressource) { ?>
+                                        <div class="col-md col-sm">
+                                            <label class="text-muted gras"><?= $ressource->name() ?> (<?= $ressource->abbr ?>)</label>
+                                            <input type="text" data-id="<?= $ressource->getId() ?>" data-toggle="tooltip" min=0 number class="gras form-control text-red text-center" name="conso-<?= $ressource->getId() ?>">
+                                        </div>
+                                    <?php } ?>
+                                </div>
                             </div>
 
-                            <div class="col-md-4 offset-md-2">
-                                <h5 class="text-uppercase"><u>Mode de payement</u></h5>
-                                <?php Native\BINDING::html("select", "modepayement") ?>
+                            <div class="col-md-3 bottom-left">
+                                <h5 class="text-uppercase"><u>Commentaire</u></h5>
+                                <textarea class="form-control" rows="4" name="comment"></textarea>
                             </div>
-                        </div><br>
+                        </div><br><hr>
 
 
                         <div class="">
