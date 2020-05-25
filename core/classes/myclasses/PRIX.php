@@ -3,24 +3,23 @@ namespace Home;
 use Native\RESPONSE;/**
  * 
  */
-class ZONELIVRAISON extends TABLE
+class PRIX extends TABLE
 {
 
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	public $name;
+	public $price;
 
 	public function enregistre(){
 		$data = new RESPONSE;
-		if ($this->name != "") {
+		if ($this->price > 0) {
 			$data = $this->save();
 			if ($data->status) {
 				foreach (PRODUIT::getAll() as $key => $produit) {
-					$ligne = new PRIX_ZONELIVRAISON();
-					$ligne->zonelivraison_id = $data->lastid;
+					$ligne = new PRIXDEVENTE();
+					$ligne->prix_id = $data->lastid;
 					$ligne->produit_id = $produit->getId();
-					$ligne->price = 0;
 					$ligne->enregistre();
 				}
 			}
@@ -32,14 +31,19 @@ class ZONELIVRAISON extends TABLE
 	}
 
 
+	public function price(){
+		return money($this->price);
+	}
+
+	
 	public function sentenseCreate(){
-		return $this->sentense = "Ajout d'une nouvelle zone de livraison : $this->name dans les paramétrages";
+		return $this->sentense = "Ajout d'une nouvelle zone de livraison : $this->price dans les paramétrages";
 	}
 	public function sentenseUpdate(){
-		return $this->sentense = "Modification des informations de la zone de livraison $this->id : $this->name ";
+		return $this->sentense = "Modification des informations de la zone de livraison $this->id : $this->price ";
 	}
 	public function sentenseDelete(){
-		return $this->sentense = "Suppression definitive de la zone de livraison $this->id : $this->name";
+		return $this->sentense = "Suppression definitive de la zone de livraison $this->id : $this->price";
 	}
 
 

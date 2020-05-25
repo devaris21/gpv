@@ -10,9 +10,9 @@ class CATEGORIEOPERATION extends TABLE
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	const PAYEMENT = 1;
+	const VENTE = 1;
 	const REMBOURSEMENT_FOURNISSEUR = 2;
-	const LOCATION_LIVRAISON = 3;
+	const LOCATION_VENTE = 3;
 	const AUTRE_ENTREE = 4;
 
 	const APPROVISIONNEMENT = 5;

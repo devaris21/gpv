@@ -20,14 +20,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i =0; foreach (Home\ZONELIVRAISON::findBy([], [], ["name"=>"ASC"]) as $key => $zone) {
+                        <?php $i =0; foreach (Home\PRIX::findBy([], [], ["name"=>"ASC"]) as $key => $prix) {
                             $i++; ?>
                             <tr class="clients">
                                 <td><i class="fa fa-truck"></i></td>
-                                <td class="gras"><?= $zone->name(); ?></td>
+                                <td class="gras"><?= $prix->name(); ?></td>
                                 <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $prod) { 
-                                    $pz = new Home\PRIX_ZONELIVRAISON();
-                                    $datas = $prod->fourni("prix_zonelivraison", ["zonelivraison_id ="=>$zone->getId()]);
+                                    $pz = new Home\PRIXDEVENTE();
+                                    $datas = $prod->fourni("prixdevente", ["prix_id ="=>$prix->getId()]);
                                     if (count($datas) > 0) {
                                         $pz = $datas[0];
                                     }

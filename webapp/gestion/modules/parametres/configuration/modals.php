@@ -102,14 +102,14 @@
 
 
 
-<div class="modal inmodal fade" id="modal-zonelivraison">
+<div class="modal inmodal fade" id="modal-zonedevente">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h4 class="modal-title">Formulaire de zone de livraison</h4>
 			</div>
-			<form method="POST" class="formShamman" classname="zonelivraison">
+			<form method="POST" class="formShamman" classname="zonedevente">
 				<div class="modal-body">
 					<div class="">
 						<label>Libéllé </label>
@@ -130,46 +130,33 @@
 </div>
 
 
-<?php $i =0; foreach (Home\ZONELIVRAISON::findBy([], [], ["name"=>"ASC"]) as $key => $zone) { ?>
-	<div class="modal inmodal fade" id="modal-prix<?= $zone->getId() ?>">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Formulaire des prix</h4>
-				</div>
-				<form method="POST" class="formPrix">
-					<div class="modal-body">
-						<h3 class="text-uppercase text-center">Pour la zone <b><?= $zone->name() ?></b></h3><br>
-
-						<div class="row">
-							<?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $prod) { 
-								$pz = new Home\PRIX_ZONELIVRAISON();
-								$datas = $prod->fourni("prix_zonelivraison", ["zonelivraison_id ="=>$zone->getId()]);
-								if (count($datas) > 0) {
-									$pz = $datas[0];
-								}
-								?>
-								<div class="col-sm-4">
-									<label><?= $prod->name() ?> </label>
-									<div class="form-group">
-										<input data-id="<?= $pz->getId(); ?>" type="number" number class="form-control" value="<?= $pz->price; ?>">
-									</div>
-								</div>
-							<?php } ?>
-						</div>						
-					</div><hr>
-					<div class="container">
-						<input type="hidden" name="id">
-						<button type="button" class="btn btn-sm  btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
-						<button class="btn btn-sm btn-primary pull-right dim"><i class="fa fa-check"></i> enregistrer</button>
-					</div>
-					<br>
-				</form>
+<div class="modal inmodal fade" id="modal-prix">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Formulaire de prix de vente</h4>
 			</div>
+			<form method="POST" class="formShamman" classname="prix">
+				<div class="modal-body">
+					<div class="">
+						<label>Prix de vente </label>
+						<div class="form-group">
+							<input type="text" class="form-control" name="price" required>
+						</div>
+					</div>
+				</div><hr>
+				<div class="container">
+					<input type="hidden" name="id">
+					<button type="button" class="btn btn-sm  btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+					<button class="btn btn-sm btn-primary pull-right dim"><i class="fa fa-check"></i> enregistrer</button>
+				</div>
+				<br>
+			</form>
 		</div>
 	</div>
-<?php } ?>
+</div>
+
 
 
 <?php foreach (Home\PRODUIT::getAll() as $key => $produit) {

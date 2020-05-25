@@ -17,7 +17,7 @@ class OPERATION extends TABLE
 	public $employe_id;
 	public $etat_id = ETAT::VALIDEE;
 	public $comment;
-	public $client_id = CLIENT::CLIENTSYSTEME;
+	public $client_id = CLIENT::ANONYME;
 	public $manoeuvre_id;
 	public $fournisseur_id;
 	public $structure;
@@ -111,7 +111,7 @@ class OPERATION extends TABLE
 
 	public static function versements(string $date1 = "2020-04-01", string $date2){
 		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? ";
-		$item = OPERATION::execute($requette, [CATEGORIEOPERATION::PAYEMENT, CLIENT::CLIENTSYSTEME, $date1, $date2]);
+		$item = OPERATION::execute($requette, [CATEGORIEOPERATION::VENTE, CLIENT::CLIENTSYSTEME, $date1, $date2]);
 		if (count($item) < 1) {$item = [new OPERATION()]; }
 		return $item[0]->montant;
 	}

@@ -65,14 +65,14 @@
                                 <div class="col-md">
                                     <div class="widget style2 bg-warning">
                                         <span>Livraisons effectuées </span>
-                                        <h2 class="font-bold"><?= start0(count(Home\LIVRAISON::findBy(["DATE(created) >= " => $date1, "DATE(created) <= " => $date2]))) ?></h2>
+                                        <h2 class="font-bold"><?= start0(count(Home\VENTE::findBy(["DATE(created) >= " => $date1, "DATE(created) <= " => $date2]))) ?></h2>
                                     </div>
                                 </div>
                                 <div class="col-md">
                                     <div class="widget style2 red-bg">
                                         <span>Annulation </span>
                                         <h2 class="font-bold"><?= start0(count(array_merge(Home\COMMANDE::findBy(["etat_id = "=> Home\ETAT::ANNULEE, "DATE(modified) >= " => $date1, "DATE(modified) <= " => $date2]), 
-                                        Home\LIVRAISON::findBy(["etat_id = "=> Home\ETAT::ANNULEE, "DATE(modified) >= " => $date1, "DATE(modified) <= " => $date2])))) ?></h2> 
+                                        Home\VENTE::findBy(["etat_id = "=> Home\ETAT::ANNULEE, "DATE(modified) >= " => $date1, "DATE(modified) <= " => $date2])))) ?></h2> 
                                     </div>
                                 </div>
                             </div><br>

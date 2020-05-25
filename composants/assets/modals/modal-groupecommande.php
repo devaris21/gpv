@@ -30,8 +30,11 @@
                         <thead>
                             <tr>
                                 <th colspan="3"></th>
-                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
-                                    <th class="text-center"><?= $produit->name() ?></th>
+                                <?php foreach ($datas as $key => $value) {
+                                $value->actualise(); ?>
+                                    <th class="text-center">
+                                    <h5 class="mp0"><?= $value->produit->name() ?></h5> 
+                                    <h6 class="mp0"><?= $value->prix->price() ?> <?= $params->devise ?></h6></th>
                                 <?php } ?>
                             </tr>
                         </thead>
@@ -42,21 +45,21 @@
                                 $ligne->fourni("lignecommande");
                                 $ligne->type = "commande";
                             }
-                            $datas2 = $groupecommande->fourni("livraison", ["etat_id !="=>Home\ETAT::ANNULEE]);
+                            $datas2 = $groupecommande->fourni("vente", ["etat_id !="=>Home\ETAT::ANNULEE]);
                             foreach ($datas2 as $key => $ligne) {
-                                $ligne->fourni("lignelivraison");
-                                $ligne->type= "livraison";
+                                $ligne->fourni("lignedevente");
+                                $ligne->type= "vente";
                             }
-                            $datas = array_merge($datas1, $datas2);
-                            usort($datas, "comparerDateCreated");
+                            $lots = array_merge($datas1, $datas2);
+                            usort($lots, "comparerDateCreated");
 
-                            foreach ($datas as $key => $ligne) { ?>
+                            foreach ($lots as $key => $ligne) { ?>
                                 <tr>
                                     <td data-toggle="tooltip" title="Annuler / Supprimer">
                                         <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
                                             <?php if ($ligne->type == "commande") { ?>
                                                 <i class="fa fa-close fa-3x d-block text-red cursor" onclick="annulerCommande(<?= $ligne->getId() ?>)"></i>
-                                            <?php }else if($ligne->type == "livraison" && $ligne->etat_id == Home\ETAT::ENCOURS){ ?> 
+                                            <?php }else if($ligne->type == "vente" && $ligne->etat_id == Home\ETAT::ENCOURS){ ?> 
                                                 <i class="fa fa-close fa-3x d-block text-red cursor" onclick="annulerLivraison(<?= $ligne->getId() ?>)"></i>
                                             <?php } ?> 
                                         <?php } ?> 
@@ -66,7 +69,7 @@
                                         <small><?= datelong($ligne->created)  ?></small>
                                     </td>
                                     <td data-toggle="tooltip" title="imprimer le bon de <?= $ligne->type ?>">
-                                        <?php if ($ligne->type == "livraison") { ?>
+                                        <?php if ($ligne->type == "vente") { ?>
                                             <a target="_blank" href="<?= $rooter->url("gestion", "fiches", "bonlivraison", $ligne->getId()) ?>">
                                                 <i class="fa fa-file-text fa-2x d-block"></i></a>
                                             <?php }else{ ?>
@@ -75,19 +78,20 @@
                                                 <?php } ?>                                
                                             </td>
                                             <?php 
-                                            foreach (Home\PRODUIT::getAll() as $key => $produit) {
+                                            foreach ($datas as $key => $value) {
                                                 $test = 0;
                                                 foreach ($ligne->items as $key => $item) {
-                                                    if ($item->produit_id == $produit->getId() ) { 
+                                                    $item->actualise();
+                                                    if ($item->prixdevente->getId() == $value->getId() ) { 
                                                         $test = $item->quantite;
-                                                        if ($ligne->type == "livraison") {
-                                                            $test = $item->quantite_livree;
+                                                        if ($ligne->type == "vente") {
+                                                            $test = $item->quantite_vendu;
                                                         }
                                                         break;
                                                     }
                                                 }
                                                 ?>
-                                                <td><h3 class="text-<?= ($ligne->type == "livraison")? "orange":"green" ?> text-center"> <?= $test  ?> </h3></td>
+                                                <td><h3 class="text-<?= ($ligne->type == "vente")? "orange":"green" ?> text-center"> <?= $test  ?> </h3></td>
                                                 <?php
                                             }
                                             ?>
@@ -102,7 +106,7 @@
                                                 </td>
                                             <?php }  ?>
 
-                                            <?php if ($ligne->type == "livraison" && $ligne->etat_id == Home\ETAT::VALIDEE) { ?>
+                                            <?php if ($ligne->type == "vente" && $ligne->etat_id == Home\ETAT::VALIDEE) { ?>
                                                 <td >
                                                     <i class="fa fa-check fa-2x text-green"></i>
                                                 </td>
@@ -115,8 +119,8 @@
 
                                     <tr>
                                         <td colspan="3"><h2 class="text-uppercase text-right">Reste à livrer : </h2></td>
-                                        <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
-                                            <td widtd="90" class="text-center"><h2 class="gras"><?= money($groupecommande->reste($produit->getId())) ?></h2></td>
+                                        <?php foreach ($datas as $key => $value) { ?>
+                                            <td widtd="90" class="text-center"><h2 class="gras"><?= money($groupecommande->reste($value->getId())) ?></h2></td>
                                         <?php } ?>
                                     </tr>
                                 </tbody>

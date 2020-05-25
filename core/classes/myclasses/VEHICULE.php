@@ -10,8 +10,8 @@ class VEHICULE extends TABLE
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	const AUTO = 1;
-	const TRICYCLE = 2;
+	const COMMERCIAUX = 1;
+	const AUTO        = 2;
 
 	public $typevehicule_id;
 	public $groupevehicule_id;

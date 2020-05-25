@@ -5,36 +5,30 @@ use Native\EMAIL;
 /**
  * 
  */
-class LIGNELIVRAISON extends TABLE
+class LIGNEDEVENTE extends TABLE
 {
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	public $livraison_id;
-	public $produit_id;
+	public $vente_id;
+	public $prixdevente_id;
 	public $quantite;
 
+	public $quantite_vendu;
 	public $reste = 0;
-	public $quantite_livree;
 
 
 	public function enregistre(){
 		$data = new RESPONSE;
-		$datas = LIVRAISON::findBy(["id ="=>$this->livraison_id]);
+		$datas = VENTE::findBy(["id ="=>$this->vente_id]);
 		if (count($datas) == 1) {
-			$datas = PRODUIT::findBy(["id ="=>$this->produit_id]);
-			if (count($datas) == 1) {
-				if ($this->quantite > 0) {
-					$this->quantite_livree = $this->quantite;
+			if ($this->quantite > 0) {
+					$this->quantite_vendu = $this->quantite;
 					$data = $this->save();
 				}else{
 					$data->status = false;
 					$data->message = "La quantité n'est pas correcte !";
 				}
-			}else{
-				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'ajout du produit !";
-			}
 		}else{
 			$data->status = false;
 			$data->message = "Une erreur s'est produite lors de l'ajout du produit !";

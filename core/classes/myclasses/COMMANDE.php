@@ -12,7 +12,7 @@ class COMMANDE extends TABLE
 	public $reference;
 	public $groupecommande_id;
 	public $datelivraison;
-	public $zonelivraison_id;
+	public $zonedevente_id;
 	public $lieu;
 	public $taux_tva = 0;
 	public $tva = 0;
@@ -33,7 +33,7 @@ class COMMANDE extends TABLE
 		$data = new RESPONSE;
 		if ($this->datelivraison >= dateAjoute()) {
 			if ($this->lieu != "") {
-				$datas = ZONELIVRAISON::findBy(["id ="=>$this->zonelivraison_id]);
+				$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonedevente_id]);
 				if (count($datas) == 1) {
 					$params = PARAMS::findLastId();
 

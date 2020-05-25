@@ -27,14 +27,14 @@ foreach ($produits as $key => $produit) {
 
 $perte = comptage($produits, "perte", "somme");
 if ($perte > 0) {
-	$pertelivraison = round(((LIVRAISON::perte($date1, $date2) / $perte) * 100),2);
+	$pertelivraison = round(((VENTE::perte($date1, $date2) / $perte) * 100),2);
 }else{
 	$pertelivraison = 0;
 }
 
 $productions = PRODUCTIONJOUR::findBy(["ladate >="=>$date1, "ladate <= "=>$date2]);
 
-$tricycles = LIVRAISON::findBy(["DATE(datelivraison) >="=>$date1, "DATE(datelivraison) <= "=>$date2, "etat_id ="=>ETAT::VALIDEE, "vehicule_id ="=>VEHICULE::TRICYCLE]);
+$tricycles = VENTE::findBy(["DATE(datelivraison) >="=>$date1, "DATE(datelivraison) <= "=>$date2, "etat_id ="=>ETAT::VALIDEE, "vehicule_id ="=>VEHICULE::TRICYCLE]);
 
 
 $ressources = RESSOURCE::getAll();

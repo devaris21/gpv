@@ -325,7 +325,7 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <?php $i =0; foreach (Home\ZONELIVRAISON::findBy([], [], ["name"=>"ASC"]) as $key => $item) { ?>
+                                                                <?php $i =0; foreach (Home\ZONEDEVENTE::findBy([], [], ["name"=>"ASC"]) as $key => $item) { ?>
                                                                     <tr>
                                                                         <td class="gras"><?= $item->name(); ?></td>
                                                                         <td data-toggle="modal" data-target="#modal-zonelivraison" title="modifier la zone de livraison" onclick="modification('zonelivraison', <?= $item->getId() ?>)"><i class="fa fa-pencil text-blue cursor"></i></td>
@@ -344,7 +344,9 @@
                                                     <div class="ibox-title">
                                                         <h5 class="text-uppercase">Prix des produits par zone de livraison</h5>
                                                         <div class="ibox-tools">
-
+                                                            <a class="btn_modal" data-toggle="modal" data-target="#modal-prix">
+                                                                <i class="fa fa-plus"></i> Nouveau prix
+                                                            </a>
                                                         </div>
                                                     </div>
                                                     <div class="ibox-content">
@@ -352,27 +354,25 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th></th>
-                                                                    <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $prod) {  ?>
-                                                                        <td class="gras text-center"><?= $prod->name(); ?></td>
+                                                                    <?php $i =0; foreach (Home\PRIX::findBy([]) as $key => $prod) {  ?>
+                                                                        <td class="gras text-center"><?= money($prod->price); ?> <?= $params->devise ?></td>
                                                                     <?php } ?>
-                                                                    <th></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <?php $i =0; foreach (Home\ZONELIVRAISON::findBy([], [], ["name"=>"ASC"]) as $key => $zone) {
+                                                                <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $produit) {
                                                                     $i++; ?>
                                                                     <tr>
-                                                                        <td class="gras"><?= $zone->name(); ?></td>
-                                                                        <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $prod) { 
-                                                                            $pz = new Home\PRIX_ZONELIVRAISON();
-                                                                            $datas = $prod->fourni("prix_zonelivraison", ["zonelivraison_id ="=>$zone->getId()]);
-                                                                            if (count($datas) > 0) {
-                                                                                $pz = $datas[0];
-                                                                            }
-                                                                            ?>
-                                                                            <td class="text-center" ><?= money($pz->price); ?> <?= $params->devise ?></td>
+                                                                        <td class="gras"><?= $produit->name(); ?></td>
+                                                                        <?php foreach (Home\PRIX::findBy([]) as $key => $prix) { 
+                                                                            $datas = $prix->fourni("prixdevente", ["produit_id ="=>$produit->getId()]);
+                                                                            $pz = $datas[0]; ?>
+                                                                            <?php if ($pz->isActive == Home\TABLE::OUI) { ?>
+                                                                                <td onclick="changerMode(<?= $pz->getId() ?>)" class="text-center" ><i class="fa fa-circle text-green fa-2x  cursor"></i></td>
+                                                                            <?php }else{ ?>
+                                                                                <td onclick="changerMode(<?= $pz->getId() ?>)" class="text-center" ><i class="fa fa-circle-o fa- cursor"></i></td>
+                                                                            <?php } ?>
                                                                         <?php } ?>
-                                                                        <td data-toggle="modal" data-target="#modal-prix<?= $zone->getId() ?>" title="modifier les prix"><i class="fa fa-pencil text-blue cursor"></i></td>
                                                                     </tr>
                                                                 <?php } ?>
                                                             </tbody>
@@ -393,7 +393,7 @@
                                     <div role="tabpanel" id="tabpersonnel" class="tab-pane">
                                         <div class="row">
 
-                                         <div class="col-md-4 bloc">
+                                           <div class="col-md-4 bloc">
                                             <div class="ibox border">
                                                 <div class="ibox-title">
                                                     <h5 class="text-uppercase">Groupe de manoeuvre</h5>
@@ -496,7 +496,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php $i =0; foreach (Home\CHAUFFEUR::findBy(["visibility ="=>1], [], ["name"=>"ASC"]) as $key => $item) {
+                                                            <?php $i =0; foreach (Home\COMMERCIAL::findBy(["visibility ="=>1], [], ["name"=>"ASC"]) as $key => $item) {
                                                                 $i++; ?>
                                                                 <tr>
                                                                     <td>
@@ -748,7 +748,7 @@
                                                 </div>
                                                 <div class="ibox-content table-responsive" style="min-height: 400px;">
                                                     <table class="table table-striped">
-                                                       <thead>
+                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Libéllé</th>
@@ -795,7 +795,7 @@
                                             </div>
                                             <div class="ibox-content table-responsive" style="min-height: 400px;">
                                                 <table class="table table-striped">
-                                                   <thead>
+                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Libéllé</th>
@@ -988,10 +988,10 @@
 
                                                                 <?php foreach (Home\ROLE::getAll() as $key => $role) {
                                                                     if (!in_array($role->getId(), $lots)) { ?>
-                                                                       <button style="margin-top: 1%" employe="<?= $rem->employe_id ?>" role="<?= $role->getId() ?>" class="btn btn-white btn-xs autoriser"><?= $role->name() ?></button>
-                                                                   <?php } } ?>                
-                                                               </td>
-                                                               <td class="text-right">          
+                                                                     <button style="margin-top: 1%" employe="<?= $rem->employe_id ?>" role="<?= $role->getId() ?>" class="btn btn-white btn-xs autoriser"><?= $role->name() ?></button>
+                                                                 <?php } } ?>                
+                                                             </td>
+                                                             <td class="text-right">          
                                                                 <button onclick="resetPassword('employe', <?= $item->getId() ?>)" class="btn btn-white btn-xs"><i class="fa fa-refresh text-blue"></i> Init. mot de passe</button><br>
 
                                                                 <?php if ($item->is_allowed == 1) { ?>

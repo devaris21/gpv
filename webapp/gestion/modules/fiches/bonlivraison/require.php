@@ -3,7 +3,7 @@
 namespace Home;
 
 if ($this->getId() != null) {
-	$datas = LIVRAISON::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
+	$datas = VENTE::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
 	if (count($datas) > 0) {
 		$livraison = $datas[0];
 		$livraison->actualise();

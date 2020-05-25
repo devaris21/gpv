@@ -1,19 +1,26 @@
 <?php 
 namespace Home;
+unset_session("produits");
+unset_session("commande-encours");
+
+$params = PARAMS::findLastId();
 
 GROUPECOMMANDE::etat();
-LIVRAISON::ResetProgramme();
+VENTE::ResetProgramme();
 
 $title = "GPV | Tableau de bord";
 
 $tableau = [];
-foreach (PRODUIT::getAll() as $key => $prod) {
+foreach (PRIXDEVENTE::getAll() as $key => $pdv) {
+	$pdv->actualise();
 	$data = new \stdclass();
-	$data->name = $prod->name();
-	$data->livrable = $prod->livrable();
-	$data->attente = $prod->enAttente();
-	$data->commande = $prod->commandee();
-	$tableau[] = $data;
+	$data->name = $pdv->produit->name()." -- ".$pdv->prix->price()/*." ".$params->devise*/;
+	$data->livrable = $pdv->livrable();
+	$data->attente = $pdv->enAttente();
+	$data->commande = $pdv->commandee();
+	if (!($data->livrable==0 && $data->attente==0 && $data->commande==0)) {
+		$tableau[] = $data;
+	}	
 }
 
 foreach (OPERATION::enAttente() as $key => $item) {

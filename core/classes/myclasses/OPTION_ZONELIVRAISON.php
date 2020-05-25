@@ -5,7 +5,7 @@ use Native\RESPONSE;
 /**
  * 
  */
-class OPTION_ZONELIVRAISON extends TABLE
+class OPTION_ZONEDEVENTE extends TABLE
 {
 	
 	
@@ -20,7 +20,7 @@ class OPTION_ZONELIVRAISON extends TABLE
 	public function enregistre(){
 		$data = new RESPONSE;
 		if ($this->name != "") {
-			$datas = ZONELIVRAISON::findBy(["id ="=>$this->zonelivraison_id]);
+			$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonelivraison_id]);
 			if (count($datas) == 1) {
 				if ($this->price >= 0) {
 					$data = $this->save();

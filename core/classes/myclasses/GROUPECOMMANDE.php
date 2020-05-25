@@ -35,20 +35,27 @@ class GROUPECOMMANDE extends TABLE
 	} 
 
 
-	public function reste(int $produit_id){
+	public function reste(int $prixdevente_id){
 		$total = 0;
 
-		$requette = "SELECT SUM(quantite) as quantite FROM lignecommande, produit, commande, groupecommande WHERE lignecommande.produit_id = produit.id AND lignecommande.commande_id = commande.id AND commande.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND commande.etat_id != ? AND produit.id = ? GROUP BY produit.id";
-		$item = LIGNECOMMANDE::execute($requette, [$this->getId(), ETAT::ANNULEE, $produit_id]);
+		$requette = "SELECT SUM(quantite) as quantite FROM lignecommande, prixdevente, commande, groupecommande WHERE lignecommande.prixdevente_id = prixdevente.id AND lignecommande.commande_id = commande.id AND commande.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND commande.etat_id != ? AND prixdevente.id = ? GROUP BY prixdevente.id";
+		$item = LIGNECOMMANDE::execute($requette, [$this->getId(), ETAT::ANNULEE, $prixdevente_id]);
 		if (count($item) < 1) {$item = [new LIGNECOMMANDE()]; }
 		$total += $item[0]->quantite;
 
-		$requette = "SELECT SUM(quantite_livree) as quantite FROM lignelivraison, produit, livraison, groupecommande WHERE lignelivraison.produit_id = produit.id AND lignelivraison.livraison_id = livraison.id AND livraison.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND livraison.etat_id != ? AND produit.id = ? GROUP BY produit.id";
-		$item = LIGNELIVRAISON::execute($requette, [$this->getId(), ETAT::ANNULEE, $produit_id]);
-		if (count($item) < 1) {$item = [new LIGNELIVRAISON()]; }
+		$requette = "SELECT SUM(quantite_vendu) as quantite FROM lignedevente, prixdevente, vente, groupecommande WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND vente.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND vente.etat_id != ? AND prixdevente.id = ? GROUP BY prixdevente.id";
+		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, $prixdevente_id]);
+		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		$total -= $item[0]->quantite;
 		return $total;
 	}
+
+
+	public function lesRestes(){
+		$requette = "SELECT prixdevente.id, SUM(quantite) as quantite FROM lignecommande, prixdevente, commande, groupecommande WHERE lignecommande.prixdevente_id = prixdevente.id AND lignecommande.commande_id = commande.id AND commande.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND commande.etat_id != ? GROUP BY prixdevente.id";
+		return PRIXDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE]);
+	}
+
 
 
 	public function sentenseCreate(){}

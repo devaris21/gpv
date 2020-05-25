@@ -43,7 +43,7 @@
               <tbody>
                 <?php for ($i=0; $i < 7; $i++) {
                   $date = dateAjoute($i);
-                  $datas = Home\LIVRAISON::findBy(["etat_id ="=>Home\ETAT::PARTIEL, "DATE(datelivraison) ="=>$date])
+                  $datas = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::PARTIEL, "DATE(dateretour) ="=>$date])
                   ?>
                   <tr>
                     <td><h2 class="gras"><?= datecourt($date) ?></h2></td>

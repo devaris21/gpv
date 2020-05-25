@@ -17,7 +17,7 @@ if ($action == "annulerLivraison") {
 		$employe = $datas[0];
 		$employe->actualise();
 		if ($employe->checkPassword($password)) {
-			$datas = LIVRAISON::findBy(["id ="=>$id]);
+			$datas = VENTE::findBy(["id ="=>$id]);
 			if (count($datas) == 1) {
 				$livraison = $datas[0];
 				$data = $livraison->annuler();
@@ -40,7 +40,7 @@ if ($action == "annulerLivraison") {
 
 if ($action == "validerLivraison") {
 	$id = getSession("livraison_id");
-	$datas = LIVRAISON::findBy(["id ="=>$id]);
+	$datas = VENTE::findBy(["id ="=>$id]);
 	if (count($datas) > 0) {
 		$livraison = $datas[0];
 		$livraison->actualise();
@@ -110,7 +110,7 @@ if ($action == "payer") {
 		$employe = $datas[0];
 		$employe->actualise();
 		if ($employe->checkPassword($password)) {
-			$datas = LIVRAISON::findBy(["id ="=>$livraison_id]);
+			$datas = VENTE::findBy(["id ="=>$livraison_id]);
 			if (count($datas) == 1) {
 				$livraison = $datas[0];
 				$data = $livraison->payer($montant, $_POST);

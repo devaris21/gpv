@@ -13,7 +13,7 @@ class CLIENT extends TABLE
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	const CLIENTSYSTEME = 1;
+	const ANONYME = 1;
 
 	public $typeclient_id = TYPECLIENT::ENTREPRISE;
 	public $name;
@@ -52,7 +52,7 @@ class CLIENT extends TABLE
 			$payement = new OPERATION();
 			$payement->hydrater($post);
 			if ($payement->modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE) {
-				$payement->categorieoperation_id = CATEGORIEOPERATION::PAYEMENT;
+				$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 				$payement->client_id = $this->getId();
 				$payement->comment = "Acréditation du compte du client ".$this->name()." d'un montant de ".money($montant)." ".$params->devise;
 				$data = $payement->enregistre();
@@ -166,7 +166,7 @@ class CLIENT extends TABLE
 						$data = $this->save();
 					}else{
 						$this->dette -= intval($montant);
-						$payement->categorieoperation_id = CATEGORIEOPERATION::PAYEMENT;
+						$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 						$payement->client_id = $this->getId();
 						$payement->comment = "Reglement de la dette du client ".$this->name()." d'un montant de ".money($montant)." ".$params->devise;
 						$data = $payement->enregistre();
@@ -233,7 +233,7 @@ class CLIENT extends TABLE
 			////////////
 
 			$data->commandes = count(COMMANDE::findBy(["DATE(created) >= " => $debut, "DATE(created) < " => $fin, "etat_id !="=>ETAT::ANNULEE]));
-			$data->livraisons = count(LIVRAISON::findBy(["DATE(created) >= " => $debut, "DATE(created) < " => $fin, "etat_id !="=>ETAT::ANNULEE]));
+			$data->livraisons = count(VENTE::findBy(["DATE(created) >= " => $debut, "DATE(created) < " => $fin, "etat_id !="=>ETAT::ANNULEE]));
 			$data->versement = OPERATION::versements($debut, $fin);
 
 			$tableaux[] = $data;

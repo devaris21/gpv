@@ -8,26 +8,23 @@ use \DateInterval;
 /**
  * 
  */
-class CHAUFFEUR extends PERSONNE
+class COMMERCIAL extends PERSONNE
 {
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	public $matricule;
+	const MAGASIN = 1;
+
 	public $name;
-	public $lastname;
 	public $nationalite;
 	public $adresse;
 	public $sexe_id = SEXE::HOMME;
-	public $typepermis;	
-	public $numero_permis;
-	public $date_fin_permis;
 	public $email;
 	public $contact;
 	public $salaire = 0;
 	public $image = "default.png";
 	
-	public $etatchauffeur_id = ETATCHAUFFEUR::RAS;
+	public $disponibilite_id = DISPONIBILITE::LIBRE;
 
 
 
@@ -62,7 +59,7 @@ class CHAUFFEUR extends PERSONNE
 					$image->hydrater($file);
 					if ($image->is_image()) {
 						$a = substr(uniqid(), 5);
-						$result = $image->upload("images", "chauffeurs", $a);
+						$result = $image->upload("images", "commercial", $a);
 						$name = $tab[$i];
 						$this->$name = $result->filename;
 						$this->save();
@@ -77,11 +74,11 @@ class CHAUFFEUR extends PERSONNE
 
 
 	public static function libres(){
-		return static::findBy(["etatchauffeur_id =" => ETATCHAUFFEUR::RAS]);
+		return static::findBy(["disponibilite_id =" => DISPONIBILITE::LIBRE]);
 	}
 
 	public static function mission(){
-		return static::findBy(["etatchauffeur_id =" => ETATCHAUFFEUR::MISSION, 'visibility ='=>1]);
+		return static::findBy(["disponibilite_id =" => DISPONIBILITE::MISSION, 'visibility ='=>1]);
 	}
 
 

@@ -11,9 +11,8 @@ class LIGNECOMMANDE extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $commande_id;
-	public $produit_id;
+	public $prixdevente_id;
 	public $quantite;
-	public $price;
 
 
 
@@ -21,14 +20,9 @@ class LIGNECOMMANDE extends TABLE
 		$data = new RESPONSE;
 		$datas = COMMANDE::findBy(["id ="=>$this->commande_id]);
 		if (count($datas) == 1) {
-			$datas = PRODUIT::findBy(["id ="=>$this->produit_id]);
+			$datas = PRIXDEVENTE::findBy(["id ="=>$this->prixdevente_id]);
 			if (count($datas) == 1) {
-				if ($this->quantite > 0) {
-					$data = $this->save();
-				}else{
-					$data->status = false;
-					$data->message = "La quantité n'est pas correcte !";
-				}
+				$data = $this->save();
 			}else{
 				$data->status = false;
 				$data->message = "Une erreur s'est produite lors de l'ajout du produit !";

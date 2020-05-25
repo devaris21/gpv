@@ -27,7 +27,9 @@
 
             <?php 
             $groupes__ = Home\GROUPECOMMANDE::encours();
-            $livraisons__ = Home\LIVRAISON::encours();
+            $prospections__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::PROSPECTION]);
+            $ventes__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::DIRECT]);
+            $livraisons__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::LIVRAISON]);
             $approvisionnements__ = Home\APPROVISIONNEMENT::encours();
             $datas1__ = array_merge(Home\PANNE::encours(), Home\DEMANDEENTRETIEN::encours(), Home\ENTRETIENVEHICULE::encours(), Home\ENTRETIENMACHINE::encours());
 
@@ -58,15 +60,19 @@
                         <a href="<?= $this->url("gestion", "production", "commandes") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Commandes</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
                     </li>
 
-                    <li class="groupe">
-                        <a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Livraisons <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li class="" id="programmes"><a href="<?= $this->url("gestion", "production", "programmes") ?>">Programme de livraison</a></li>
-                            <li class="" id="livraisons"><a href="<?= $this->url("gestion", "production", "livraisons") ?>">Livraison en cours <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a></li>
-                            <li class="" id="tricycle"><a href="<?= $this->url("gestion", "production", "tricycle") ?>">Livraisons tricycle</a></li>
-                        </ul>
+                    <li class="" id="livraisons">
+                        <a href="<?= $this->url("gestion", "production", "livraisons") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
+                    </li>
+
+                    <li class="" id="prospections">
+                        <a href="<?= $this->url("gestion", "production", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Prospections</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
                     </li>
                     
+                    <li class="dropdown-divider"></li>
+                    <li class="" id="commerciaux">
+                        <a href="<?= $this->url("gestion", "production", "commerciaux") ?>"><i class="fa fa-users"></i> <span class="nav-label">Les commerciaux</span></a>
+                    </li>
+
                     <li class="" id="fournisseurs">
                         <a href="<?= $this->url("gestion", "production", "fournisseurs") ?>"><i class="fa fa-address-book-o"></i> <span class="nav-label">Liste des Fournisseurs</span></a>
                     </li>
@@ -76,17 +82,15 @@
                     <li class="dropdown-divider"></li>
                 <?php } ?>
 
-
-                <li class="" id="personnel">
-                    <a href="<?= $this->url("gestion", "master", "personnel") ?>"><i class="fa fa-users"></i> <span class="nav-label">Le personnel</span></a>
-                </li>
+<!-- 
+                
                 <li class="" id="machines">
                     <a href="<?= $this->url("gestion", "master", "machines") ?>"><i class="fa fa-steam"></i> <span class="nav-label">Véhicules et machines</span></a>
                 </li>            
                 <li class="" id="pannes">
                     <a href="<?= $this->url("gestion", "master", "pannes") ?>"><i class="fa fa-wrench"></i> <span class="nav-label">Pannes et entretien</span> <?php if (count($datas1__) > 0) { ?> <span class="label label-warning float-right"><?= count($datas1__) ?></span> <?php } ?></a>
                 </li>
-                <li class="dropdown-divider"></li>
+                <li class="dropdown-divider"></li> -->
 
 
                 <?php if ($employe->isAutoriser("caisse")) { ?>

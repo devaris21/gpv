@@ -8,7 +8,7 @@ if ($this->getId() != "") {
 }
 
 $commandes = COMMANDE::findBy(["DATE(created) = " => $date, "etat_id !="=>ETAT::ANNULEE]);
-$livraisons = LIVRAISON::findBy(["DATE(created) = " => $date, "etat_id > "=>ETAT::ANNULEE, "etat_id !="=>ETAT::PARTIEL]);
+$livraisons = VENTE::findBy(["DATE(created) = " => $date, "etat_id > "=>ETAT::ANNULEE, "etat_id !="=>ETAT::PARTIEL]);
 $approvisionnements = APPROVISIONNEMENT::findBy(["visibility ="=>1, "DATE(created) = " => $date, "etat_id !="=>ETAT::ANNULEE]);
 
 $operations = OPERATION::findBy(["DATE(created) = " => $date]);

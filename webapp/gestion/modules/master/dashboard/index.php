@@ -20,7 +20,7 @@
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Commandes passés aujourd'hui</h5>
+                                <h5>Vendu aujourd'hui</h5>
                             </div>
                             <div class="ibox-content">
                                 <h2 class="no-margins"><?= start0(count(Home\COMMANDE::findBy(["DATE(created) ="=>dateAjoute(), "etat_id !="=>Home\ETAT::ANNULEE]))); ?></h2>
@@ -30,15 +30,15 @@
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Livraisons pour aujourd'hui</h5>
+                                <h5>Livrable actuellement</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
                                     <div class="col-sm-6 border-right">
-                                        <h2 class="no-margins"><?= start0(count(Home\LIVRAISON::programmee(dateAjoute()))); ?></h2>
+                                        <h2 class="no-margins"><?= start0(count(Home\VENTE::programmee(dateAjoute()))); ?></h2>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h2 class="no-margins text-green"><?= start0(count(Home\LIVRAISON::effectuee(dateAjoute()))); ?></h2>
+                                        <h2 class="no-margins text-green"><?= start0(count(Home\VENTE::effectuee(dateAjoute()))); ?></h2>
                                     </div>
                                 </div>
                             </div>
@@ -47,7 +47,7 @@
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Véhicules / Machines</h5>
+                                <h5>Dettes chez clients</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
@@ -64,12 +64,12 @@
                     <div class="col-lg-3">
                         <div class="ibox">
                             <div class="ibox-title">
-                                <h5>Le personnel</h5>
+                                <h5>En rupture de stock</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
                                     <div class="col-sm-6 border-right">
-                                        <h2 class="no-margins"><?= start0(count(Home\CHAUFFEUR::findBy(["visibility ="=>1]))) ?></h2>
+                                        <h2 class="no-margins"><?= start0(count(Home\PRODUIT::findBy([]))) ?></h2>
                                     </div>
                                     <div class="col-sm-6">
                                         <h2 class="no-margins"><?= start0(count(Home\MANOEUVRE::getAll())); ?></h2>
@@ -87,19 +87,18 @@
                         <div class="col-md-3">
                             <h3 class="text-uppercase">Stock des produits</h3>
                             <ul class="list-group clear-list m-t">
-                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
+                                <?php foreach ($tableau as $key => $pdv) { ?>
                                     <li class="list-group-item">
-                                        <i class="fa fa-cubes"></i>&nbsp;&nbsp;&nbsp; <?= $produit->name() ?>
+                                        <i class="fa fa-cubes"></i>&nbsp;&nbsp;&nbsp; <?= $pdv->name ?>
                                         <span class="float-right">
-                                            <span class="label label-success"><?= money($produit->livrable()) ?></span>
-                                            <span class="text-default"><?= money($produit->enAttente()) ?></span>
+                                            <span class="label label-success"><?= money($pdv->livrable) ?></span>
                                         </span>
                                     </li>
                                 <?php } ?>
                                 <li class="list-group-item"></li>
                             </ul>
 
-                            <a href="<?= $this->url("gestion", "caisse", "comptedujour") ?>" ><button class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Rapport de la journée</button></a>    
+                            <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Vente directe</button>
 
                         </div>
                         <div class="col-md-6 border-right border-left">
@@ -151,7 +150,7 @@
                             </ul>
 
                             <?php if ($employe->isAutoriser("production")) { ?>
-                                <button data-toggle="modal" data-target="#modal-productionjour" onclick=" modification('productionjour', <?= $productionjour->getId(); ?>) " class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Production de la journée</button>
+                                <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
                             <?php } ?>
                             
 
@@ -215,7 +214,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach (Home\LIVRAISON::programmee(dateAjoute()) as $key => $livraison) {
+                                        <?php foreach (Home\VENTE::programmee(dateAjoute()) as $key => $livraison) {
                                             $livraison->actualise();
                                             $datas = $livraison->fourni("lignelivraison"); ?>
                                             <tr>
@@ -253,6 +252,8 @@
 
             <?php include($this->rootPath("composants/assets/modals/modal-clients.php")); ?> 
             <?php include($this->rootPath("composants/assets/modals/modal-client.php")); ?> 
+            <?php include($this->rootPath("composants/assets/modals/modal-vente.php")); ?> 
+            <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
 
         </div>
     </div>
@@ -261,6 +262,7 @@
     <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
 
     <script type="text/javascript" src="<?= $this->relativePath("../../production/programmes/script.js") ?>"></script>
+    <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
 
     <script>
         $(document).ready(function() {
@@ -289,8 +291,8 @@
     [<?php foreach ($tableau as $key => $data){ ?>0, <?= $data->commande ?>, 0,<?php } ?>],
     ]
 }, {
-   stackBars: true,
-   axisX: {
+ stackBars: true,
+ axisX: {
     labelInterpolationFnc: function(value) {
         if (value >= 1000) {
             return (value / 1000) + 'k';            

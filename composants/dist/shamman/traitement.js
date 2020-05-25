@@ -95,7 +95,7 @@
         }
 
 
-        lock = function(table, id){
+        lock = function(type, id){
             url = "../../composants/dist/shamman/traitement.php";
             alerty.confirm("Voulez-vous vraiment bloquer tout accès à cette personne ?", {
                 title: "Restriction d'accès",
@@ -109,7 +109,7 @@
                     okLabel : "Valider"
                 }, function(password){
                     Loader.start();
-                    $.post(url, {action:"lock", table:table, id:id, password:password}, (data)=>{
+                    $.post(url, {action:"lock", type:type, id:id, password:password}, (data)=>{
                         if (data.status) {
                             window.location.reload()
                         }else{

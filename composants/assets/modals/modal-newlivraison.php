@@ -18,74 +18,85 @@
                         <div class="table-responsive">
                             <table class="table  table-striped">
                                 <tbody class="commande">
-                                    <?php foreach (Home\PRODUIT::getAll() as $key => $produit) {
-                                        $reste = $groupecommande->reste($produit->getId());
-                                        if ($reste > 0) { ?>
-                                           <tr class="border-0 border-bottom " id="ligne<?= $produit->getId() ?>" data-id="<?= $produit->getId() ?>">
-                                            <td><i class="fa fa-close text-red cursor" onclick="supprimeProduit(<?= $produit->getId() ?>)" style="font-size: 18px;"></i></td>
-                                            <td >
-                                                <img style="width: 40px" src="<?= $rooter->stockage("images", "produits", $produit->image) ?>">
-                                            </td>
-                                            <td class="text-left">
-                                                <h4 class="mp0 text-uppercase"><?= $produit->name() ?></h4>
-                                                <small><?= $produit->description ?></small>
-                                            </td>
-                                            <td width="105"><input type="number" number class="form-control text-center gras" value="<?= $reste ?>" max="<?= $reste ?>"></td>
-                                            <td> / <?= $reste ?></td>
-                                        </tr>
-                                    <?php }   
-                                } ?>
-                            </tbody>
-                        </table>
+                                    <?php
+                                    $datas = $groupecommande->lesRestes();
+                                    foreach ($datas as $key => $value) {
+                                        $reste = $groupecommande->reste($value->getId());
+                                        if ($reste > 0) {
+                                            $value->actualise(); ?>
+                                            <tr class="border-0 border-bottom " id="ligne<?= $value->produit->getId() ?>" data-id="<?= $value->produit->getId() ?>">
+                                                <td><i class="fa fa-close text-red cursor" onclick="supprimeProduit(<?= $value->produit->getId() ?>)" style="font-size: 18px;"></i></td>
+                                                <td >
+                                                    <img style="width: 40px" src="<?= $rooter->stockage("images", "produits", $value->produit->image) ?>">
+                                                </td>
+                                                <td class="text-left">
+                                                    <h4><?= $value->produit->name() ?></h4>
+                                                    <h5 class="mp0 text-uppercase"><?= $value->prix->price() ?> <?= $params->devise  ?></h5>
+                                                    <small><?= $value->produit->description ?></small>
+                                                </td>
+                                                <td width="105"><input type="number" number class="form-control text-center gras" value="<?= $reste ?>" max="<?= $reste ?>"></td>
+                                                <td> / <?= $reste ?></td>
+                                            </tr>
+                                        <?php }   
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
             </div>
-
-        </div>
-        <div class="col-md-4 ">
-            <div class="ibox"  style="background-color: #eee">
-                <div class="ibox-title" style="padding-right: 2%; padding-left: 3%; ">
-                    <h5 class="text-uppercase">Finaliser la livraison</h5>
-                </div>
-                <div class="ibox-content"  style="background-color: #fafafa">
-                    <form id="formLivraison">
-                        <div>
-                            <label>zone de livraison <span style="color: red">*</span> </label>
-                            <div class="input-group">
-                                <select class="select2 form-control" name="zonelivraison_id" style="width: 100%">
-                                    <?php 
-                                    $datas = $groupecommande->commandes;
-                                    $datas2 = $dt = [];
-                                    foreach ($datas as $key => $value) {
-                                        if (!in_array($value->zonelivraison_id, $dt)) {
-                                            $dt[] = $value->zonelivraison_id;
-                                            $datas2[] = $datas[$key];
+            <div class="col-md-4 ">
+                <div class="ibox"  style="background-color: #eee">
+                    <div class="ibox-title" style="padding-right: 2%; padding-left: 3%; ">
+                        <h5 class="text-uppercase">Finaliser la livraison</h5>
+                    </div>
+                    <div class="ibox-content"  style="background-color: #fafafa">
+                        <form id="formLivraison">
+                            <div>
+                                <label>zone de livraison <span style="color: red">*</span> </label>
+                                <div class="input-group">
+                                    <select class="select2 form-control" name="zonedevente_id" style="width: 100%">
+                                        <?php 
+                                        $datas = $groupecommande->commandes;
+                                        $datas2 = $dt = [];
+                                        foreach ($datas as $key => $value) {
+                                            if (!in_array($value->zonedevente_id, $dt)) {
+                                                $dt[] = $value->zonedevente_id;
+                                                $datas2[] = $datas[$key];
+                                            }
                                         }
-                                    }
-                                    foreach ($datas2 as $key => $commande) {
-                                        $commande->actualise(); ?>
-                                        <option value="<?= $commande->zonelivraison_id ?>"><?= $commande->zonelivraison->name()  ?></option>
-                                    <?php } ?>                                        
-                                </select>
-                            </div>
-                        </div><br>
-                        <div>
-                            <label>Lieu de livraison <span style="color: red">*</span> </label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-map-marker"></i></span><input type="text" name="lieu" class="form-control" required>
-                            </div>
-                        </div><br>
-                        <div>
-                            <label>Véhicule de la livraison <span style="color: red">*</span> </label>                                
-                            <div class="input-group">
-                                <?php Native\BINDING::html("select-tableau", Home\VEHICULE::ras(), null, "vehicule_id"); ?>
-                            </div>
-                        </div><br>
+                                        foreach ($datas2 as $key => $commande) {
+                                            $commande->actualise(); ?>
+                                            <option value="<?= $commande->zonedevente_id ?>"><?= $commande->zonedevente->name()  ?></option>
+                                        <?php } ?>                                        
+                                    </select>
+                                </div>
+                            </div><br>
+                            <div>
+                                <label>Lieu de livraison <span style="color: red">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-map-marker"></i></span><input type="text" name="lieu" class="form-control" required>
+                                </div>
+                            </div><br>
+                            <div>
+                                <label>Véhicule de la livraison <span style="color: red">*</span> </label>                                
+                                <div class="input-group">
+                                    <?php Native\BINDING::html("select-tableau", Home\VEHICULE::ras(), null, "vehicule_id"); ?>
+                                </div>
+                            </div><br>
 
-                        <div class="chauffeur">
+                            <div class="commercial">
+                                <label>Commercial pour la livraison <span style="color: red">*</span> </label>                                
+                                <div class="input-group">
+                                    <?php Native\BINDING::html("select-tableau-multiple", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
+                                </div><br>
+                            </div>
+
+                       <!--  <div class="chauffeur">
                             <label>Chauffeur de la livraison <span style="color: red">*</span> </label>                                
                             <div class="input-group">
-                                <?php Native\BINDING::html("select-tableau", Home\CHAUFFEUR::libres(), null, "chauffeur_id"); ?>
+                                <?php // Native\BINDING::html("select-tableau", Home\CHAUFFEUR::libres(), null, "chauffeur_id"); ?>
                             </div><br>
                         </div>
 
@@ -114,7 +125,7 @@
                             <div>
                                 <label>Mode de payement <span style="color: red">*</span> </label>                                
                                 <div class="input-group">
-                                    <?php Native\BINDING::html("select", "modepayement"); ?>
+                                    <?php //Native\BINDING::html("select", "modepayement"); ?>
                                 </div>
                             </div><br>
                             <div class="modepayement_facultatif">
@@ -152,16 +163,18 @@
                             <label><input class="i-checks cursor" type="checkbox" name="chargement_manoeuvre" checked > Chargement par nos manoeuvres</label>
                             <label><input class="i-checks cursor" type="checkbox" name="dechargement_manoeuvre" checked > Déchargement par nos manoeuvres</label>
                         </div><br>
+                    -->
+                    <input type="hidden" name="client_id" value="<?= $groupecommande->client_id ?>">
+                    <input type="hidden" name="typevente_id" value="<?= Home\TYPEVENTE::LIVRAISON ?>" class="form-control">
 
-                        <input type="hidden" name="client_id" value="<?= $groupecommande->client_id ?>">
-                    </form>
-                    <hr/>
-                    <button onclick="validerLivraison()" class="btn btn-primary btn-block dim"><i class="fa fa-check"></i> Valider la livraison</button>
-                </div>
+                </form>
+                <hr/>
+                <button onclick="validerLivraison()" class="btn btn-primary btn-block dim"><i class="fa fa-check"></i> Valider la livraison</button>
             </div>
-
         </div>
+
     </div>
+</div>
 
 </div>
 </div>

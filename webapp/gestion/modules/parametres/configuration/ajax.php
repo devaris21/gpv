@@ -14,7 +14,7 @@ if ($action == "prix") {
 		$data = explode("-", $value);
 		$id = $data[0];
 		$val = end($data);
-		$datas = PRIX_ZONELIVRAISON::findBy(["id ="=> $id]);
+		$datas = PRIX_ZONEDEVENTE::findBy(["id ="=> $id]);
 		if (count($datas) == 1) {
 			$pz = $datas[0];
 			$pz->price = intval($val);
@@ -164,6 +164,33 @@ if ($action == "refuser") {
 	}else{
 		$data->status = false;
 		$data->message = "L'accès est déjà refusé à cet employé !";
+	}
+	echo json_encode($data);
+}
+
+
+
+if ($action === "changerMode") {
+	$datas = EMPLOYE::findBy(["id = "=>getSession("employe_connecte_id")]);
+	if (count($datas) > 0) {
+		$employe = $datas[0];
+		$employe->actualise();
+		if ($employe->checkPassword($password)) {
+			$datas = PRIXDEVENTE::findBy(["id ="=>$id]);
+			if (count($datas) == 1) {
+				$pz = $datas[0];
+				$data = $pz->changerMode();
+			}else{
+				$data->status = false;
+				$data->message = "Votre mot de passe ne correspond pas !";
+			}
+		}else{
+			$data->status = false;
+			$data->message = "Votre mot de passe ne correspond pas !";
+		}
+	}else{
+		$data->status = false;
+		$data->message = "Vous ne pouvez pas effectué cette opération !";
 	}
 	echo json_encode($data);
 }

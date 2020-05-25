@@ -4,14 +4,21 @@ namespace Home;
 //n'oublie pas de configurer la date par defaut PARAMS
 //n'oublie pas d'importer la base de données des marques de vehicules
 
-$datas = ["Abidjan"];
+$datas = ["Au magasin", "Dans tout Bassam"];
 foreach ($datas as $key => $value) {
-	$item = new ZONELIVRAISON();
+	$item = new ZONEDEVENTE();
 	$item->name = $value;
 	$item->setProtected(1);
 	$item->save();
 }
 
+$datas = ["Vente directe", "livraison de commande", "Prospection par commercial"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEVENTE();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
 
 $datas = ["Voiture", "Camion benne", "Tricycle", "Moto"];
 foreach ($datas as $key => $value) {
@@ -49,7 +56,7 @@ foreach ($datas as $key => $value) {
 
 $item = new VEHICULE();
 $item->immatriculation = "...";
-$item->modele = "LE VEHICULE DU CLIENT";
+$item->modele = "PAR NOS COMMERCIAUX";
 $item->marque_id = 0;
 $item->typevehicule_id = 1;
 $item->groupevehicule_id = 1;
@@ -60,7 +67,7 @@ $item->save();
 
 $item = new VEHICULE();
 $item->immatriculation = "...";
-$item->modele = "TRICYCLE";
+$item->modele = "LE VEHICULE DU CLIENT";
 $item->marque_id = 0;
 $item->typevehicule_id = 1;
 $item->groupevehicule_id = 1;
@@ -68,7 +75,6 @@ $item->prestataire_id = 1;
 $item->visibility = 0;
 $item->setProtected(1);
 $item->save();
-
 
 
 $datas = ["Entreprise", "Particulier"];
@@ -142,9 +148,17 @@ $item->save();
 
 
 $item = new CLIENT();
-$item->name = "Devaris 21";
-$item->email = "info@devaris21.com";
+$item->name = "Monsieur Tout le Monde";
 $item->adresse = "...";
+$item->contact = "...";
+$item->visibility = 0;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new COMMERCIAL();
+$item->name = "La boutique";
+$item->adresse = "Magazin à bassam";
 $item->contact = "...";
 $item->visibility = 0;
 $item->setProtected(1);
@@ -215,55 +229,24 @@ $item->save();
 
 
 
-
-$item = new ETATVEHICULE();
-$item->name = "RAS";
-$item->class = "primary";
-$item->setProtected(1);
-$item->save();
-
-$item = new ETATVEHICULE();
-$item->name = "En mission";
-$item->class = "warning";
-$item->setProtected(1);
-$item->save();
-
-$item = new ETATVEHICULE();
-$item->name = "En panne";
-$item->class = "success";
-$item->setProtected(1);
-$item->save();
-
-$item = new ETATVEHICULE();
-$item->name = "En entretien";
-$item->class = "success";
-$item->setProtected(1);
-$item->save();
-
-$item = new ETATVEHICULE();
+$item = new DISPONIBILITE();
 $item->name = "Indisponible";
 $item->class = "danger";
 $item->setProtected(1);
 $item->save();
 
-
-$item = new ETATCHAUFFEUR();
-$item->name = "RAS";
-$item->class = "primary";
-$item->setProtected(1);
-$item->save();
-
-$item = new ETATCHAUFFEUR();
-$item->name = "En mission";
+$item = new DISPONIBILITE();
+$item->name = "Libre";
 $item->class = "warning";
 $item->setProtected(1);
 $item->save();
 
-$item = new ETATCHAUFFEUR();
-$item->name = "Indisponible";
-$item->class = "danger";
+$item = new DISPONIBILITE();
+$item->name = "En mission";
+$item->class = "info";
 $item->setProtected(1);
 $item->save();
+
 
 
 $item = new CATEGORIEOPERATION();
@@ -370,7 +353,7 @@ $item->save();
 $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
-$item->name = "HOURDIS";
+$item->name = "Jus de passion";
 $item->class = "Hourdis";
 $item->enregistre();
 
@@ -378,36 +361,23 @@ $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
 $item->name = "AC 15";
-$item->class = "Agglos creux 15";
+$item->class = "Jus d'orange";
 $item->enregistre();
 
 $item = new PRODUIT();
 $item->files = [];
 $item->stock = 100;
 $item->name = "AP 15";
-$item->class = "Agglos pleins 15";
+$item->class = "Jus de bissap";
 $item->enregistre();
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "BTC 15";
-$item->class = "Briques en terre compressée";
-$item->enregistre();
-
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "BTC 18";
-$item->class = "Briques en terre compressée";
-$item->enregistre();
 
 
 
 $item = new RESSOURCE();
 $item->files = [];
 $item->stock = 100;
-$item->name = "CIMENT";
+$item->name = "EAU";
 $item->class = "Sac";
 $item->abbr = "Sacs";
 $item->enregistre();
@@ -415,15 +385,15 @@ $item->enregistre();
 $item = new RESSOURCE();
 $item->files = [];
 $item->stock = 100;
-$item->name = "SABLE";
-$item->class = "Chargement";
+$item->name = "Orange";
+$item->class = "unités";
 $item->abbr = "Chgs";
 $item->enregistre();
 
 $item = new RESSOURCE();
 $item->files = [];
 $item->stock = 100;
-$item->name = "GRAVIER";
+$item->name = "Sucre";
 $item->class = "Tonne";
 $item->abbr = "T";
 $item->enregistre();
@@ -431,7 +401,7 @@ $item->enregistre();
 $item = new RESSOURCE();
 $item->files = [];
 $item->stock = 100;
-$item->name = "TERRE";
+$item->name = "Bidons";
 $item->class = "Tonne";
 $item->abbr = "T";
 $item->enregistre();
@@ -439,6 +409,11 @@ $item->enregistre();
 
 $datas = ["standart"];
 foreach ($datas as $key => $value) {
+	$item = new TYPEVEHICULE();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+
 	$item = new TYPETRANSMISSION();
 	$item->name = $value;
 	$item->setProtected(1);

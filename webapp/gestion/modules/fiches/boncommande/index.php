@@ -46,7 +46,7 @@
 
                                 <div class="row">
                                     <div class="col-6">
-                                        <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $commande->zonelivraison->name() ?></span></h5>   
+                                        <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $commande->zonedevente->name() ?></span></h5>   
                                         <h5><span>Lieu de livraison :</span> <span class="text-uppercase"><?= $commande->lieu ?></span></h5>                              
                                     </div>
 
@@ -73,12 +73,12 @@
                                                     <img style="width: 120%" src="<?= $this->stockage("images", "produits", $ligne->produit->image) ?>">                        
                                                 </td>
                                                 <td width="35%" class="desc">
-                                                    <h3 class="mp0 text-uppercase gras"><?= $ligne->produit->name() ?><br> <small><?= $ligne->produit->description ?></small></h3>
+                                                    <h3 class="mp0 text-uppercase gras"><?= $ligne->prixdevente->produit->name() ?><br> <small><?= $ligne->prixdevente->produit->description ?></small></h3>
                                                 </td>
-                                                <td class="text-center"><h4 class="text-muted"><?= money($ligne->price / $ligne->quantite) ?> <?= $params->devise ?></h4></td>
+                                                <td class="text-center"><h4 class="text-muted"><?= money($ligne->prixdevente->prix->price) ?> <?= $params->devise ?></h4></td>
                                                 <td class="text-center"><h3 style="font-weight: 300px"><i>x <?= $ligne->quantite ?></i></h3></td>
                                                 <td class="text-center" width="25%">
-                                                    <h3 class="gras"><?= money($ligne->price) ?> <?= $params->devise ?></h3>
+                                                    <h3 class="gras"><?= money($ligne->prixdevente->prix->price * $ligne->quantite) ?> <?= $params->devise ?></h3>
                                                 </td>
                                             </tr>
                                         <?php } ?> 
@@ -148,7 +148,7 @@
 
 
                             <br><br><hr class="mp0">
-                            <p class="text-center"><small><i>* Nous vous prions de vérifier l'exactitude de toutes les informations qui ont mentionnées sur cette facture avant de quitter nos locaux !</i></small></p>
+                            <p class="text-center"><small><i>* Nous vous prions de vérifier l'exactitude de toutes les informations qui ont été mentionnées sur cette facture avant de quitter nos locaux !</i></small></p>
 
 
 

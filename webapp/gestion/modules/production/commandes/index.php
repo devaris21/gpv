@@ -54,8 +54,9 @@
                     <tbody>
                         <?php foreach ($groupes as $key => $commande) {
                             $commande->actualise(); 
+                            $lots = $commande->lesRestes();
                             $datas = $commande->fourni("commande");
-                            $datas1 = $commande->fourni("livraison", ["etat_id > "=>Home\ETAT::ANNULEE, "etat_id < "=>Home\ETAT::VALIDEE]);
+                            $datas1 = $commande->fourni("vente", ["etat_id > "=>Home\ETAT::ANNULEE, "etat_id < "=>Home\ETAT::VALIDEE]);
                             $client = $commande->client;
                             ?>
                             <tr class="border-bottom">
@@ -80,9 +81,13 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
-                                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { 
-                                                    if ($commande->reste($produit->getId()) > 0) { ?>
-                                                        <th class="text-center"><?= $produit->name() ?></th>
+                                                <?php foreach ($lots as $key => $value) { 
+                                                    if ($commande->reste($value->getId()) > 0) {
+                                                    $value->actualise(); ?>
+                                                        <th class="text-center">
+                                                            <h5 class="mp0"><?= $value->produit->name() ?></h5>
+                                                            <h6 class="mp0"><?= $value->prix->price() ?></h6>
+                                                        </th>
                                                     <?php }
                                                 } ?>
                                             </tr>
@@ -90,8 +95,8 @@
                                         <tbody>
                                             <tr>
                                                 <td><h4 class="mp0">Reste : </h4></td>
-                                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) {
-                                                    $reste = $commande->reste($produit->getId());
+                                                <?php foreach ($lots as $key => $value) {
+                                                    $reste = $commande->reste($value->getId());
                                                     if ($reste > 0) { ?>
                                                      <td class="text-center"><?= start0($reste) ?></td>
                                                  <?php } 

@@ -21,7 +21,7 @@
                         <div class="ibox-content">
                             <p></p>
                             <div class="">                                
-                             <ul class="nav nav-tabs">
+                               <ul class="nav nav-tabs">
                                 <li><a class="nav-link active" data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Les commandes en cours</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-2"><i class="fa fa-file-text-o"></i> Flux des commandes</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-3"><i class="fa fa-money"></i> Transactions de caisse</a></li>
@@ -30,7 +30,7 @@
 
 
 
-                             <?php if ($employe->isAutoriser("production")) { ?>
+                               <?php if ($employe->isAutoriser("production")) { ?>
 
                                 <div id="tab-1" class="tab-pane active"><br>
                                     <div class="row container-fluid">
@@ -41,34 +41,39 @@
 
                                             <?php foreach ($groupes as $key => $commande) {
                                                 $commande->actualise(); 
+                                                $lots = $commande->lesRestes();
                                                 ?>
                                                 <h4 class="text-uppercase gras">Commande du <?= datecourt($commande->created)  ?></h4>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th></th>
-                                                            <?php foreach (Home\PRODUIT::getAll() as $key => $produit){ 
-                                                               $reste = $commande->reste($produit->getId());
-                                                               if ($reste > 0) { ?>
-                                                                <th class="text-center"><?= $produit->name() ?></th>
-                                                            <?php }
-                                                        } ?>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td><h3 class="text-uppercase">Reste : </h3></td>
-                                                        <?php foreach (Home\PRODUIT::getAll() as $key => $produit) {
-                                                            $reste = $commande->reste($produit->getId());
-                                                            if ($reste > 0) { ?>
-                                                                <td class="text-center" style="font-size: 20px;"><?= start0($reste) ?></td>
-                                                            <?php   } 
-                                                        } ?>
-                                                        <td style="width: 60px; padding: 0"><button onclick="fichecommande(<?= $commande->getId()  ?>)" style="font-size: 11px; margin-top: 5%; margin-left: 5%;" class="btn btn-success btn-sm dim"><i class="fa fa-plus"></i> de détails </button></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table><hr>
-                                        <?php  }  }else{ ?>
+                                                            <?php foreach ($lots as $key => $value) { 
+                                                                if ($commande->reste($value->getId()) > 0) {
+                                                                    $value->actualise(); ?>
+                                                                    <th class="text-center">
+                                                                        <h5 class="mp0"><?= $value->produit->name() ?></h5>
+                                                                        <h6 class="mp0"><?= $value->prix->price() ?></h6>
+                                                                    </th>
+                                                                <?php }
+                                                            } ?>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><h4 class="mp0">Reste : </h4></td>
+                                                            <?php foreach ($lots as $key => $value) {
+                                                                $reste = $commande->reste($value->getId());
+                                                                if ($reste > 0) { ?>
+                                                                   <td class="text-center"><?= start0($reste) ?></td>
+                                                               <?php } 
+                                                           } ?>
+                                                           <td style="width: 60px; padding: 0"><button onclick="fichecommande(<?= $commande->getId()  ?>)" style="font-size: 11px; margin-top: 5%; margin-left: 5%;" class="btn btn-success btn-sm dim"><i class="fa fa-plus"></i> de détails </button></td>
+                                                       </tr>
+                                                   </tbody>
+                                               </table><hr>
+
+                                           <?php  }  }else{ ?>
                                             <h2 style="margin-top: 15% auto;" class="text-center text-muted"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune commande en cours pour ce client !</h2>
                                         <?php } ?>
 
@@ -94,12 +99,12 @@
                                                                 <tr>
                                                                     <?php foreach ($transaction->items as $key => $ligne) {
                                                                         $ligne->actualise();  ?>
-                                                                        <th class="text-center text-uppercase"><?= $ligne->produit->name() ?></th>
+                                                                        <th class="text-center text-uppercase"><?= $ligne->prixdevente->produit->name() ?></th>
                                                                     <?php } ?>
                                                                     <th class="text-center mp0" style="background-color: transparent; border: none">
                                                                         <?php if ($transaction->type == "commande") { ?>
-                                                                         <a target="_blank" href="<?= $this->url("gestion", "fiches", "boncommande", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de commande</a>
-                                                                     <?php }else{ ?>
+                                                                           <a target="_blank" href="<?= $this->url("gestion", "fiches", "boncommande", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de commande</a>
+                                                                       <?php }else{ ?>
                                                                         <a target="_blank" href="<?= $this->url("gestion", "fiches", "bonlivraison", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de livraison</a>
                                                                     <?php } ?>
                                                                 </th>
@@ -200,7 +205,7 @@
                     <button data-toggle="modal" data-target="#modal-acompte" class="cursor simple_tag pull-right"><i class="fa fa-plus"></i> Crediter acompte</button><br><br>
 
                     <?php if ($client->acompte > 0) { ?>
-                     <button type="button" data-toggle="modal" data-target="#modal-rembourser" class="btn btn-danger dim btn-block"><i
+                       <button type="button" data-toggle="modal" data-target="#modal-rembourser" class="btn btn-danger dim btn-block"><i
                         class="fa fa-minus"></i> Rembourser le client
                     </button>
                 <?php } ?>
@@ -229,7 +234,7 @@
 <div class="modal inmodal fade" id="modal-listecommande">
     <div class="modal-dialog">
         <div class="modal-content">
-         <div class="modal-header">
+           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title">Choisir la commande</h4>
             <span>Double-cliquez pour selectionner la commande voulue !</span>

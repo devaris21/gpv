@@ -169,7 +169,7 @@ $(function(){
 	});
 
 
-		$("button.refuser").click(function(event) {
+	$("button.refuser").click(function(event) {
 		var url = "../../webapp/gestion/modules/parametres/configuration/ajax.php";
 		button = $(this);
 		employe_id = $(this).attr("employe");
@@ -192,6 +192,32 @@ $(function(){
 		})
 	});
 
+
+
+	changerMode = function(id){
+		var url = "../../webapp/gestion/modules/parametres/configuration/ajax.php";
+		alerty.confirm("Vous êtes sur le point d'autoriser cet accès à cet employe, voulez-vous continuer ?", {
+			title: "Autoriser l'acces",
+			cancelLabel : "Non",
+			okLabel : "OUI, autoriser",
+		}, function(){
+			alerty.prompt("Entrer votre mot de passe pour confirmer l'opération !", {
+				title: 'Récupération du mot de passe !',
+				inputType : "password",
+				cancelLabel : "Annuler",
+				okLabel : "Valider"
+			}, function(password){
+				Loader.start();
+				$.post(url, {action:"changerMode", id:id, password:password}, (data)=>{
+					if (data.status) {
+						window.location.reload()
+					}else{
+						Alerter.error('Erreur !', data.message);
+					}
+				},"json");
+			})
+		})
+	}
 
 
 })

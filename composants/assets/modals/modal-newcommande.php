@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Nouveau bon de commande</h4>
+                <h4 class="modal-title">Nouvelle commande de produits</h4>
                 <small class="font-bold">Renseigner ces champs pour enregistrer la commande</small>
             </div>
             
@@ -37,7 +37,7 @@
                     <div class="ibox-title" style="padding-right: 2%; padding-left: 3%; ">
                         <h5 class="text-uppercase">Finaliser la commande</h5>
                     </div>
-                    <div class="ibox-content"  style="background-color: #fafafa">
+                      <div class="ibox-content"  style="background-color: #fafafa">
                         <form id="formCommande">
                             <div>
                                 <label>Date prévue pour livraison <span style="color: red">*</span> </label>
@@ -48,7 +48,7 @@
                             <div>
                                 <label>zone de livraison <span style="color: red">*</span> </label>
                                 <div class="input-group">
-                                    <?php Native\BINDING::html("select", "zonelivraison"); ?>
+                                    <?php Native\BINDING::html("select", "zonedevente"); ?>
                                 </div>
                             </div><br>
                             <div>

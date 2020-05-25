@@ -3,73 +3,50 @@ namespace Home;
 use Native\RESPONSE;/**
  * 
  */
-class LIVRAISON extends TABLE
+class VENTE extends TABLE
 {
 
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
 	public $reference;
-	public $groupecommande_id;
-	public $zonelivraison_id;
-	public $lieu;
-	public $vehicule_id;
-	public $chauffeur_id = 0;
-	public $etat_id = ETAT::ENCOURS;
-	public $employe_id = 0;
+	public $typevente_id;
+	public $groupecommande_id = null;
+	public $zonedevente_id;
+	public $commercial_id     = COMMERCIAL::MAGASIN;
+	public $etat_id           = ETAT::ENCOURS;
+	public $employe_id        = null;
+	public $operation_id      = null;
 	
-	public $isLouer = 0;
-	public $montant_location = 0;
-	public $operation_id = 0;
-	public $nom_tricycle = "";
-	public $paye_tricycle = 0;
-	public $reste = 0;
-	public $chargement_manoeuvre;
-	public $dechargement_manoeuvre;
-	public $isPayer = 0;
+	public $montant           = 0;
+	public $vendu             = 0;
 
-	public $datelivraison;
+	public $dateretour;
 	public $comment;
-	public $nom_receptionniste;
-	public $contact_receptionniste;
 
 	
 
 	public function enregistre(){
 		$data = new RESPONSE;
-		if ($this->lieu != "") {
-			$datas = ZONELIVRAISON::findBy(["id ="=>$this->zonelivraison_id]);
+		$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonedevente_id]);
+		if (count($datas) == 1) {
+			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id, "disponibilite_id ="=>DISPONIBILITE::LIBRE]);
 			if (count($datas) == 1) {
-				$datas = VEHICULE::findBy(["id ="=>$this->vehicule_id]);
-				if (count($datas) == 1) {
-					if ($this->vehicule_id == VEHICULE::AUTO || ($this->vehicule_id == VEHICULE::TRICYCLE && $this->nom_tricycle != "" && $this->paye_tricycle > 0) || ($this->vehicule_id > VEHICULE::TRICYCLE && $this->chauffeur_id > 0)) {
-
-						if (($this->vehicule_id <= VEHICULE::TRICYCLE) || ($this->vehicule_id > VEHICULE::TRICYCLE && $this->isLouer == 0) || ($this->vehicule_id > VEHICULE::TRICYCLE && $this->isLouer == 1 && $this->montant_location > 0)) {
-							
-							$this->employe_id = getSession("employe_connecte_id");
-							$this->reference = "BLI/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
-							$this->reste = $this->paye_tricycle;
-							$data = $this->save();
-
-						}else{
-							$data->status = false;
-							$data->message = "Veuillez renseigner le montant de la location ";
-						}
-					}else{
-						$data->status = false;
-						$data->message = "Veuillez renseigner tous les champs pour valider la livraison !";
-					}
-				}else{
-					$data->status = false;
-					$data->message = "veuillez selectionner un véhicule pour la livraison!";
+				$commercial = $datas[0];
+				$this->employe_id = getSession("employe_connecte_id");
+				$this->reference = "BVE/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
+				$data = $this->save();
+				if ($this->commercial_id != COMMERCIAL::MAGASIN) {
+					$commercial->disponibilite_id = DISPONIBILITE::MISSION;
+					$commercial->save();
 				}
 			}else{
 				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'enregistrement de la livraison!";
+				$data->message = "veuillez selectionner un véhicule pour la vente!";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "veuillez indiquer la destination précise de la livraison *!";
+			$data->message = "Une erreur s'est produite lors de l'enregistrement de la vente!";
 		}
 		return $data;
 	}
@@ -78,28 +55,28 @@ class LIVRAISON extends TABLE
 
 	//les livraions programmées du jour
 	public static function programmee(String $date){
-		return static::findBy(["DATE(datelivraison) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
+		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
 	}
 
 
 	//les livraions effectuéez du jour
 	public static function effectuee(String $date){
-		return static::findBy(["DATE(datelivraison) ="=>$date, "etat_id ="=>ETAT::VALIDEE]);
+		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id ="=>ETAT::VALIDEE]);
 	}
 
 
-	// Supprimer toutes les livraisons programmée qui n'ont pu etre effectuée...
+	// Supprimer toutes les ventes programmée qui n'ont pu etre effectuée...
 	public static function ResetProgramme(){
-		$datas = LIVRAISON::findBy(["etat_id ="=>ETAT::PARTIEL, "DATE(datelivraison) <"=>dateAjoute()]);
-		foreach ($datas as $key => $livraison) {
-			$livraison->fourni("lignelivraison");
-			foreach ($livraison->lignelivraisons as $key => $value) {
+		$datas = VENTE::findBy(["etat_id ="=>ETAT::PARTIEL, "DATE(dateretour) <"=>dateAjoute()]);
+		foreach ($datas as $key => $vente) {
+			$vente->fourni("lignedevente");
+			foreach ($vente->lignedeventes as $key => $value) {
 				$value->delete();
 			}
-			$livraison->delete();
+			$vente->delete();
 		}
 		
-		// $requette = "DELETE FROM livraison WHERE etat_id = ? AND DATE(datelivraison) < ? ";
+		// $requette = "DELETE FROM vente WHERE etat_id = ? AND DATE(dateretour) < ? ";
 		// static::query($requette, [ETAT::PARTIEL, dateAjoute()]);
 	}
 
@@ -131,7 +108,7 @@ class LIVRAISON extends TABLE
 		$data = new RESPONSE;
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::ANNULEE;
-			$this->historique("La livraison en reference $this->reference vient d'être annulée !");
+			$this->historique("La vente en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
@@ -148,7 +125,7 @@ class LIVRAISON extends TABLE
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cette livraison !";
+			$data->message = "Vous ne pouvez plus faire cette opération sur cette vente !";
 		}
 		return $data;
 	}
@@ -159,8 +136,8 @@ class LIVRAISON extends TABLE
 		$data = new RESPONSE;
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::VALIDEE;
-			$this->datelivraison = date("Y-m-d H:i:s");
-			$this->historique("La livraison en reference $this->reference vient d'être terminé !");
+			$this->dateretour = date("Y-m-d H:i:s");
+			$this->historique("La vente en reference $this->reference vient d'être terminé !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
@@ -177,7 +154,7 @@ class LIVRAISON extends TABLE
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cette livraison !";
+			$data->message = "Vous ne pouvez plus faire cette opération sur cette vente !";
 		}
 		return $data;
 	}
@@ -186,17 +163,27 @@ class LIVRAISON extends TABLE
 
 	public static function perte(string $date1, string $date2){
 		$total = 0;
-		$datas = LIVRAISON::findBy(["etat_id ="=>ETAT::VALIDEE, "DATE(datelivraison) >= " => $date1, "DATE(datelivraison) <= " => $date2]);
-		foreach ($datas as $key => $livraison) {
-			$lots = $livraison->fourni("lignelivraison");
+		$datas = VENTE::findBy(["etat_id ="=>ETAT::VALIDEE, "DATE(dateretour) >= " => $date1, "DATE(dateretour) <= " => $date2]);
+		foreach ($datas as $key => $vente) {
+			$lots = $vente->fourni("lignedevente");
 			foreach ($lots as $key => $ligne) {
-				$total += $ligne->quantite - $ligne->quantite_livree;
+				$total += $ligne->quantite - $ligne->quantite_vendu;
 			}
 		}
 		return $total;
 	}
 
 
+
+	public function montant(){
+		$total = 0;
+		$datas = $this->fourni("lignedevente");
+		foreach ($datas as $key => $ligne) {
+			$ligne->actualise();
+			$total += $ligne->prixdevente->prix->price * $ligne->quantite;
+		}
+		return $total;
+	}
 
 
 	public function payer(int $montant, Array $post){

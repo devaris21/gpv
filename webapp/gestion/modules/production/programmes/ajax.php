@@ -14,7 +14,7 @@ if ($action == "modifier") {
 	session("livraison_id", $id);
 	$rooter = new ROOTER;
 	$params = PARAMS::findLastId();
-	$datas = LIVRAISON::findBy(["id ="=> $id]);
+	$datas = VENTE::findBy(["id ="=> $id]);
 	if (count($datas) == 1) {
 		$livraison = $datas[0];
 		$livraison->actualise();
@@ -28,7 +28,7 @@ if ($action == "modifier") {
 if ($action == "modifierProgrammation") {
 	if ($datelivraison >= dateAjoute()) {
 		if (getSession("livraison_id") != null) {
-			$datas = LIVRAISON::findBy(["id ="=>getSession("livraison_id")]);
+			$datas = VENTE::findBy(["id ="=>getSession("livraison_id")]);
 			if (count($datas) > 0) {
 				$livraison = $datas[0];
 				$livraison->actualise();
@@ -72,7 +72,7 @@ if ($action == "modifierProgrammation") {
 									$produit = $datas[0];
 									$produit->livrer($qte);
 
-									$lignecommande = new LIGNELIVRAISON;
+									$lignecommande = new LIGNEVENTE;
 									$lignecommande->livraison_id = $livraison->getId();
 									$lignecommande->produit_id = $id;
 									$lignecommande->quantite = $qte;
@@ -112,7 +112,7 @@ if ($action == "valider") {
 	session("livraison_id", $id);
 	$rooter = new ROOTER;
 	$params = PARAMS::findLastId();
-	$datas = LIVRAISON::findBy(["id ="=> $id]);
+	$datas = VENTE::findBy(["id ="=> $id]);
 	if (count($datas) == 1) {
 		$livraison = $datas[0];
 		$livraison->actualise();
@@ -124,7 +124,7 @@ if ($action == "valider") {
 
 if ($action == "ValiderLivraisonProgrammee") {
 	if (getSession("livraison_id") != null) {
-		$datas = LIVRAISON::findBy(["id ="=>getSession("livraison_id")]);
+		$datas = VENTE::findBy(["id ="=>getSession("livraison_id")]);
 		if (count($datas) > 0) {
 			$livraison = $datas[0];
 			$livraison->actualise();
@@ -178,7 +178,7 @@ if ($action == "ValiderLivraisonProgrammee") {
 									$produit = $datas[0];
 									$produit->livrer($qte);
 
-									$lignecommande = new LIGNELIVRAISON;
+									$lignecommande = new LIGNEVENTE;
 									$lignecommande->livraison_id = $livraison->getId();
 									$lignecommande->produit_id = $id;
 									$lignecommande->quantite = $qte;
@@ -207,7 +207,7 @@ if ($action == "ValiderLivraisonProgrammee") {
 										$livraison->actualise();
 										$payement = new OPERATION();
 										$payement->hydrater($_POST);
-										$payement->categorieoperation_id = CATEGORIEOPERATION::LOCATION_LIVRAISON;
+										$payement->categorieoperation_id = CATEGORIEOPERATION::LOCATION_VENTE;
 										$payement->montant = $avance;
 										$payement->client_id = $livraison->groupecommande->client_id;
 										$payement->comment = "Réglement pour la location d'engins de livraison pour la livraison N°".$livraison->reference;
