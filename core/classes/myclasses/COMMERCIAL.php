@@ -19,7 +19,6 @@ class COMMERCIAL extends PERSONNE
 	public $nationalite;
 	public $adresse;
 	public $sexe_id = SEXE::HOMME;
-	public $email;
 	public $contact;
 	public $salaire = 0;
 	public $image = "default.png";
@@ -59,7 +58,7 @@ class COMMERCIAL extends PERSONNE
 					$image->hydrater($file);
 					if ($image->is_image()) {
 						$a = substr(uniqid(), 5);
-						$result = $image->upload("images", "commercial", $a);
+						$result = $image->upload("images", "commercials", $a);
 						$name = $tab[$i];
 						$this->$name = $result->filename;
 						$this->save();

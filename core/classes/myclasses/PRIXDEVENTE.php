@@ -46,6 +46,11 @@ class PRIXDEVENTE extends TABLE
 
 
 
+public function name()
+{
+	return $this->produit->name()." / ".$this->prix->price;
+}
+
 
 	public function stock(String $date){
 		$total = 0;
@@ -128,8 +133,10 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function enProspection(){
-		$datas = PROSPECTION::findBy(["etat_id ="=>ETAT::ENCOURS]);
-		return comptage($datas, "quantite", "somme");
+		$requette = "SELECT SUM(quantite) as quantite  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id IN (?, ?) GROUP BY prixdevente.id";
+		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ENCOURS, ETAT::VALIDEE]);
+		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
+		return $item[0]->quantite;
 	}
 
 

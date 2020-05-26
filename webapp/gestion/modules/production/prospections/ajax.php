@@ -11,16 +11,16 @@ extract($_POST);
 
 
 
-if ($action == "annulerLivraison") {
+if ($action == "annulerProspection") {
 	$datas = EMPLOYE::findBy(["id = "=>getSession("employe_connecte_id")]);
 	if (count($datas) > 0) {
 		$employe = $datas[0];
 		$employe->actualise();
 		if ($employe->checkPassword($password)) {
-			$datas = VENTE::findBy(["id ="=>$id]);
+			$datas = PROSPECTION::findBy(["id ="=>$id]);
 			if (count($datas) == 1) {
-				$livraison = $datas[0];
-				$data = $livraison->annuler();
+				$prospection = $datas[0];
+				$data = $prospection->annuler();
 			}else{
 				$data->status = false;
 				$data->message = "Une erreur s'est produite lors de l'opération! Veuillez recommencer";
@@ -38,59 +38,60 @@ if ($action == "annulerLivraison") {
 
 
 
-if ($action == "validerLivraison") {
-	$id = getSession("livraison_id");
-	$datas = VENTE::findBy(["id ="=>$id]);
+if ($action == "validerProspection") {
+	$id = getSession("prospection_id");
+	$datas = PROSPECTION::findBy(["id ="=>$id]);
 	if (count($datas) > 0) {
-		$livraison = $datas[0];
-		$livraison->actualise();
-		$livraison->fourni("lignelivraison");
+		$prospection = $datas[0];
+		$prospection->actualise();
+		$prospection->fourni("ligneprospection");
 
 		$produits = explode(",", $tableau);
-		if (count($produits) > 0) {
-			$tests = $produits;
-			foreach ($tests as $key => $value) {
-				$lot = explode("-", $value);
-				$id = $lot[0];
-				$qte = end($lot);
+		foreach ($produits as $key => $value) {
+			$lot = explode("-", $value);
+			$array[$lot[0]] = end($lot);
+		}
+		$tests = $array;
 
-				$produit = new PRODUIT();
-				$datas = PRODUIT::findBy(["id ="=>$id]);
-				if (count($datas) == 1) {
-					$produit = $datas[0];
-				}
-				foreach ($livraison->lignelivraisons as $key => $lgn) {
-					if (($lgn->produit_id == $id) && ($lgn->quantite >= $qte)) {
+
+		$produits1 = explode(",", $tableau1);
+		foreach ($produits1 as $key => $value) {
+			$lot = explode("-", $value);
+			$array1[$lot[0]] = end($lot);
+		}
+
+		if (count($produits) > 0) {
+			$tests = $array;
+			foreach ($tests as $key => $value) {
+				foreach ($prospection->ligneprospections as $cle => $lgn) {
+					if (($lgn->getId() == $key) && ($lgn->quantite >= ($value + $array1[$key]))) {
 						unset($tests[$key]);
 					}
 				}
 			}
 			if (count($tests) == 0) {
-				foreach ($produits as $key => $value) {
-					$lot = explode("-", $value);
-					$id = $lot[0];
-					$qte = end($lot);
-					foreach ($livraison->lignelivraisons as $key => $lgn) {
-						if ($lgn->produit_id == $id) {
-							$lgn->quantite_livree = $qte;
-							$lgn->save();
-							$lgn->reste = $livraison->groupecommande->reste($id);
+				foreach ($array as $key => $value) {
+					foreach ($prospection->ligneprospections as $cle => $lgn) {
+						if ($lgn->prixdevente_id == $key) {
+							$lgn->quantite_vendu = $value;
+							$lgn->perte = $array1[$key];
+							$lgn->reste = $lgn->quantite - $value - $array1[$key];
 							$lgn->save();
 
 							if ($lgn->reste > 0) {
-								$livraison->groupecommande->etat_id = ETAT::ENCOURS;
-								$livraison->groupecommande->save();
+								$prospection->groupecommande->etat_id = ETAT::ENCOURS;
+								$prospection->groupecommande->save();
 							}
 							break;
 						}
 					}
 				}
-				$livraison->hydrater($_POST);
-				$data = $livraison->terminer();
+				$prospection->hydrater($_POST);
+				$data = $prospection->terminer();
 				
 			}else{
 				$data->status = false;
-				$data->message = "Veuillez à bien vérifier les quantités des différents produits à livrer, certaines sont incorrectes !";
+				$data->message = "Veuillez à bien vérifier les quantités des différents produits, certaines sont incorrectes !";
 			}			
 		}else{
 			$data->status = false;

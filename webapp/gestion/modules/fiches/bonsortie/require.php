@@ -3,20 +3,20 @@
 namespace Home;
 
 if ($this->getId() != null) {
-	$datas = VENTE::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
+	$datas = PROSPECTION::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
 	if (count($datas) > 0) {
 		$prospection = $datas[0];
 		$prospection->actualise();
 
-		$prospection->fourni("lignedevente");
+		$prospection->fourni("ligneprospection");
 
-		$title = "GPV | Bon de vente ";
+		$title = "GPV | Bon de sortie ";
 		
 	}else{
-		header("Location: ../master/clients");
+		header("Location: ../production/prospections");
 	}
 }else{
-	header("Location: ../master/clients");
+	header("Location: ../production/prospections");
 }
 
 ?>

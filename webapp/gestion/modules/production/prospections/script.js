@@ -19,19 +19,19 @@ $(function(){
 
     $("#top-search").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $("table.table-livraison tr:not(.no)").filter(function() {
+        $("table.table-prospection tr:not(.no)").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
 
     
-    annulerLivraison = function(id){
-        alerty.confirm("Voulez-vous vraiment annuler cette livraison ?", {
-            title: "Annuler la livraison",
+    annulerProspection = function(id){
+        alerty.confirm("Voulez-vous vraiment annuler cette prospection ?", {
+            title: "Annuler la prospection",
             cancelLabel : "Non",
             okLabel : "OUI, annuler",
         }, function(){
-            var url = "../../webapp/gestion/modules/production/livraisons/ajax.php";
+            var url = "../../webapp/gestion/modules/production/prospections/ajax.php";
             alerty.prompt("Entrer votre mot de passe pour confirmer l'opération !", {
                 title: 'Récupération du mot de passe !',
                 inputType : "password",
@@ -39,7 +39,7 @@ $(function(){
                 okLabel : "Valider"
             }, function(password){
                 Loader.start();
-                $.post(url, {action:"annulerLivraison", id:id, password:password}, (data)=>{
+                $.post(url, {action:"annulerProspection", id:id, password:password}, (data)=>{
                     if (data.status) {
                         window.location.reload()
                     }else{
@@ -52,31 +52,41 @@ $(function(){
 
 
     terminer = function(id){
-        alerty.confirm("Cette livraison est-elle vraiment terminée ?", {
-            title: "Livraison terminée",
+        alerty.confirm("Cette prospection est-elle vraiment terminée ?", {
+            title: "Prospection terminée",
             cancelLabel : "Non",
             okLabel : "OUI, terminer",
         }, function(){
-            session("livraison_id", id);
-            modal("#modal-livraison"+id);
+            session("prospection_id", id);
+            modal("#modal-prospection"+id);
         })
     }
 
 
 
-    $(".formValiderLivraison").submit(function(event) {
+    $(".formValiderProspection").submit(function(event) {
         Loader.start();
-        var url = "../../webapp/gestion/modules/production/livraisons/ajax.php";
+        var url = "../../webapp/gestion/modules/production/prospections/ajax.php";
         var formdata = new FormData($(this)[0]);
         var tableau = new Array();
         $(this).find("table tr").each(function(index, el) {
             var id = $(this).attr('data-id');
-            var val = $(this).find('input').val();
+            var val = $(this).find('input.vendu').val();
             var item = id+"-"+val;
             tableau.push(item);
         });
         formdata.append('tableau', tableau);
-        formdata.append('action', "validerLivraison");
+
+        var tableau = new Array();
+        $(this).find("table tr").each(function(index, el) {
+            var id = $(this).attr('data-id');
+            var val = $(this).find('input.perdu').val();
+            var item = id+"-"+val;
+            tableau.push(item);
+        });
+        formdata.append('tableau1', tableau);
+
+        formdata.append('action', "validerProspection");
         $.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
             if (data.status) {
                 window.location.reload()

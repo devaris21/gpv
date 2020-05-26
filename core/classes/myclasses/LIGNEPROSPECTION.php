@@ -5,22 +5,23 @@ use Native\EMAIL;
 /**
  * 
  */
-class LIGNEDEVENTE extends TABLE
+class LIGNEPROSPECTION extends TABLE
 {
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	public $vente_id;
+	public $prospection_id;
 	public $prixdevente_id;
 	public $quantite;
 
 	public $quantite_vendu;
+	public $perte = 0;
 	public $reste = 0;
 
 
 	public function enregistre(){
 		$data = new RESPONSE;
-		$datas = VENTE::findBy(["id ="=>$this->vente_id]);
+		$datas = PROSPECTION::findBy(["id ="=>$this->prospection_id]);
 		if (count($datas) == 1) {
 			if ($this->quantite > 0) {
 					$this->quantite_vendu = $this->quantite;

@@ -31,7 +31,7 @@ class PROSPECTION extends TABLE
 			if (count($datas) == 1) {
 				$commercial = $datas[0];
 				$this->employe_id = getSession("employe_connecte_id");
-				$this->reference = "BVE/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
+				$this->reference = "BSO/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
 				$data = $this->save();
 				if ($this->commercial_id != COMMERCIAL::MAGASIN) {
 					$commercial->disponibilite_id = DISPONIBILITE::MISSION;
@@ -39,7 +39,7 @@ class PROSPECTION extends TABLE
 				}
 			}else{
 				$data->status = false;
-				$data->message = "veuillez selectionner un véhicule pour la vente!";
+				$data->message = "veuillez selectionner un commercial pour la vente!";
 			}
 		}else{
 			$data->status = false;
@@ -134,24 +134,11 @@ class PROSPECTION extends TABLE
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::VALIDEE;
 			$this->dateretour = date("Y-m-d H:i:s");
-			$this->historique("La vente en reference $this->reference vient d'être terminé !");
+			$this->historique("La prospection en reference $this->reference vient d'être terminé !");
 			$data = $this->save();
-			if ($data->status) {
-				$this->actualise();
-				if ($this->chauffeur_id > 0) {
-					$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
-					$this->chauffeur->save();
-				}
-
-				$this->vehicule->etatvehicule_id = ETATVEHICULE::RAS;
-				$this->vehicule->save();
-
-				$this->groupecommande->etat_id = ETAT::ENCOURS;
-				$this->groupecommande->save();
-			}
 		}else{
 			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cette vente !";
+			$data->message = "Vous ne pouvez plus faire cette opération sur cette prospection !";
 		}
 		return $data;
 	}

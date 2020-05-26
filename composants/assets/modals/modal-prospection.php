@@ -38,12 +38,11 @@
                         </div>
                         <div class="ibox-content"  style="background-color: #fafafa">
                             <form id="formProspection">
-                                <input type="hidden" name="etat_id" value="<?= Home\ETAT::PARTIEL ?>" class="form-control">
-
+                                
                                 <div>
                                     <label>Choisissez le commercial <span style="color: red">*</span> </label>                                
                                     <div class="input-group">
-                                        <?php Native\BINDING::html("select", "commercial"); ?>
+                                        <?php Native\BINDING::html("select-tableau", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
                                     </div>
                                 </div><br>
 
@@ -55,7 +54,6 @@
                                 </div><br>
 
                                 <input type="hidden" name="client_id" value="<?= Home\CLIENT::ANONYME ?>">
-                                <input type="hidden" name="typevente_id" value="<?= Home\TYPEVENTE::PROSPECTION ?>" class="form-control">
                             </form><br>
                             <h2 class="font-bold total text-right total">0 Fcfa</h2>
                             <hr/>

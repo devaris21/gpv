@@ -1,9 +1,11 @@
 <?php 
 namespace Home;
+unset_session("produits");
+unset_session("commande-encours");
 
 $title = "GPV | Toutes les ventes en cours";
 
-$prospections = VENTE::findBy(["etat_id !="=>ETAT::ANNULEE, "typevente_id ="=>TYPEVENTE::PROSPECTION]);
+$prospections = PROSPECTION::getAll();
 
 
 ?>

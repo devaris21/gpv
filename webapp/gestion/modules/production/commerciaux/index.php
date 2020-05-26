@@ -57,32 +57,33 @@
     <div class="wrapper wrapper-content">
         <div class="ibox">
             <div class="ibox-title">
-                <h5>Toutes les productions non rangées</h5>
+                <h5>Liste de vos commerciaux</h5>
                 <div class="ibox-tools">
-                    <button data-toggle="modal" data-target="#modal-fournisseur" style="margin-top: -5%" class="btn btn-primary btn-xs dim"><i class="fa fa-plus"></i> Nouveau fournisseur</button>
+                    <button data-toggle="modal" data-target="#modal-commercial" style="margin-top: -5%" class="btn btn-primary btn-xs dim"><i class="fa fa-plus"></i> Nouveau commercial</button>
                 </div>
             </div>
             <div class="ibox-content">
                 <?php if (count($commerciaux) > 0) { ?>
-                <table class="table table-hover issue-tracker">
+                <table class="table table-hover ">
                     <tbody>
                         <tr>
-                            <?php foreach ($commerciaux as $key => $commercial) { ?>
-                                <td ><img style="width: 60px" src="<?= $this->stockage("images", "fournisseurs", $commercial->image); ?>"></td>
-                                <td class="issue-info">
-                                    <a><?= $commercial->name()  ?></a>
-                                    <small><?= $commercial->description ?></small>
+                            <?php foreach ($commerciaux as $key => $commercial) {
+                            $commercial->actualise() ?>
+                                <td ><img style="width: 50px" src="<?= $this->stockage("images", "commercials", $commercial->image); ?>"></td>
+                                <td class="">
+                                    <a><?= $commercial->name()  ?></a><br>
+                                    <small><?= $commercial->adresse ?></small>
                                 </td>
                                 <td>
-                                    <?= $commercial->adresse ?><br>
-                                    <?= $commercial->email ?>
+                                    <?= $commercial->nationalite ?><br>
+                                    <?= $commercial->sexe->name() ?>
                                 </td>
                                 <td>
                                     <?= $commercial->contact ?><br>
-                                    <?= $commercial->fax ?>
                                 </td>
+                                <td><label class="label label-<?= $commercial->disponibilite->class ?>"><?= $commercial->disponibilite->name() ?></label></td>
                                 <td class="text-right">
-                                    <a href="<?= $this->url("gestion", "production", "fournisseur", $commercial->getId())  ?>" class="btn btn-white btn-xs"><i class="fa fa-eye"></i> Voir le compte</a>
+                                    <a href="<?= $this->url("gestion", "production", "commercial", $commercial->getId())  ?>" class="btn btn-white btn-xs"><i class="fa fa-eye"></i> Voir le compte</a>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -99,7 +100,7 @@
 
 <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?> 
 
-<?php include($this->rootPath("composants/assets/modals/modal-fournisseur.php")); ?> 
+<?php include($this->rootPath("composants/assets/modals/modal-commercial.php")); ?> 
 
 </div>
 </div>
