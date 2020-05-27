@@ -12,9 +12,17 @@ foreach ($datas as $key => $value) {
 	$item->save();
 }
 
-$datas = ["Vente directe", "livraison de commande", "Prospection par commercial"];
+$datas = ["Directe", "Par Prospection/livraison"];
 foreach ($datas as $key => $value) {
 	$item = new TYPEVENTE();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+$datas = ["Prospection par commercial", "livraison de commande"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEPROSPECTION();
 	$item->name = $value;
 	$item->setProtected(1);
 	$item->save();

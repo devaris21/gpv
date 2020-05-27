@@ -23,22 +23,22 @@
                                 <h5>Vendu aujourd'hui</h5>
                             </div>
                             <div class="ibox-content">
-                                <h2 class="no-margins"><?= start0(count(Home\COMMANDE::findBy(["DATE(created) ="=>dateAjoute(), "etat_id !="=>Home\ETAT::ANNULEE]))); ?></h2>
+                                <h2 class="no-margins"><?= money(comptage(Home\VENTE::today(), "montant", "somme")); ?> <?= $params->devise ?></h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>boutique actuellement</h5>
+                                <h5>Prospections du jour</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
                                     <div class="col-sm-6 border-right">
-                                        <h2 class="no-margins"><?= start0(count(Home\VENTE::programmee(dateAjoute()))); ?></h2>
+                                        <h2 class="no-margins"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h2 class="no-margins text-green"><?= start0(count(Home\VENTE::effectuee(dateAjoute()))); ?></h2>
+                                        <h2 class="no-margins text-green"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::VALIDEE, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
                                     </div>
                                 </div>
                             </div>
@@ -50,13 +50,8 @@
                                 <h5>Dettes chez clients</h5>
                             </div>
                             <div class="ibox-content">
-                                <div class="row text-center">
-                                    <div class="col-sm-6 border-right">
-                                        <h2 class="no-margins"><?= start0(count(Home\VEHICULE::findBy(["visibility ="=>1]))); ?></h2>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h2 class="no-margins"><?= start0(count(Home\MACHINE::getAll())); ?></h2>
-                                    </div>
+                                <div class="text-center">
+                                    <h2 class="no-margins"><?= start0(Home\CLIENT::Dettes()); ?> <?= $params->devise  ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -67,13 +62,8 @@
                                 <h5>En rupture de stock</h5>
                             </div>
                             <div class="ibox-content">
-                                <div class="row text-center">
-                                    <div class="col-sm-6 border-right">
-                                        <h2 class="no-margins"><?= start0(count(Home\PRODUIT::findBy([]))) ?></h2>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h2 class="no-margins"><?= start0(count(Home\MANOEUVRE::getAll())); ?></h2>
-                                    </div>
+                                <div class=" text-center">
+                                    <h2 class="no-margins"><?= start0(count(Home\PRIXDEVENTE::rupture())) ?> produit(s)</h2>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +81,7 @@
                                     <li class="list-group-item">
                                         <i class="fa fa-cubes"></i>&nbsp;&nbsp;&nbsp; <?= $pdv->name ?>
                                         <span class="float-right">
-                                            <span class="label label-success"><?= money($pdv->boutique) ?></span>
+                                            <span class="label label-<?= ($pdv->boutique>0)?"success":"danger" ?>"><?= money($pdv->boutique) ?></span>
                                             <small class=""><?= money($pdv->stock) ?></small>
                                         </span>
                                     </li>
@@ -216,7 +206,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach (Home\VENTE::programmee(dateAjoute()) as $key => $livraison) {
+                                        <?php foreach (/*Home\VENTE::programmee(dateAjoute())*/ [] as $key => $livraison) {
                                             $livraison->actualise();
                                             $datas = $livraison->fourni("lignelivraison"); ?>
                                             <tr>
@@ -295,8 +285,8 @@
     [<?php foreach ($tableau as $key => $data){ ?>0, <?= $data->commande ?>, 0,<?php } ?>],
     ]
 }, {
- stackBars: true,
- axisX: {
+   stackBars: true,
+   axisX: {
     labelInterpolationFnc: function(value) {
         if (value >= 1000) {
             return (value / 1000) + 'k';            

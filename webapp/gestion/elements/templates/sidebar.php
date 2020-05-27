@@ -27,9 +27,8 @@
 
             <?php 
             $groupes__ = Home\GROUPECOMMANDE::encours();
-            $prospections__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::PROSPECTION]);
-            $ventes__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::DIRECT]);
-            $livraisons__ = Home\VENTE::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typevente_id ="=>Home\TYPEVENTE::LIVRAISON]);
+            $prospections__ = Home\PROSPECTION::encours();
+            $livraisons__ = Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typeprospection_id ="=>Home\TYPEPROSPECTION::LIVRAISON]);
             $approvisionnements__ = Home\APPROVISIONNEMENT::encours();
             $datas1__ = array_merge(Home\PANNE::encours(), Home\DEMANDEENTRETIEN::encours(), Home\ENTRETIENVEHICULE::encours(), Home\ENTRETIENMACHINE::encours());
 
@@ -49,23 +48,26 @@
 
                 <?php if ($employe->isAutoriser("production")) { ?>
                     <li class="groupe">
-                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Stocks & production</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Productions & ventes</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                            <li class="" id="production"><a href="<?= $this->url("gestion", "production", "production", 7) ?>">Stock de production</a></li>
-                            <li class="" id="ressources"><a href="<?= $this->url("gestion", "production", "ressources", 7) ?>">Stock de ressources</a></li>
+                            <li class="" id="production"><a href="<?= $this->url("gestion", "production", "production", 7) ?>">Rapport de production</a></li>
+                            <li class="" id="ventes"><a href="<?= $this->url("gestion", "production", "ventes", 7) ?>">Rapport de ventes</a></li>
                             <li class="" id="miseenboutique"><a href="<?= $this->url("gestion", "production", "miseenboutique") ?>">Mise en boutique</a></li>
                         </ul>
+                    </li>
+                    <li class="" id="commandes">
+                        <a href="<?= $this->url("gestion", "production", "ressources", 7) ?>"><i class="fa fa-archive"></i> <span class="nav-label">Stock de ressources</span></a>
                     </li>
                     <li class="" id="commandes">
                         <a href="<?= $this->url("gestion", "production", "commandes") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Commandes</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
                     </li>
 
                     <li class="" id="livraisons">
-                        <a href="<?= $this->url("gestion", "production", "livraisons") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "production", "livraisons") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a>
                     </li>
 
                     <li class="" id="prospections">
-                        <a href="<?= $this->url("gestion", "production", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Prospections</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "production", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Prospections</span> <?php if (count($prospections__) > 0) { ?> <span class="label label-warning float-right"><?= count($prospections__) ?></span> <?php } ?></a>
                     </li>
                     
                     <li class="dropdown-divider"></li>

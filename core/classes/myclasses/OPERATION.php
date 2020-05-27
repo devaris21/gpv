@@ -18,7 +18,7 @@ class OPERATION extends TABLE
 	public $etat_id = ETAT::VALIDEE;
 	public $comment;
 	public $client_id = CLIENT::ANONYME;
-	public $manoeuvre_id;
+	public $commercial_id;
 	public $fournisseur_id;
 	public $structure;
 	public $numero;

@@ -56,7 +56,7 @@
 
 
                         <div class="">
-                            <button class="btn pull-right dim btn-primary" ><i class="fa fa-check"></i> Valider la vente</button>
+                            <button class="btn pull-right dim btn-primary" ><i class="fa fa-check"></i> Valider la production</button>
                         </div><br>
                     </form>
                 </div>

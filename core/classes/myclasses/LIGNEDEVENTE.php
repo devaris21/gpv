@@ -14,16 +14,12 @@ class LIGNEDEVENTE extends TABLE
 	public $prixdevente_id;
 	public $quantite;
 
-	public $quantite_vendu;
-	public $reste = 0;
-
 
 	public function enregistre(){
 		$data = new RESPONSE;
 		$datas = VENTE::findBy(["id ="=>$this->vente_id]);
 		if (count($datas) == 1) {
 			if ($this->quantite > 0) {
-					$this->quantite_vendu = $this->quantite;
 					$data = $this->save();
 				}else{
 					$data->status = false;

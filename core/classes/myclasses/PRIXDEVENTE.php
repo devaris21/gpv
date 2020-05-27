@@ -46,21 +46,21 @@ class PRIXDEVENTE extends TABLE
 
 
 
-public function name()
-{
-	return $this->produit->name()." / ".$this->prix->price;
-}
+	public function name()
+	{
+		return $this->produit->name()." / ".$this->prix->price;
+	}
 
 
 	public function stock(String $date){
 		$total = 0;
-		$requette = "SELECT SUM(production) - SUM(perte) as production  FROM ligneproductionjour, produit, productionjour WHERE ligneproductionjour.produit_id = produit.id AND produit.id = ? AND ligneproductionjour.productionjour_id = productionjour.id AND DATE(productionjour.ladate) <= ? GROUP BY produit.id";
+		$requette = "SELECT SUM(production) as production FROM ligneproductionjour, prixdevente, productionjour WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneproductionjour.productionjour_id = productionjour.id AND DATE(productionjour.ladate) <= ? GROUP BY prixdevente.id";
 		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), $date]);
 		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
 		$total += $item[0]->production;
 
 
-		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, produit, vente WHERE lignedevente.produit_id = produit.id AND lignedevente.vente_id = vente.id AND produit.id = ? AND vente.etat_id != ?  AND vente.etat_id != ? AND DATE(vente.created) <= ? GROUP BY produit.id";
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, prixdevente, vente WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND prixdevente.id = ? AND vente.etat_id != ?  AND vente.etat_id != ? AND DATE(vente.created) <= ? GROUP BY prixdevente.id";
 		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, ETAT::PARTIEL, $date]);
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		$total -= $item[0]->quantite;
@@ -71,7 +71,7 @@ public function name()
 
 
 	public function production(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(production) as production  FROM ligneproductionjour, produit WHERE ligneproductionjour.produit_id = produit.id AND produit.id = ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY produit.id";
+		$requette = "SELECT SUM(production) as production  FROM ligneproductionjour, prixdevente WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY produit.id";
 		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), $date1, $date2]);
 		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
 		return $item[0]->production;
@@ -96,11 +96,19 @@ public function name()
 	
 
 
-	public function livree(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(quantite_vendu) as quantite_vendu  FROM lignedevente, produit, vente WHERE lignedevente.produit_id = produit.id AND lignedevente.vente_id = vente.id AND produit.id = ? AND vente.etat_id != ? AND DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY produit.id";
+	public function vendu(string $date1 = "2020-04-01", string $date2){
+		$total = 0;
+		$requette = "SELECT SUM(quantite_vendu) as quantite_vendu  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND ligneprospection.prospection_id = prospection.id AND prixdevente.id = ? AND prospection.etat_id != ? AND DATE(ligneprospection.created) >= ? AND DATE(ligneprospection.created) <= ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total += $item[0]->quantite_vendu;
+
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, prixdevente, vente WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND prixdevente.id = ? AND vente.etat_id != ? AND DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY prixdevente.id";
 		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
-		return $item[0]->quantite_vendu;
+		$total += $item[0]->quantite;
+
+		return $total;
 	}
 
 
@@ -151,6 +159,24 @@ public function name()
 		$b = comptage($datas, "quantite", "somme");
 
 		return $a - $b;
+	}
+
+
+
+	public function stockGlobal(){
+		return $this->enBoutique() + $this->enStock();
+	}
+
+
+	public static function rupture(){
+		$params = PARAMS::findLastId();
+		$datas = static::findBy(["isActive ="=>TABLE::OUI]);
+		foreach ($datas as $key => $item) {
+			if ($item->enStock() > $params->ruptureStock) {
+				unset($datas[$key]);
+			}
+		}
+		return $datas;
 	}
 
 

@@ -43,7 +43,7 @@ class GROUPECOMMANDE extends TABLE
 		if (count($item) < 1) {$item = [new LIGNECOMMANDE()]; }
 		$total += $item[0]->quantite;
 
-		$requette = "SELECT SUM(quantite_vendu) as quantite FROM lignedevente, prixdevente, vente, groupecommande WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND vente.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND vente.etat_id != ? AND prixdevente.id = ? GROUP BY prixdevente.id";
+		$requette = "SELECT SUM(quantite) as quantite FROM lignedevente, prixdevente, vente, groupecommande WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND vente.groupecommande_id = groupecommande.id AND groupecommande.id = ? AND vente.etat_id != ? AND prixdevente.id = ? GROUP BY prixdevente.id";
 		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, $prixdevente_id]);
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		$total -= $item[0]->quantite;

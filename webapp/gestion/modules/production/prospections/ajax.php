@@ -38,6 +38,30 @@ if ($action == "annulerProspection") {
 
 
 
+if ($action == "calcul") {
+	$params = PARAMS::findLastId();
+	$montant = 0;
+	$tableau = explode(",", $tableau);
+	foreach ($tableau as $key => $value) {
+		$data = explode("-", $value);
+		$id = $data[0];
+		$val = end($data);
+
+		$datas = LIGNEPROSPECTION::findBy(["id = "=>$id]);
+		if (count($datas) == 1) {
+			$ligne = $datas[0];
+			$ligne->actualise();
+			$montant += $ligne->prixdevente->prix->price * intval($val);
+		}
+	}
+	session("total", $montant);
+
+	$data = new \stdclass();
+	$data->total = $montant." ".$params->devise;
+	echo json_encode($data);
+}
+
+
 if ($action == "validerProspection") {
 	$id = getSession("prospection_id");
 	$datas = PROSPECTION::findBy(["id ="=>$id]);
@@ -51,8 +75,6 @@ if ($action == "validerProspection") {
 			$lot = explode("-", $value);
 			$array[$lot[0]] = end($lot);
 		}
-		$tests = $array;
-
 
 		$produits1 = explode(",", $tableau1);
 		foreach ($produits1 as $key => $value) {
@@ -77,16 +99,12 @@ if ($action == "validerProspection") {
 							$lgn->perte = $array1[$key];
 							$lgn->reste = $lgn->quantite - $value - $array1[$key];
 							$lgn->save();
-
-							if ($lgn->reste > 0) {
-								$prospection->groupecommande->etat_id = ETAT::ENCOURS;
-								$prospection->groupecommande->save();
-							}
 							break;
 						}
 					}
 				}
 				$prospection->hydrater($_POST);
+				$prospection->vendu = getSession("total");
 				$data = $prospection->terminer();
 				
 			}else{

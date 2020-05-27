@@ -10,15 +10,14 @@ class PROSPECTION extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $reference;
-	public $typevente_id;
-	public $groupecommande_id = null;
+	public $typeprospection_id;
 	public $zonedevente_id;
 	public $commercial_id     = COMMERCIAL::MAGASIN;
 	public $etat_id           = ETAT::ENCOURS;
 	public $employe_id        = null;
-	public $operation_id      = null;
 	
 	public $montant           = 0;
+	public $vendu           = 0;
 	public $comment;
 
 	
@@ -78,26 +77,26 @@ class PROSPECTION extends TABLE
 	}
 
 
-	public function chauffeur(){
-		if ($this->vehicule_id == VEHICULE::AUTO) {
-			return "...";
-		}else if ($this->vehicule_id == VEHICULE::TRICYCLE) {
-			return $this->nom_tricycle;
-		}else{
-			return $this->chauffeur->name();
-		}
-	}
+	// public function chauffeur(){
+	// 	if ($this->vehicule_id == VEHICULE::AUTO) {
+	// 		return "...";
+	// 	}else if ($this->vehicule_id == VEHICULE::TRICYCLE) {
+	// 		return $this->nom_tricycle;
+	// 	}else{
+	// 		return $this->chauffeur->name();
+	// 	}
+	// }
 
 
-	public function vehicule(){
-		if ($this->vehicule_id == VEHICULE::AUTO) {
-			return "SON PROPRE VEHICULE";
-		}else if ($this->vehicule_id == VEHICULE::TRICYCLE) {
-			return "TRICYCLE";
-		}else{
-			return $this->vehicule->name();
-		}
-	}
+	// public function vehicule(){
+	// 	if ($this->vehicule_id == VEHICULE::AUTO) {
+	// 		return "SON PROPRE VEHICULE";
+	// 	}else if ($this->vehicule_id == VEHICULE::TRICYCLE) {
+	// 		return "TRICYCLE";
+	// 	}else{
+	// 		return $this->vehicule->name();
+	// 	}
+	// }
 
 
 
@@ -105,7 +104,7 @@ class PROSPECTION extends TABLE
 		$data = new RESPONSE;
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::ANNULEE;
-			$this->historique("La vente en reference $this->reference vient d'être annulée !");
+			$this->historique("La prospection en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
@@ -122,7 +121,7 @@ class PROSPECTION extends TABLE
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cette vente !";
+			$data->message = "Vous ne pouvez plus faire cette opération sur cette prospection !";
 		}
 		return $data;
 	}
@@ -136,6 +135,25 @@ class PROSPECTION extends TABLE
 			$this->dateretour = date("Y-m-d H:i:s");
 			$this->historique("La prospection en reference $this->reference vient d'être terminé !");
 			$data = $this->save();
+			if ($data->status) {
+				$vente = new VENTE();
+				$vente->cloner($this);
+				$vente->setId(null);
+				$data = $vente->enregistre();
+				if ($data->status) {
+					$montant = 0;
+					$datas = $this->fourni("ligneprospection");
+					foreach ($datas as $key => $ligne) {
+						$lgn = new LIGNEDEVENTE();
+						$lgn->vente_id = $vente->getId();
+						$lgn->prixdevente_id = $ligne->prixdevente_id;
+						$lgn->quantite = $ligne->quantite_vendu;
+						$lgn->save();
+						$montant += $ligne->prixdevente->prix->price * $ligne->quantite_vendu;
+					}
+					$vente->payement($montant, json_decode(json_encode($vente), true));
+				}
+			}
 		}else{
 			$data->status = false;
 			$data->message = "Vous ne pouvez plus faire cette opération sur cette prospection !";

@@ -92,16 +92,19 @@
                                         </thead>
                                         <tbody>
                                             <tr class="no">
-                                                <td><h4 class="mp0"><?= ($prospection->etat_id == Home\ETAT::VALIDEE)?'Vendu':'à vendre' ?> : </h4></td>
+                                                <td><h4 class="mp0">Qté : </h4></td>
                                                 <?php foreach ($prospection->ligneprospections as $key => $ligne) { ?>
-                                                    <td class="text-center <?= ($prospection->etat_id == Home\ETAT::VALIDEE)?'text-warning':'' ?>"><?= $ligne->quantite_vendu ?></td>
+                                                    <td class="text-center"><?= start0($ligne->quantite) ?> // 
+                                                        <?php if ($prospection->etat_id == Home\ETAT::VALIDEE) { ?>
+                                                        <span class="text-green"><?= start0($ligne->quantite_vendu) ?></span>
+                                                    <?php }  ?></td>
                                                 <?php   } ?>
                                             </tr>
                                             <?php if ($prospection->etat_id == Home\ETAT::VALIDEE) { ?>
                                                 <tr class="no">
-                                                    <td><h4 class="mp0">Restait :</h4></td>
+                                                    <td><h4 class="mp0">Perte :</h4></td>
                                                     <?php foreach ($prospection->ligneprospections as $key => $ligne) { ?>
-                                                        <td class="text-center"><?= $ligne->reste ?></td>
+                                                        <td class="text-center"><?= start0($ligne->perte) ?></td>
                                                     <?php   } ?>
                                                 </tr>
                                             <?php } ?>
@@ -135,13 +138,13 @@
     <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
 
     <?php 
-    foreach ($prospections as $key => $prospection) {
-        if ($prospection->etat_id == Home\ETAT::ENCOURS) { 
-            $prospection->actualise();
-            $prospection->fourni("ligneprospection");
-            include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
+        foreach ($prospections as $key => $prospection) {
+            if ($prospection->etat_id == Home\ETAT::ENCOURS) { 
+                $prospection->actualise();
+                $prospection->fourni("ligneprospection");
+                include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
+            } 
         } 
-    } 
     ?>
 
 </div>
@@ -149,7 +152,6 @@
 
 
 <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
-<script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
 
 
 </body>

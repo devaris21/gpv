@@ -27,20 +27,9 @@ class VENTE extends TABLE
 		$data = new RESPONSE;
 		$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonedevente_id]);
 		if (count($datas) == 1) {
-			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id, "disponibilite_id ="=>DISPONIBILITE::LIBRE]);
-			if (count($datas) == 1) {
-				$commercial = $datas[0];
-				$this->employe_id = getSession("employe_connecte_id");
-				$this->reference = "BVE/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
-				$data = $this->save();
-				if ($this->commercial_id != COMMERCIAL::MAGASIN) {
-					$commercial->disponibilite_id = DISPONIBILITE::MISSION;
-					$commercial->save();
-				}
-			}else{
-				$data->status = false;
-				$data->message = "veuillez selectionner un véhicule pour la vente!";
-			}
+			$this->employe_id = getSession("employe_connecte_id");
+			$this->reference = "BVE/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
+			$data = $this->save();
 		}else{
 			$data->status = false;
 			$data->message = "Une erreur s'est produite lors de l'enregistrement de la vente!";
@@ -50,15 +39,29 @@ class VENTE extends TABLE
 
 
 
-	//les livraions programmées du jour
-	public static function programmee(String $date){
-		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
+	public function payement(int $montant, Array $post){
+		$this->actualise();
+		$params = PARAMS::findLastId();
+		$tva = ($montant * $params->tva) / 100;
+		$total = $montant + $tva;
+
+		$payement = new OPERATION();
+		$payement->hydrater($post);
+		$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
+		$payement->montant = $total;
+		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;
+		$data = $payement->enregistre();
+		if ($data->status) {
+			$this->operation_id = $data->lastid;
+			$data = $this->save();
+		}
+							// $data->url1 = $data->setUrl("gestion", "fiches", "boncaisse", $lot->lastid);
+							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
+		return $data;
 	}
 
-
-	//les livraions effectuéez du jour
-	public static function effectuee(String $date){
-		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id ="=>ETAT::VALIDEE]);
+	public static function today(){
+		return static::findBy(["DATE(created) ="=>dateAjoute(), "etat_id !="=>ETAT::ANNULEE]);
 	}
 
 

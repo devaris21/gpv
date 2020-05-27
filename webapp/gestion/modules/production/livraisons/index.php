@@ -16,10 +16,10 @@
 
           <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-sm-9">
-                <h2 class="text-uppercase text-warning gras">Les ventes en cours</h2>
+                <h2 class="text-uppercase text-warning gras">Les livraisons en cours</h2>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-7 gras ">Afficher même les ventes passées</div>
+                        <div class="col-xs-7 gras ">Afficher même les livraisons passées</div>
                         <div class="offset-1"></div>
                         <div class="col-xs-4">
                             <div class="switch">
@@ -44,7 +44,7 @@
                                 <i class="fa fa-truck fa-3x"></i>
                             </div>
                             <div class="col-8 text-right">
-                                <span> ventes en cours </span>
+                                <span> livraisons en cours </span>
                                 <h2 class="font-bold"><?= start0($total) ?></h2>
                             </div>
                         </div>
@@ -59,45 +59,45 @@
             <div class="ibox-title">
                 <h5>Toutes les ventes</h5>
                 <div class="ibox-tools">
-                    <button style="margin-top: -5%;" type="button" data-toggle=modal data-target='#modal-clients' class="btn btn-primary btn-sm dim float-right"><i class="fa fa-plus"></i> Nouvelle vente </button>
+                    <button style="margin-top: -5%;" type="button" data-toggle=modal data-target='#modal-clients' class="btn btn-primary btn-sm dim float-right"><i class="fa fa-plus"></i> Nouvelle livraison </button>
                 </div>
             </div>
             <div class="ibox-content" style="min-height: 300px">
-                <table class="table table-hover table-vente">
+                <table class="table table-hover table-livraison">
                     <tbody>
-                        <?php foreach ($ventes as $key => $vente) {
-                            $vente->actualise(); 
-                            $client = $vente->groupecommande->client;
-                            $vente->fourni("lignedevente");
+                        <?php foreach ($livraisons as $key => $livraison) {
+                            $livraison->actualise(); 
+                            $client = $livraison->groupecommande->client;
+                            $livraison->fourni("ligneprospection");
                             ?>
-                            <tr class="<?= ($vente->etat_id != Home\ETAT::ENCOURS)?'fini':'' ?> border-bottom" style="border-bottom: 2px solid black">
+                            <tr class="<?= ($livraison->etat_id != Home\ETAT::ENCOURS)?'fini':'' ?> border-bottom" style="border-bottom: 2px solid black">
                                 <td class="project-status">
-                                    <span class="label label-<?= $vente->etat->class ?>"><?= $vente->etat->name ?></span>
+                                    <span class="label label-<?= $livraison->etat->class ?>"><?= $livraison->etat->name ?></span>
                                 </td>
                                 <td class="project-title border-right" style="width: 30%;">
-                                    <h4 class="text-uppercase">vente N°<?= $vente->reference ?></h4>
-                                    <h6 class="text-uppercase text-muted">Client :  <?= $vente->groupecommande->client->name() ?></h6>
-                                    <h6 class="text-uppercase text-muted">Chauffeur :  <?= $vente->chauffeur->name() ?></h6>
-                                    <span>Emise <?= depuis($vente->created) ?></span>
+                                    <h4 class="text-uppercase">livraison N°<?= $livraison->reference ?></h4>
+                                    <h6 class="text-uppercase text-muted">Client :  <?= $livraison->groupecommande->client->name() ?></h6>
+                                    <h6 class="text-uppercase text-muted">Chauffeur :  <?= $livraison->chauffeur->name() ?></h6>
+                                    <span>Emise <?= depuis($livraison->created) ?></span>
                                 </td>
                                 <td class="border-right" style="width: 25%">
                                     <div class="row">
                                         <div class="col-3">
-                                            <img style="width: 40px" src="<?= $this->stockage("images", "vehicules", $vente->vehicule->image) ?>">
+                                            <img style="width: 40px" src="<?= $this->stockage("images", "vehicules", $livraison->vehicule->image) ?>">
                                         </div>
                                         <div class="col-9">
-                                            <h5 class="mp0"><?= $vente->vehicule->typevehicule->name() ?></h5>
-                                            <h6 class="mp0"><?= $vente->vehicule() ?></h6>
+                                            <h5 class="mp0"><?= $livraison->vehicule->typevehicule->name() ?></h5>
+                                            <h6 class="mp0"><?= $livraison->vehicule() ?></h6>
                                         </div>
                                     </div><hr class="mp3">
-                                    <h5 class="mp0"><small><?= $vente->zonevente->name() ?></small><br> <?= $vente->lieu ?></h5>
+                                    <h5 class="mp0"><small><?= $livraison->zonevente->name() ?></small><br> <?= $livraison->lieu ?></h5>
                                 </td>
                                 <td class="border-right" style="width: 32%">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr class="no">
                                                 <th></th>
-                                                <?php foreach ($vente->lignedeventes as $key => $ligne) { 
+                                                <?php foreach ($livraison->ligneprospections as $key => $ligne) { 
                                                     $ligne->actualise(); ?>
                                                     <th class="text-center text-uppercase"><?= $ligne->produit->name() ?></th>
                                                 <?php } ?>
@@ -105,15 +105,15 @@
                                         </thead>
                                         <tbody>
                                             <tr class="no">
-                                                <td><h4 class="mp0"><?= ($vente->etat_id == Home\ETAT::VALIDEE)?'livrés':'à livrer' ?> : </h4></td>
-                                                <?php foreach ($vente->lignedeventes as $key => $ligne) { ?>
-                                                    <td class="text-center <?= ($vente->etat_id == Home\ETAT::VALIDEE)?'text-warning':'' ?>"><?= $ligne->quantite_livree ?></td>
+                                                <td><h4 class="mp0"><?= ($livraison->etat_id == Home\ETAT::VALIDEE)?'livrés':'à livrer' ?> : </h4></td>
+                                                <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
+                                                    <td class="text-center <?= ($livraison->etat_id == Home\ETAT::VALIDEE)?'text-warning':'' ?>"><?= $ligne->quantite_livree ?></td>
                                                 <?php   } ?>
                                             </tr>
-                                            <?php if ($vente->etat_id == Home\ETAT::VALIDEE) { ?>
+                                            <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
                                                 <tr class="no">
                                                     <td><h4 class="mp0">Restait :</h4></td>
-                                                    <?php foreach ($vente->lignedeventes as $key => $ligne) { ?>
+                                                    <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
                                                         <td class="text-center"><?= $ligne->reste ?></td>
                                                     <?php   } ?>
                                                 </tr>
@@ -122,11 +122,11 @@
                                     </table>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->url("gestion", "fiches", "bonvente", $vente->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de vente</a><br>
-                                    <?php if ($vente->etat_id == Home\ETAT::ENCOURS) { ?>
-                                        <button onclick="terminer(<?= $vente->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
+                                    <a href="<?= $this->url("gestion", "fiches", "bonsortie", $livraison->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de sortie</a><br>
+                                    <?php if ($livraison->etat_id == Home\ETAT::ENCOURS) { ?>
+                                        <button onclick="terminer(<?= $livraison->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
                                         <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
-                                            <button onclick="annulervente(<?= $vente->getId() ?>)" class="btn btn-white btn-sm"><i class="fa fa-close text-red"></i></button>
+                                            <button onclick="annulervente(<?= $livraison->getId() ?>)" class="btn btn-white btn-sm"><i class="fa fa-close text-red"></i></button>
                                         <?php } ?>
                                     <?php } ?>
                                 </td>
@@ -134,8 +134,8 @@
                         <?php  } ?>
                     </tbody>
                 </table>
-                <?php if (count($ventes__) == 0) { ?>
-                    <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune vente en cours pour le moment !</h1>
+                <?php if (count($livraisons__) == 0) { ?>
+                    <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune livraison en cours pour le moment !</h1>
                 <?php } ?>
 
             </div>
@@ -148,11 +148,11 @@
     <?php include($this->rootPath("composants/assets/modals/modal-clients.php")); ?> 
 
     <?php 
-    foreach ($ventes as $key => $vente) {
-        if ($vente->etat_id == Home\ETAT::ENCOURS) { 
-            $vente->actualise();
-            $vente->fourni("lignedevente");
-            include($this->rootPath("composants/assets/modals/modal-vente2.php"));
+    foreach ($livraisons as $key => $livraison) {
+        if ($livraison->etat_id == Home\ETAT::ENCOURS) { 
+            $livraison->actualise();
+            $livraison->fourni("ligneprospection");
+            include($this->rootPath("composants/assets/modals/modal-livraison2.php"));
         } 
     } 
     ?>

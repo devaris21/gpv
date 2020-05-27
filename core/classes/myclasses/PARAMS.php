@@ -29,6 +29,7 @@ class PARAMS extends TABLE
 
 	public $tva;
 	public $seuilCredit;
+	public $ruptureStock = 10;
 
 
 

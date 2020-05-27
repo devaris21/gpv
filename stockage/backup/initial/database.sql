@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 05 mai 2020 à 23:39
+-- Généré le : mar. 26 mai 2020 à 14:25
 -- Version du serveur :  10.2.6-MariaDB-log
 -- Version de PHP : 7.2.19
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `bidy`
+-- Base de données : `vente`
 --
 
 -- --------------------------------------------------------
@@ -31,6 +31,8 @@ CREATE TABLE `approvisionnement` (
   `id` int(11) NOT NULL,
   `reference` varchar(20) COLLATE utf8_bin NOT NULL,
   `montant` int(11) NOT NULL,
+  `avance` int(11) NOT NULL,
+  `reste` int(11) NOT NULL,
   `fournisseur_id` int(11) NOT NULL,
   `operation_id` int(11) DEFAULT NULL,
   `datelivraison` datetime DEFAULT NULL,
@@ -93,35 +95,6 @@ CREATE TABLE `categorieoperation` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `chauffeur`
---
-
-CREATE TABLE `chauffeur` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_bin NOT NULL,
-  `lastname` varchar(150) COLLATE utf8_bin DEFAULT NULL,
-  `matricule` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `sexe_id` int(2) NOT NULL,
-  `nationalite` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `adresse` varchar(150) COLLATE utf8_bin DEFAULT NULL,
-  `typepermis` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `numero_permis` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `date_fin_permis` date DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `contact` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `salaire` int(11) NOT NULL,
-  `etatchauffeur_id` int(11) NOT NULL,
-  `image` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `visibility` int(11) NOT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `protected` int(11) NOT NULL DEFAULT 0,
-  `valide` int(11) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `client`
 --
 
@@ -151,7 +124,7 @@ CREATE TABLE `commande` (
   `id` int(11) NOT NULL,
   `reference` varchar(20) COLLATE utf8_bin NOT NULL,
   `groupecommande_id` int(20) NOT NULL,
-  `zonelivraison_id` int(11) NOT NULL,
+  `zonedevente_id` int(11) NOT NULL,
   `lieu` varchar(200) COLLATE utf8_bin NOT NULL,
   `taux_tva` int(11) DEFAULT NULL,
   `tva` int(11) NOT NULL,
@@ -165,6 +138,30 @@ CREATE TABLE `commande` (
   `comment` text COLLATE utf8_bin DEFAULT NULL,
   `acompteClient` int(11) NOT NULL,
   `detteClient` int(11) NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commercial`
+--
+
+CREATE TABLE `commercial` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) COLLATE utf8_bin NOT NULL,
+  `sexe_id` int(2) NOT NULL,
+  `nationalite` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `adresse` varchar(150) COLLATE utf8_bin DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `contact` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `salaire` int(11) NOT NULL,
+  `disponibilite_id` int(11) NOT NULL,
+  `image` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `visibility` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
@@ -209,6 +206,20 @@ CREATE TABLE `demandeentretien` (
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `disponibilite`
+--
+
+CREATE TABLE `disponibilite` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) COLLATE utf8_bin NOT NULL,
+  `class` varchar(50) COLLATE utf8_bin NOT NULL,
+  `protected` int(11) NOT NULL DEFAULT 1,
   `valide` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -458,16 +469,14 @@ CREATE TABLE `groupevehicule` (
 CREATE TABLE `history` (
   `id` int(11) NOT NULL,
   `sentense` text COLLATE utf8_bin NOT NULL,
-  `type_save` varchar(50) COLLATE utf8_bin NOT NULL,
+  `typeSave` varchar(50) COLLATE utf8_bin NOT NULL,
   `record` varchar(200) COLLATE utf8_bin NOT NULL,
   `employe_id` int(11) DEFAULT NULL,
-  `carplan_id` int(11) DEFAULT NULL,
-  `prestataire_id` int(11) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 1,
   `valide` int(11) NOT NULL DEFAULT 1,
-  `record_key` int(11) NOT NULL
+  `recordId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -480,8 +489,8 @@ CREATE TABLE `ligneapprovisionnement` (
   `id` int(11) NOT NULL,
   `approvisionnement_id` int(11) NOT NULL,
   `ressource_id` int(11) NOT NULL,
-  `quantite` int(11) NOT NULL,
-  `quantite_recu` int(11) NOT NULL,
+  `quantite` float NOT NULL,
+  `quantite_recu` float NOT NULL,
   `price` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
@@ -498,9 +507,8 @@ CREATE TABLE `ligneapprovisionnement` (
 CREATE TABLE `lignecommande` (
   `id` int(11) NOT NULL,
   `commande_id` int(11) NOT NULL,
-  `produit_id` int(11) NOT NULL,
+  `prixdevente_id` int(11) NOT NULL,
   `quantite` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
@@ -527,16 +535,14 @@ CREATE TABLE `ligneconsommationjour` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `lignelivraison`
+-- Structure de la table `lignedevente`
 --
 
-CREATE TABLE `lignelivraison` (
+CREATE TABLE `lignedevente` (
   `id` int(11) NOT NULL,
-  `livraison_id` int(11) NOT NULL,
-  `produit_id` int(11) NOT NULL,
+  `vente_id` int(11) NOT NULL,
+  `prixdevente_id` int(11) NOT NULL,
   `quantite` int(11) NOT NULL,
-  `quantite_livree` int(11) NOT NULL,
-  `reste` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
@@ -552,9 +558,8 @@ CREATE TABLE `lignelivraison` (
 CREATE TABLE `ligneproductionjour` (
   `id` int(11) NOT NULL,
   `productionjour_id` int(11) NOT NULL,
-  `produit_id` int(11) NOT NULL,
+  `prixdevente_id` int(11) NOT NULL,
   `production` int(11) NOT NULL,
-  `perte` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
@@ -564,37 +569,22 @@ CREATE TABLE `ligneproductionjour` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `livraison`
+-- Structure de la table `ligneprospection`
 --
 
-CREATE TABLE `livraison` (
+CREATE TABLE `ligneprospection` (
   `id` int(11) NOT NULL,
-  `reference` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `groupecommande_id` int(20) NOT NULL,
-  `zonelivraison_id` int(11) DEFAULT NULL,
-  `lieu` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `vehicule_id` int(11) DEFAULT NULL,
-  `chauffeur_id` int(11) DEFAULT NULL,
-  `etat_id` int(11) NOT NULL,
-  `employe_id` int(11) DEFAULT NULL,
-  `datelivraison` date DEFAULT NULL,
-  `comment` text COLLATE utf8_bin DEFAULT NULL,
-  `isLouer` int(11) NOT NULL,
-  `montant_location` int(11) NOT NULL,
-  `operation_id` int(11) NOT NULL,
-  `nom_tricycle` varchar(50) COLLATE utf8_bin NOT NULL,
-  `paye_tricycle` int(11) NOT NULL,
+  `prospection_id` int(11) NOT NULL,
+  `prixdevente_id` int(11) NOT NULL,
+  `quantite` int(11) NOT NULL,
+  `quantite_vendu` int(11) NOT NULL,
   `reste` int(11) NOT NULL,
-  `isPayer` int(11) NOT NULL,
-  `chargement_manoeuvre` varchar(5) COLLATE utf8_bin DEFAULT NULL,
-  `dechargement_manoeuvre` varchar(5) COLLATE utf8_bin DEFAULT NULL,
-  `nom_receptionniste` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `contact_receptionniste` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `perte` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
   `valide` int(11) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
 
@@ -684,125 +674,22 @@ CREATE TABLE `marque` (
   `valide` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Déchargement des données de la table `marque`
+-- Structure de la table `miseenboutique`
 --
 
-INSERT INTO `marque` (`id`, `name`, `logo`, `created`, `modified`, `protected`, `valide`) VALUES
-(1, 'ABARTH', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(2, 'ACURA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(3, 'ALFA ROMEO', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(4, 'ALPINA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(5, 'AMC', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(6, 'ASR', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(7, 'ASTON MARTIN', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(8, 'AUDI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(9, 'BENTLEY', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(10, 'BMW', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(11, 'BRILLIANCE', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(12, 'BUGATTI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(13, 'BUICK', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(14, 'CADILLAC', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(15, 'CHERY', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(16, 'CHEVROLET', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(17, 'CHRYSLER', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(18, 'CIZETA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(19, 'CORVETTE', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(20, 'COVINI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(21, 'DACIA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(22, 'DAEWOO', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(23, 'DAIHATSU', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(24, 'DATSUN', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(25, 'DKW', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(26, 'DODGE', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(27, 'EAGLE', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(28, 'FARBIO', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(29, 'FERRARI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(30, 'FIAT', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(31, 'FISKER', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(32, 'FORD', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(33, 'GEELY', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(34, 'GEO', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(35, 'GMC', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(36, 'GREAT WALL', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(37, 'HOLDEN', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(38, 'HONDA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(39, 'HORCH', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(40, 'HUMMER', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(41, 'HYUNDAI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(42, 'INFINITI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(43, 'ISUZU', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(44, 'JAGUAR', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(45, 'JEEP', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(46, 'KIA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(47, 'KOENIGSEGG', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(48, 'LADA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(49, 'LAMBORGHINI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(50, 'LANCIA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(51, 'LAND ROVER', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(52, 'LEBLANC', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(53, 'LEXUS', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(54, 'LINCOLN', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(55, 'LOTUS', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(56, 'MAHINDRA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(57, 'MARUTI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(58, 'MASERATI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(59, 'MAYBACH', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(60, 'MAZDA', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(61, 'MERCEDES-BENZ', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(62, 'MG', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(63, 'MINI', '', NULL, '2019-10-28 14:12:43', 0, 1),
-(64, 'MITSUBISHI', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(65, 'MORGAN', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(66, 'MOSKVICH', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(67, 'NANJING', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(68, 'NAZA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(69, 'NISSAN', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(70, 'NOBLE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(71, 'OLDSMOBILE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(72, 'OPEL', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(73, 'PAGANI', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(74, 'PANOZ', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(75, 'PEUGEOT', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(76, 'PIAGGIO', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(77, 'PLYMOUTH', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(78, 'PONTIAC', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(79, 'PORSCHE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(80, 'PERODUA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(81, 'PROTON', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(82, 'RAPP MOTERNWERKE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(83, 'RENAULT', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(84, 'ROEWE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(85, 'ROLLS-ROYCE', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(86, 'ROVER', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(87, 'ROSSION', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(88, 'SAAB', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(89, 'SATURN', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(90, 'SCION', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(91, 'SEAT', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(92, 'SKODA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(93, 'SMART', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(94, 'SPYKER', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(95, 'SSANGYONG', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(96, 'STEALTH', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(97, 'SUZUKI', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(98, 'TATA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(99, 'TESLA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(100, 'TOYOTA', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(101, 'TONIQ', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(102, 'TRABANT', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(103, 'VAUXHALL', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(104, 'VECTOR', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(105, 'VENTURI', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(106, 'VOLKSWAGEN', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(107, 'VOLVO', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(108, 'WANDERER', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(109, 'WARTBURG', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(110, 'WESTFIELD', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(111, 'ZASTAVA ', '', NULL, '2019-10-28 14:12:44', 0, 1),
-(112, 'DISCOVERY', NULL, '2019-10-18 12:21:02', '2019-10-28 14:12:44', 0, 1),
-(113, 'CHANGAN', NULL, '2019-10-18 12:22:32', '2019-10-28 14:12:44', 0, 1),
-(114, 'OUTLANDER', NULL, '2019-10-28 11:09:31', '2019-10-28 14:12:44', 0, 1);
+CREATE TABLE `miseenboutique` (
+  `id` int(11) NOT NULL,
+  `prixdevente_id` int(11) NOT NULL,
+  `quantite` int(11) NOT NULL,
+  `employe_id` int(11) NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -848,7 +735,7 @@ CREATE TABLE `operation` (
   `reference` varchar(20) COLLATE utf8_bin NOT NULL,
   `montant` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
-  `manoeuvre_id` int(11) DEFAULT NULL,
+  `commercial_id` int(11) DEFAULT NULL,
   `fournisseur_id` int(11) DEFAULT NULL,
   `modepayement_id` int(11) NOT NULL,
   `structure` varchar(50) COLLATE utf8_bin DEFAULT NULL,
@@ -996,14 +883,29 @@ CREATE TABLE `prestataire` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `prix_zonelivraison`
+-- Structure de la table `prix`
 --
 
-CREATE TABLE `prix_zonelivraison` (
+CREATE TABLE `prix` (
+  `id` int(11) NOT NULL,
+  `price` varchar(200) COLLATE utf8_bin NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prixdevente`
+--
+
+CREATE TABLE `prixdevente` (
   `id` int(11) NOT NULL,
   `produit_id` int(11) NOT NULL,
-  `zonelivraison_id` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
+  `prix_id` int(11) NOT NULL,
+  `isActive` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `protected` int(11) NOT NULL DEFAULT 0,
@@ -1050,6 +952,30 @@ CREATE TABLE `produit` (
   `protected` int(11) NOT NULL DEFAULT 0,
   `valide` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prospection`
+--
+
+CREATE TABLE `prospection` (
+  `id` int(11) NOT NULL,
+  `reference` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `typeprospection_id` int(11) DEFAULT NULL,
+  `zonedevente_id` int(11) DEFAULT NULL,
+  `montant` int(11) DEFAULT NULL,
+  `vendu` int(11) DEFAULT NULL,
+  `etat_id` int(11) NOT NULL,
+  `commercial_id` int(11) NOT NULL,
+  `employe_id` int(11) DEFAULT NULL,
+  `dateretour` date DEFAULT NULL,
+  `comment` text COLLATE utf8_bin DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
 
@@ -1203,6 +1129,21 @@ CREATE TABLE `typeprestataire` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `typeprospection`
+--
+
+CREATE TABLE `typeprospection` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) COLLATE utf8_bin NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `typesuggestion`
 --
 
@@ -1248,6 +1189,21 @@ CREATE TABLE `typevehicule` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `typevente`
+--
+
+CREATE TABLE `typevente` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) COLLATE utf8_bin NOT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `vehicule`
 --
 
@@ -1270,6 +1226,7 @@ CREATE TABLE `vehicule` (
   `date_assurance` date DEFAULT NULL,
   `date_vidange` datetime DEFAULT NULL,
   `image` text COLLATE utf8_bin DEFAULT NULL,
+  `etiquette` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `visibility` int(11) NOT NULL,
   `groupevehicule_id` int(11) DEFAULT NULL,
   `chasis` text COLLATE utf8_bin DEFAULT NULL,
@@ -1288,10 +1245,36 @@ CREATE TABLE `vehicule` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `zonelivraison`
+-- Structure de la table `vente`
 --
 
-CREATE TABLE `zonelivraison` (
+CREATE TABLE `vente` (
+  `id` int(11) NOT NULL,
+  `reference` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `typevente_id` int(11) DEFAULT NULL,
+  `groupecommande_id` int(11) DEFAULT NULL,
+  `zonedevente_id` int(11) DEFAULT NULL,
+  `montant` int(11) DEFAULT NULL,
+  `vendu` int(11) DEFAULT NULL,
+  `etat_id` int(11) NOT NULL,
+  `commercial_id` int(11) NOT NULL,
+  `employe_id` int(11) DEFAULT NULL,
+  `dateretour` date DEFAULT NULL,
+  `comment` text COLLATE utf8_bin DEFAULT NULL,
+  `operation_id` int(11) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `protected` int(11) NOT NULL DEFAULT 0,
+  `valide` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `zonedevente`
+--
+
+CREATE TABLE `zonedevente` (
   `id` int(11) NOT NULL,
   `name` varchar(200) COLLATE utf8_bin NOT NULL,
   `created` datetime DEFAULT NULL,
@@ -1323,12 +1306,6 @@ ALTER TABLE `categorieoperation`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `chauffeur`
---
-ALTER TABLE `chauffeur`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Index pour la table `client`
 --
 ALTER TABLE `client`
@@ -1341,6 +1318,12 @@ ALTER TABLE `commande`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `commercial`
+--
+ALTER TABLE `commercial`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `connexion`
 --
 ALTER TABLE `connexion`
@@ -1350,6 +1333,12 @@ ALTER TABLE `connexion`
 -- Index pour la table `demandeentretien`
 --
 ALTER TABLE `demandeentretien`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `disponibilite`
+--
+ALTER TABLE `disponibilite`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1455,9 +1444,9 @@ ALTER TABLE `ligneconsommationjour`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `lignelivraison`
+-- Index pour la table `lignedevente`
 --
-ALTER TABLE `lignelivraison`
+ALTER TABLE `lignedevente`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1467,9 +1456,9 @@ ALTER TABLE `ligneproductionjour`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `livraison`
+-- Index pour la table `ligneprospection`
 --
-ALTER TABLE `livraison`
+ALTER TABLE `ligneprospection`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1500,6 +1489,12 @@ ALTER TABLE `manoeuvredurangement`
 -- Index pour la table `marque`
 --
 ALTER TABLE `marque`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `miseenboutique`
+--
+ALTER TABLE `miseenboutique`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1557,9 +1552,15 @@ ALTER TABLE `prestataire`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `prix_zonelivraison`
+-- Index pour la table `prix`
 --
-ALTER TABLE `prix_zonelivraison`
+ALTER TABLE `prix`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prixdevente`
+--
+ALTER TABLE `prixdevente`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1572,6 +1573,12 @@ ALTER TABLE `productionjour`
 -- Index pour la table `produit`
 --
 ALTER TABLE `produit`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prospection`
+--
+ALTER TABLE `prospection`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1629,6 +1636,12 @@ ALTER TABLE `typeprestataire`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `typeprospection`
+--
+ALTER TABLE `typeprospection`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `typesuggestion`
 --
 ALTER TABLE `typesuggestion`
@@ -1647,15 +1660,27 @@ ALTER TABLE `typevehicule`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `typevente`
+--
+ALTER TABLE `typevente`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `vehicule`
 --
 ALTER TABLE `vehicule`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `zonelivraison`
+-- Index pour la table `vente`
 --
-ALTER TABLE `zonelivraison`
+ALTER TABLE `vente`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `zonedevente`
+--
+ALTER TABLE `zonedevente`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1681,12 +1706,6 @@ ALTER TABLE `categorieoperation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `chauffeur`
---
-ALTER TABLE `chauffeur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT pour la table `client`
 --
 ALTER TABLE `client`
@@ -1699,6 +1718,12 @@ ALTER TABLE `commande`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `commercial`
+--
+ALTER TABLE `commercial`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `connexion`
 --
 ALTER TABLE `connexion`
@@ -1708,6 +1733,12 @@ ALTER TABLE `connexion`
 -- AUTO_INCREMENT pour la table `demandeentretien`
 --
 ALTER TABLE `demandeentretien`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `disponibilite`
+--
+ALTER TABLE `disponibilite`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1813,9 +1844,9 @@ ALTER TABLE `ligneconsommationjour`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `lignelivraison`
+-- AUTO_INCREMENT pour la table `lignedevente`
 --
-ALTER TABLE `lignelivraison`
+ALTER TABLE `lignedevente`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1825,9 +1856,9 @@ ALTER TABLE `ligneproductionjour`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `livraison`
+-- AUTO_INCREMENT pour la table `ligneprospection`
 --
-ALTER TABLE `livraison`
+ALTER TABLE `ligneprospection`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1858,7 +1889,13 @@ ALTER TABLE `manoeuvredurangement`
 -- AUTO_INCREMENT pour la table `marque`
 --
 ALTER TABLE `marque`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `miseenboutique`
+--
+ALTER TABLE `miseenboutique`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `modepayement`
@@ -1915,9 +1952,15 @@ ALTER TABLE `prestataire`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `prix_zonelivraison`
+-- AUTO_INCREMENT pour la table `prix`
 --
-ALTER TABLE `prix_zonelivraison`
+ALTER TABLE `prix`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `prixdevente`
+--
+ALTER TABLE `prixdevente`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1930,6 +1973,12 @@ ALTER TABLE `productionjour`
 -- AUTO_INCREMENT pour la table `produit`
 --
 ALTER TABLE `produit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `prospection`
+--
+ALTER TABLE `prospection`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1987,6 +2036,12 @@ ALTER TABLE `typeprestataire`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `typeprospection`
+--
+ALTER TABLE `typeprospection`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `typesuggestion`
 --
 ALTER TABLE `typesuggestion`
@@ -2005,15 +2060,27 @@ ALTER TABLE `typevehicule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `typevente`
+--
+ALTER TABLE `typevente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `vehicule`
 --
 ALTER TABLE `vehicule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `zonelivraison`
+-- AUTO_INCREMENT pour la table `vente`
 --
-ALTER TABLE `zonelivraison`
+ALTER TABLE `vente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `zonedevente`
+--
+ALTER TABLE `zonedevente`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 

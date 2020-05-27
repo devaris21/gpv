@@ -15,6 +15,7 @@ class MISEENBOUTIQUE extends TABLE
 
 	public $prixdevente_id;
 	public $quantite;
+	public $restant = 0;
 	public $employe_id;
 
 

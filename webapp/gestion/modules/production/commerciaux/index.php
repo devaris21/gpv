@@ -71,7 +71,7 @@
                             $commercial->actualise() ?>
                                 <td ><img style="width: 50px" src="<?= $this->stockage("images", "commercials", $commercial->image); ?>"></td>
                                 <td class="">
-                                    <a><?= $commercial->name()  ?></a><br>
+                                    <a class="gras"><?= $commercial->name()  ?></a><br>
                                     <small><?= $commercial->adresse ?></small>
                                 </td>
                                 <td>

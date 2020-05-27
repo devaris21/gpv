@@ -30,6 +30,7 @@ if ($action === "miseenboutique") {
 			$meb = new MISEENBOUTIQUE();
 			$meb->prixdevente_id = $pdv->getId();
 			$meb->quantite = intval($_POST["mise-".$pdv->getId()]);
+			$meb->restant = $pdv->enStock() - intval($_POST["mise-".$pdv->getId()]);
 			$data = $meb->enregistre();
 		}
 	}else{

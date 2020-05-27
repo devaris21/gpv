@@ -66,7 +66,7 @@
                                     <tr>
                                         <?php foreach ($lots as $key => $pdv) {
                                             $pdv->actualise(); ?>
-                                            <th class="produit-<?= $pdv->di ?>"><small><?= $pdv->prix->price ?></small></th>
+                                            <th class="produit-<?= $pdv->di ?>"><small><?= $pdv->prix->price() ?></small></th>
                                         <?php } ?>
                                     </tr>
                                 </thead>
@@ -89,9 +89,22 @@
                                             foreach ($lots as $key => $pdv) {
                                                 foreach ($production->ligneproductionjours as $key => $ligne) {
                                                     if ($pdv->getId() == $ligne->prixdevente_id) { 
+                                                        $requette = "SELECT ligneprospection.prixdevente_id, SUM(quantite) as quantite, SUM(quantite_vendu) as vendu, SUM(perte) as perte FROM prixdevente, prospection, ligneprospection WHERE prixdevente.id = ligneprospection.prixdevente_id AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id !=? AND prospection.etat_id !=? AND prixdevente.id = ? AND DATE(prospection.created) = ? GROUP BY ligneprospection.prixdevente_id ";
+                                                        $datas = Home\PRIXDEVENTE::execute($requette, [Home\ETAT::ANNULEE, Home\ETAT::PARTIEL, $produit->getId(), $production->ladate]);
+                                                        if (count($datas) > 0) {
+                                                            $item = $datas[0];
+                                                        }else{
+                                                            $item = new \stdclass();
+                                                            $item->quantite = 0;
+                                                            $item->vendu = 0;
+                                                            $item->perte = 0;
+                                                        }
                                                         ?>
                                                         <td class="produit-<?= $pdv->di ?>">
-                                                            <h4 class="d-inline text-success gras"><?= ($ligne->production >0)?start0($ligne->production):"" ?></h4>
+                                                            <h5 class="d-inline text-danger"><?php 
+                                                            $a = $pdv->vendu(Home\PARAMS::DATE_DEFAULT, $production->ladate);
+                                                            echo ($a > 0)?start0($a):""; ?></h5> &nbsp; 
+                                                            <!-- | &nbsp; <small class="text-red"><?= start0($item->perte) ?></small> -->
                                                         </td>
                                                     <?php }
                                                 }
@@ -100,21 +113,9 @@
                                     <?php } ?>
                                     <tr style="height: 18px;"></tr>
                                     <tr>
-                                        <td style="width: 20%"><h4 class="text-center gras text-uppercase mp0">En entrepot</h4></td>
-                                        <?php foreach ($lots as $key => $pdv) { ?>
-                                            <td class="produit-<?= $pdv->di ?>"><h4 class="text-muted gras" ><?= start0($pdv->stockGlobal()) ?></h4></td>
-                                        <?php } ?>
-                                    </tr>
-                                    <tr>
-                                        <td ><h4 class="text-center gras text-muted text-uppercase">En boutique</h4></td>
-                                        <?php foreach ($lots as $key => $pdv) { ?>
-                                            <td class="produit-<?= $pdv->di ?>"><h4 class="produit-<?= $pdv->di ?> gras" ><?= start0($pdv->enBoutique()) ?></h4></td>
-                                        <?php } ?>
-                                    </tr>
-                                    <tr>
                                         <td style="width: 20%"><h3 class="text-center gras text-uppercase mp0">Stock global actuel</h3><small>Entrepot + boutique</small></td>
                                         <?php foreach ($lots as $key => $pdv) { ?>
-                                            <td class="produit-<?= $pdv->di ?>"><h3 class="text-green gras" ><?= start0($pdv->stockGlobal()) ?></h3></td>
+                                            <td class="produit-<?= $pdv->di ?>"><h2 class="text-green gras" ><?= start0($pdv->stock(dateAjoute())) ?></h2></td>
                                         <?php } ?>
                                     </tr>
                                 </tbody>

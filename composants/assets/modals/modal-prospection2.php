@@ -18,20 +18,20 @@
                         <div class="ibox-content"><br>
                             <div class="table-responsive">
                                 <table class="table  table-striped">
-                                    <tbody class="commande">
+                                    <tbody class="">
                                         <?php foreach ($prospection->ligneprospections as $key => $ligne) {
                                             $ligne->actualise(); ?>
-                                            <tr class="border-0 border-bottom " data-id="<?= $ligne->getId() ?>">
+                                            <tr class="border-0 border-bottom ">
                                                 <td >
                                                     <img style="width: 40px" src="<?= $this->stockage("images", "produits", $ligne->prixdevente->produit->image) ?>">
                                                 </td>
                                                 <td class="text-left">
                                                     <h4 class="mp0 text-uppercase"><?= $ligne->prixdevente->produit->name() ?></h4>
-                                                    <small><?= $ligne->prixdevente->produit->description ?></small>
+                                                    <small><?= $ligne->prixdevente->prix->price() ?> <?= $params->devise ?></small>
                                                 </td>
-                                                <td width="130">
-                                                    <label>Quantité livrée</label>
-                                                    <input type="number" number class="form-control text-center gras vendu" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
+                                                <td width="140">
+                                                    <label>Quantité vendue /<?= $ligne->quantite ?></label>
+                                                    <input type="number" data-id="<?= $ligne->getId() ?>" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
                                                 </td>
                                                 <td  width="30"></td>
                                                 <td width="130">

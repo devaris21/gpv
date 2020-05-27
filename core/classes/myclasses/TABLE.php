@@ -236,7 +236,7 @@ if ($resultat) {
     $data->status = true;
     $data->message = "Données enregistrées avec succes !";
     if ($data->mode == "insert") {
-                //recuperer le lastid
+        //recuperer le lastid
         $class = self::fullyClassName($table);
         $temp = $class::findLastId();
         $id = $temp->getId();
@@ -247,7 +247,7 @@ if ($resultat) {
     }
 
     if ($this::$tableName != self::fullyClassName("history") ) {
-                //L'historque
+        //L'historque
         $class = self::fullyClassName($table);
         $element = new $class();
         $element->cloner($this);

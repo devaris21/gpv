@@ -165,7 +165,7 @@
                         </div><br>
                     -->
                     <input type="hidden" name="client_id" value="<?= $groupecommande->client_id ?>">
-                    <input type="hidden" name="typevente_id" value="<?= Home\TYPEVENTE::LIVRAISON ?>" class="form-control">
+                    <input type="hidden" name="typeprospection_id" value="<?= Home\TYPEPROSPECTION::LIVRAISON ?>" class="form-control">
 
                 </form>
                 <hr/>

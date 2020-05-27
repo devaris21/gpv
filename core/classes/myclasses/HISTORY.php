@@ -12,8 +12,6 @@ public static $tableName = __CLASS__;
 
 	public $sentense; // phrase de l'historique
 	public $employe_id = null;
-	public $carplan_id = null;
-	public $prestataire_id = null;
 	public $isOperationCaisse = 0; //1 si operation de caisse, 1 sinon
 	public $price = 0; //le montant si operation de caisse
 	public $typeSave; //-1 delete, 0 create, 1 update
@@ -29,25 +27,19 @@ public static $tableName = __CLASS__;
 		extract($element::tableName());
 		$story = new HISTORY;
 		$story->record = $table;
-		$story->record_key = $element->getId();
-		$story->type_save = $type_save;
+		$story->recordId = $element->getId();
+		$story->typeSave = $type_save;
 		$story->sentense =  $element->sentense;
 
 		if (getSession("employe_connecte_id") != null) {
 			$story->employe_id = getSession("employe_connecte_id");
 		}
-		if ($story->type_save == "insert") {
+		if ($story->typeSave == "insert") {
 			$story->sentense = $element->sentenseCreate();
-		}else if ($story->type_save == "delete") {
+		}else if ($story->typeSave == "delete") {
 			$story->sentense = $element->sentenseDelete();
-		}else if ($story->type_save == "update") {
+		}else if ($story->typeSave == "update") {
 			$story->sentense = $element->sentenseUpdate();
-		}
-		if (isset($element->utilisateur_id)) {
-			$story->utilisateur_id = $element->utilisateur_id;
-		}
-		if (isset($element->carplan_id)) {
-			$story->carplan_id = $element->carplan_id;
 		}
 		if (in_array($story->record, ["depense", "entree", "reglement", "remboursement", "lignefacture"])) {
 			$story->isOperationCaisse = 1;

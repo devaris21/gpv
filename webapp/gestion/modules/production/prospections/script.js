@@ -63,6 +63,24 @@ $(function(){
     }
 
 
+    $("input.vendus").change(function(){
+        var url = "../../webapp/gestion/modules/production/prospections/ajax.php";
+        var formdata = new FormData();
+        var tableau = new Array();
+        $(this).parent("td").parent("tr").parent("tbody").parent("table").find("tr").each(function(index, el) {
+            var id = $(this).find("input.vendus").attr('data-id');
+            var val = $(this).find("input.vendus").val();
+            var item = id+"-"+val;
+            tableau.push(item);
+        });
+        formdata.append('tableau', tableau);
+        formdata.append('action', "calcul");
+        $.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
+            $(".total").html(data.total);
+        }, 'json');
+    });
+
+
 
     $(".formValiderProspection").submit(function(event) {
         Loader.start();
@@ -70,8 +88,8 @@ $(function(){
         var formdata = new FormData($(this)[0]);
         var tableau = new Array();
         $(this).find("table tr").each(function(index, el) {
-            var id = $(this).attr('data-id');
-            var val = $(this).find('input.vendu').val();
+            var id = $(this).find('input.vendus').attr('data-id');
+            var val = $(this).find('input.vendus').val();
             var item = id+"-"+val;
             tableau.push(item);
         });
@@ -79,7 +97,7 @@ $(function(){
 
         var tableau = new Array();
         $(this).find("table tr").each(function(index, el) {
-            var id = $(this).attr('data-id');
+            var id = $(this).find('input.vendus').attr('data-id');
             var val = $(this).find('input.perdu').val();
             var item = id+"-"+val;
             tableau.push(item);

@@ -95,60 +95,63 @@ if ($action == "newproduit") {
 			$client = $datas[0];
 			$prixdeventes = explode(",", $prixdeventes);
 			if (count($prixdeventes) > 0) {
+				$test = true;
+				foreach ($prixdeventes as $key => $value) {
+					$lot = explode("-", $value);
+					$id = $lot[0];
+					$qte = end($lot);
+					$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
+					if (count($datas) == 1) {
+						$pdv = $datas[0];
+						if ($pdv->enBoutique() < $qte) {
+							$test = false;
+							break;
+						}	
+					}
+				}
 
-				if (getSession("total") > 0) {
-					if ($modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE ) {
-						
-						$vente = new VENTE();
-						$vente->hydrater($_POST);
-						$vente->montant = $vente->vendu = getSession("total");
-						$data = $vente->enregistre();
-						if ($data->status) {
-							foreach ($prixdeventes as $key => $value) {
-								$lot = explode("-", $value);
-								$id = $lot[0];
-								$qte = end($lot);
-								$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
-								if (count($datas) == 1) {
-									$pdv = $datas[0];
-									$pdv->actualise();
-									$montant += $pdv->prix->price * intval($qte);
+				if ($test) {
+					if (getSession("total") > 0) {
+						if ($modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE ) {
 
-									$lignedevente = new LIGNEDEVENTE;
-									$lignedevente->vente_id = $vente->getId();
-									$lignedevente->prixdevente_id = $id;
-									$lignedevente->quantite = intval($qte);
-									//$lignedevente->price =  $pdv->prix->price * $qte;
-									$lignedevente->enregistre();	
-								}
-							}
-
-							$tva = ($montant * $params->tva) / 100;
-							$total = $montant + $tva;
-
-							$payement = new OPERATION();
-							$payement->hydrater($_POST);
-							$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
-							$payement->montant = $total;
-							$payement->client_id = $client_id;
-							$payement->comment = "Réglement de la vente directe N°".$vente->reference;
-							$data = $payement->enregistre();
+							$vente = new VENTE();
+							$vente->hydrater($_POST);
+							$vente->montant = $vente->vendu = getSession("total");
+							$data = $vente->enregistre();
 							if ($data->status) {
-								$vente->operation_id = $data->lastid;
-								$data = $vente->save();
-							}
-							// $data->url1 = $data->setUrl("gestion", "fiches", "boncaisse", $lot->lastid);
-							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
-						}
+								foreach ($prixdeventes as $key => $value) {
+									$lot = explode("-", $value);
+									$id = $lot[0];
+									$qte = end($lot);
+									$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
+									if (count($datas) == 1) {
+										$pdv = $datas[0];
+										$pdv->actualise();
+										$montant += $pdv->prix->price * intval($qte);
 
+										$lignedevente = new LIGNEDEVENTE;
+										$lignedevente->vente_id = $vente->getId();
+										$lignedevente->prixdevente_id = $id;
+										$lignedevente->quantite = intval($qte);
+									//$lignedevente->price =  $pdv->prix->price * $qte;
+										$lignedevente->enregistre();	
+									}
+								}
+								$data = $vente->payement($montant, $_POST);							
+							}
+
+						}else{
+							$data->status = false;
+							$data->message = "Vous ne pouvez pas utiliser ce mode de payement pour cette opération!";
+						}
 					}else{
 						$data->status = false;
-						$data->message = "Vous ne pouvez pas utiliser ce mode de payement pour cette opération!";
+						$data->message = "Veuillez verifier le montant de la commande !";
 					}
 				}else{
 					$data->status = false;
-					$data->message = "Veuillez verifier le montant de la commande !";
-				}
+					$data->message = "Veuillez à bien vérifier les quantités des différents produits à livrer, certaines sont incorrectes !";
+				}				
 			}else{
 				$data->status = false;
 				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la commande !";
@@ -173,59 +176,52 @@ if ($action == "newproduit") {
 				if ($commercial_id != COMMERCIAL::MAGASIN  && $zonedevente_id != ZONEDEVENTE::MAGASIN) {
 					if (getSession("total") > 0) {
 						
-						$prixdeventes = explode(",", $prixdeventes);
-						if (count($prixdeventes) > 0) {
-							$tests = $prixdeventes;
-							foreach ($tests as $key => $value) {
-								$lot = explode("-", $value);
-								$id = $lot[0];
-								$qte = end($lot);
-								$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
-								$pdv->actualise();
-								if ($qte > 0 && $pdv->enBoutique() >= $qte ) {
-									unset($tests[$key]);
-								}
+						$tests = $prixdeventes;
+						foreach ($tests as $key => $value) {
+							$lot = explode("-", $value);
+							$id = $lot[0];
+							$qte = end($lot);
+							$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
+							$pdv->actualise();
+							if ($qte > 0 && $pdv->enBoutique() >= $qte ) {
+								unset($tests[$key]);
 							}
-							if (count($tests) == 0) {
-								
-								$prospection = new PROSPECTION();
-								$prospection->hydrater($_POST);
-								$data = $prospection->enregistre();
-								if ($data->status) {
-									foreach ($prixdeventes as $key => $value) {
-										$lot = explode("-", $value);
-										$id = $lot[0];
-										$qte = end($lot);
-										$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
-										if (count($datas) == 1) {
-											$pdv = $datas[0];
-											$pdv->actualise();
-											$montant += $pdv->prix->price * intval($qte);
+						}
+						if (count($tests) == 0) {
+							
+							$prospection = new PROSPECTION();
+							$prospection->hydrater($_POST);
+							$data = $prospection->enregistre();
+							if ($data->status) {
+								foreach ($prixdeventes as $key => $value) {
+									$lot = explode("-", $value);
+									$id = $lot[0];
+									$qte = end($lot);
+									$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
+									if (count($datas) == 1) {
+										$pdv = $datas[0];
+										$pdv->actualise();
+										$montant += $pdv->prix->price * intval($qte);
 
-											$ligneprospection = new LIGNEPROSPECTION;
-											$ligneprospection->prospection_id = $prospection->getId();
-											$ligneprospection->prixdevente_id = $id;
-											$ligneprospection->quantite = intval($qte);
+										$ligneprospection = new LIGNEPROSPECTION;
+										$ligneprospection->prospection_id = $prospection->getId();
+										$ligneprospection->prixdevente_id = $id;
+										$ligneprospection->quantite = intval($qte);
 								//$ligneprospection->price =  $pdv->prix->price * $qte;
-											$ligneprospection->enregistre();										
-										}
+										$ligneprospection->enregistre();										
 									}
-
-									$prospection->montant = $montant;
-									$data = $prospection->save();
-									$data->setUrl("gestion", "fiches", "bonsortie", $data->lastid);
-							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
 								}
 
-							}else{
-								$data->status = false;
-								$data->message = "Veuillez à bien vérifier les quantités des différents produits à livrer, certaines sont incorrectes !";
+								$prospection->montant = $montant;
+								$data = $prospection->save();
+								$data->setUrl("gestion", "fiches", "bonsortie", $data->lastid);
+							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
 							}
+
 						}else{
 							$data->status = false;
-							$data->message = "Veuillez selectionner des produits et leur quantité pour valider la prospection !";
-						}
-						
+							$data->message = "Veuillez à bien vérifier les quantités des différents produits à livrer, certaines sont incorrectes !";
+						}						
 					}else{
 						$data->status = false;
 						$data->message = "Veuillez verifier le montant de la commande !";

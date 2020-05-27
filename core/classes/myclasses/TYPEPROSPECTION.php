@@ -3,15 +3,15 @@ namespace Home;
 use Native\RESPONSE;/**
  * 
  */
-class TYPEVENTE extends TABLE
+class TYPEPROSPECTION extends TABLE
 {
 
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	const DIRECT      = 1;
-	const PROSPECTION = 2;
-	
+	const PROSPECTION = 1;
+	const LIVRAISON = 2;
+
 	public $name;
 
 	public function enregistre(){
