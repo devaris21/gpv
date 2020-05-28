@@ -54,6 +54,18 @@ class PROSPECTION extends TABLE
 
 
 
+	public static function perte(string $date1, string $date2){
+		$total = 0;
+		$datas = static::findBy(["etat_id ="=>ETAT::VALIDEE, "DATE(dateretour) >= " => $date1, "DATE(dateretour) <= " => $date2]);
+		foreach ($datas as $key => $prospection) {
+			$lots = $prospection->fourni("ligneprospection");
+			$total += comptage($lots, "perte", "somme");
+		}
+		return $total;
+	}
+
+
+
 	//les livraions programmées du jour
 	public static function programmee(String $date){
 		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
@@ -174,19 +186,6 @@ class PROSPECTION extends TABLE
 		return $data;
 	}
 
-
-
-	public static function perte(string $date1, string $date2){
-		$total = 0;
-		$datas = VENTE::findBy(["etat_id ="=>ETAT::VALIDEE, "DATE(dateretour) >= " => $date1, "DATE(dateretour) <= " => $date2]);
-		foreach ($datas as $key => $vente) {
-			$lots = $vente->fourni("lignedevente");
-			foreach ($lots as $key => $ligne) {
-				$total += $ligne->quantite - $ligne->quantite_vendu;
-			}
-		}
-		return $total;
-	}
 
 
 

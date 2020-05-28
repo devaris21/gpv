@@ -1,5 +1,5 @@
 <div class="modal inmodal fade" id="modal-entree">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -9,28 +9,25 @@
             <form method="POST" class="formShamman" classname="operation">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-4">
                             <label>Type d'opération <span1>*</span1></label>
                             <div class="form-group">
                                 <?php Native\BINDING::html("select-tableau", Home\CATEGORIEOPERATION::entree(), null, "categorieoperation_id"); ?>
                             </div>
-                        </div>                       
-                    </div><br>
-
-                    <div class="row">
-                        <div class="col-sm-6">
+                        </div> 
+                        <div class="col-sm-4">
                             <label>Montant de l'opération <span1>*</span1></label>
                             <div class="form-group">
                                 <input type="number" number class="form-control" name="montant" required>
                             </div>
                         </div>   
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label>Mode de payement</label>
                             <div class="form-group">
                                 <?php Native\BINDING::html("select", "modepayement"); ?>
                             </div>
-                        </div>                     
-                    </div>
+                        </div>                        
+                    </div><br>
 
                     <div class="modepayement_facultatif row">
                         <div class="col-sm-6">
@@ -48,12 +45,20 @@
                     </div><br>
 
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-4">
                             <label>Plus de détails sur l'opération <span1>*</span1></label>
                             <div class="form-group">
                                 <textarea class="form-control" rows="4" name="comment"></textarea>
                             </div>
-                        </div>                    
+                        </div> 
+                        <div class="col-sm-4">
+                            <label>Ajouter une image du reçu</label>
+                            <div class="">
+                                <img style="width: 80px;" src="" class="img-thumbnail logo">
+                                <input class="hide" type="file" name="image">
+                                <button type="button" class="btn btn-sm bg-purple pull-right btn_image"><i class="fa fa-image"></i> Ajouter le reçu</button>
+                            </div>
+                        </div>                   
                     </div>
 
                 </div><hr>

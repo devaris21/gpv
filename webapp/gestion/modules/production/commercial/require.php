@@ -3,6 +3,10 @@ namespace Home;
 
 unset_session("ressources");
 
+unset_session("produits");
+unset_session("commande-encours");
+
+
 if ($this->getId() != null) {
 	$datas = COMMERCIAL::findBy(["id ="=> $this->getId()]);
 	if (count($datas) > 0) {

@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-               <div class="row">
+             <div class="row">
                 <div class="col-md-12">
                     <div class="widget style1 lazur-bg">
                         <div class="row">
@@ -59,46 +59,49 @@
             <div class="ibox-title">
                 <h5>Toutes les mises en boutique de la production</h5>
                 <div class="ibox-tools">
-                    <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Mise en boutique</button>
+                    <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-plus"></i> Nouvelle mise en boutique</button>
                 </div>
             </div>
             <div class="ibox-content">
-               <?php if (count($datas) > 0) { ?>
-                 <table class="table table-striped table-hover table-commande">
-                    <thead>
+             <?php if (count($datas) > 0) { ?>
+               <table class="table table-striped table-hover table-commande">
+                <thead>
+                    <tr>
+                        <th>A la date du</th>
+                        <th>Produit concerné</th>
+                        <th>Quantité</th>
+                        <th>Stock restant</th>
+                        <th>Effectué par</th>
+                        <th >Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($datas as $key => $mise) {
+                        $mise->actualise(); ?>
                         <tr>
-                            <th>A la date du</th>
-                            <th>Produit concerné</th>
-                            <th>Quantité</th>
-                            <th>Stock restant</th>
-                            <th>Effectué par</th>
-                            <th >Actions</th>
+                            <td><?= datecourt3($mise->created) ?></td>
+                            <td><?= $mise->prixdevente->produit->name() ?> <?= $mise->prixdevente->prix->price() ?> <?= $params->devise ?></td>
+                            <td><?= $mise->quantite ?> unité(s)</td>
+                            <td><?= $mise->restant ?> unité(s)</td>
+                            <td><?= $mise->employe->name() ?></td>
+                            <td onclick="suppressionWithPassword('miseenboutique', <?= $mise->getId() ?>)"><i class="fa fa-close cursor text-danger"></i></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($datas as $key => $mise) {
-                            $mise->actualise(); ?>
-                            <tr>
-                                <td><?= datecourt3($mise->created) ?></td>
-                                <td><?= $mise->prixdevente->name() ?></td>
-                                <td><?= $mise->quantite ?> unité(s)</td>
-                                <td><?= $mise->restant ?> unité(s)</td>
-                                <td><?= $mise->employe->name() ?></td>
-                                <td onclick="suppressionWithPassword('miseenboutique', <?= $mise->getId() ?>)"><i class="fa fa-close cursor text-danger"></i></td>
-                            </tr>
-                        <?php  } ?>
-                    </tbody>
-                </table>
-            <?php }else{ ?>
-                <h1 style="margin: 6% auto;" class="text-center text-muted"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune mise en boutique effectuée pour le moment</h1>
-            <?php } ?>
+                    <?php  } ?>
+                </tbody>
+            </table>
+        <?php }else{ ?>
+            <h1 style="margin: 6% auto;" class="text-center text-muted"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune mise en boutique effectuée pour le moment</h1>
+        <?php } ?>
 
-        </div>
     </div>
+</div>
 </div>
 
 
 <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?> 
+
+<?php include($this->rootPath("composants/assets/modals/modal-miseenboutique.php")); ?> 
+
 
 </div>
 </div>

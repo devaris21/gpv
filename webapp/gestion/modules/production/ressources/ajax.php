@@ -87,7 +87,7 @@ if ($action == "enregistrerApprovisionnement") {
 				$payement->categorieoperation_id = CATEGORIEOPERATION::APPROVISIONNEMENT;
 				$payement->modepayement_id = $modepayement_id;
 				$payement->montant = $montant;
-				$payement->client_id = CLIENT::CLIENTSYSTEME;
+				$payement->client_id = CLIENT::ANONYME;
 				$payement->comment = "Réglement de la facture pour l'approvisionnement de ressources N°".$approvisionnement->reference;
 				$data = $payement->enregistre();
 

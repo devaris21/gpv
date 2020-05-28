@@ -133,7 +133,7 @@ $(function(){
 		formdata.append('tableau', tableau);
 
 		tableau = new Array();
-		$(".modal tr input").each(function(index, el) {
+		$(".modal .commande tr input").each(function(index, el) {
 			var pdv = $(this).attr('data-pdv');
 			var val = $(this).val();
 			if (val > 0) {
@@ -194,7 +194,7 @@ $(function(){
 		var formdata = new FormData($("#formProspection")[0]);
 		
 		tableau = new Array();
-		$("#modal-prospection tr input").each(function(index, el) {
+		$("#modal-prospection tr input, #modal-prospection_ tr input").each(function(index, el) {
 			var pdv = $(this).attr('data-pdv');
 			var val = $(this).val();
 			if (val > 0) {

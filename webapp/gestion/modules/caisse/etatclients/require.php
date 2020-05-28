@@ -18,7 +18,7 @@ foreach ($clients as $key => $client) {
 	$datas = $client->fourni("groupecommande");
 	foreach ($datas as $key => $groupe) {
 		$lot1 = $groupe->fourni("commande", ["DATE(created) >= " => $date1, "DATE(created) <= " => $date2, "etat_id !="=>ETAT::ANNULEE]);
-		$lot2 = $groupe->fourni("livraison", ["DATE(created) >= " => $date1, "DATE(created) <= " => $date2, "etat_id !="=>ETAT::ANNULEE]);
+		$lot2 = $groupe->fourni("prospection", ["DATE(created) >= " => $date1, "DATE(created) <= " => $date2, "etat_id !="=>ETAT::ANNULEE]);
 	}
 	if (!($vers > 0 || count($lot1) > 0 || count($lot2) > 0)) {
 		unset($clients[$key]);

@@ -71,6 +71,30 @@ class COMMERCIAL extends PERSONNE
 
 
 
+	public function rapports($jours = 7)
+	{
+		$tableau = [];
+		for ($i=0; $i < $jours ; $i++) { 
+			$date = dateAjoute(-$i);
+			$datas = $this->fourni("prospection", ["DATE(created) ="=>$date]);
+			$item = new \stdClass();
+			if (date('w', strtotime($date)) == 0) {
+				$item->date = "";
+				$item->count = 0;
+				$item->montant = 0;
+				$item->vendu = 0;
+			}else{
+				$item->date = $date;
+				$item->count = count($datas);
+				$item->montant = comptage($datas, 'montant', "somme");
+				$item->vendu = comptage($datas, 'vendu', "somme");
+			}			
+			$tableau[] = $item;
+		}
+		return $tableau;
+	}
+
+
 
 	public static function libres(){
 		return static::findBy(["disponibilite_id =" => DISPONIBILITE::LIBRE]);

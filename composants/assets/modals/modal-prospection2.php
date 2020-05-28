@@ -31,7 +31,7 @@
                                                 </td>
                                                 <td width="140">
                                                     <label>Quantité vendue /<?= $ligne->quantite ?></label>
-                                                    <input type="number" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
+                                                    <input type="number"  data-id="<?= $ligne->getId() ?>" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
                                                 </td>
                                                 <td  width="30"></td>
                                                 <td width="130">
@@ -60,7 +60,7 @@
                             </div><br>
 
                             <label>Montant vendu </label>
-                            <h2 class="font-bold total text-right total">0 Fcfa</h2><br>
+                            <h2 class="font-bold total text-right total"><?= money($prospection->montant) ?> Fcfa</h2><br>
                             <button class="btn btn-primary btn-block dim"><i class="fa fa-check"></i> Terminer la prospection</button>
                         </div>
                     </div>

@@ -78,18 +78,18 @@
                                                 <span><?= $ligne->prixdevente->prix->price() ?> <?= $params->devise ?></span>
                                             </td>
                                             <td class="text-center">
-                                                <h2 class="gras mp0"><?= start0(money($ligne->quantite)) ?></h2>
+                                                <h2 class="gras mp0"><?= start0($ligne->quantite) ?></h2>
                                                 <i><?= money($ligne->quantite * $ligne->prixdevente->prix->price) ?> <?= $params->devise ?></i>
                                             </td>
                                             <td class="text-center">
                                                 <?php if (($prospection->etat_id == Home\ETAT::VALIDEE)) { ?>
-                                                   <h2 class="mp0 text-green"><?= $ligne->quantite_vendu  ?></h2>
+                                                   <h2 class="mp0 text-green"><?= start0($ligne->quantite_vendu)  ?></h2>
                                                    <i><?= money($ligne->quantite_vendu * $ligne->prixdevente->prix->price) ?> <?= $params->devise ?></i>
                                                <?php } ?>                                               
                                            </td>
-                                           <td class="text-center text-red"><br><h3><?= ($prospection->etat_id == Home\ETAT::VALIDEE) ? start0($ligne->quantite - $ligne->quantite_vendu) : "" ?></h3>
+                                           <td class="text-center text-red"><br><h3><?= ($prospection->etat_id == Home\ETAT::VALIDEE) ? start0($ligne->perte) : "" ?></h3>
                                            </td>
-                                           <td class="text-center gras text-muted"><br><h3><?= ($prospection->etat_id == Home\ETAT::VALIDEE)? $ligne->reste : "" ?></h3></td>
+                                           <td class="text-center gras text-muted"><br><h3><?= ($prospection->etat_id == Home\ETAT::VALIDEE)? start0($ligne->reste) : "" ?></h3></td>
                                        </tr>
                                    <?php } ?>                            
                                </tbody>
@@ -98,9 +98,9 @@
                            <br><br>
                            <div class="row">
                             <div class="col-7">
-                                <h5><span>Total à vendre :</span> <h2 class="text-uppercase text-red gras d-inline"><?= money($prospection->montant) ?> <?= $params->devise ?></h2></h5>  <br><br>
+                                <h5><span>Total à vendre :</span> <h2 class="text-uppercase text-red gras d-inline"><?= money($prospection->montant) ?> <?= $params->devise ?></h2></h5>  <br><br><br>
 
-                                <h5><span>Total vendu :</span> <h2 class="text-uppercase text-red gras d-inline"><?= ($prospection->etat_id == Home\ETAT::VALIDEE)? money($prospection->vendu)." ".$params->devise : "" ?></h2></h5><br><br>                        
+                                <h5><span>Total vendu :</span> <h2 class="text-uppercase text-green gras d-inline"><?= ($prospection->etat_id == Home\ETAT::VALIDEE)? money($prospection->vendu)." ".$params->devise : "" ?></h2></h5><br><br>                        
                             </div>
                             <div class="col-5">
                                 <div class="text-right">

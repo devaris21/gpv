@@ -62,15 +62,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($produits as $key => $produit) { ?>
+                                    <?php foreach ($pdvs as $key => $pdv) { ?>
                                         <tr>
-                                            <td><span class="gras text-uppercase"><?= $produit->name() ?></span> <br> <small><?= $produit->description ?></small></td>
-                                            <td class="text-center"><br><h3 class="gras text-muted"><?= money($produit->stock(dateAjoute1($date1, -1))) ?></h3></td>
-                                            <td class="text-center"><br><h3 class="text-green gras"><?= money($produit->production) ?></h3></td>
-                                            <td class="text-center"><br><h4 class="text-red"><?= money($produit->perte) ?></h4></td>
-                                            <td class="text-center" ><?= ($produit->production + $produit->perte > 0)?round( ($produit->perte / ($produit->production + $produit->perte) * 100 ), 2):0 ?> %<br><small>de la production</small></td>
-                                            <td class="text-center"><br><h4><?= money($produit->livraison) ?></h4></td>
-                                            <td class="text-center" ><h2 class="gras"><?= money($produit->stock(dateAjoute1($date2, 1))) ?></h2></td>
+                                            <td><span class="gras text-uppercase"><?= $pdv->name() ?> <small><?= $params->devise ?></small></span></td>
+                                            <td class="text-center"><br><h3 class="gras text-muted"><?= money($pdv->stock(dateAjoute1($date1, -1))) ?></h3></td>
+                                            <td class="text-center"><br><h3 class="text-green gras"><?= money($pdv->production) ?></h3></td>
+                                            <td class="text-center"><br><h4 class="text-red"><?= money($pdv->perte) ?></h4></td>
+                                            <td class="text-center" ><?= ($pdv->production + $pdv->perte > 0)?round( ($pdv->perte / ($pdv->production + $pdv->perte) * 100 ), 2):0 ?> %<br><small>de la production</small></td>
+                                            <td class="text-center"><br><h4><?= money($pdv->livraison) ?></h4></td>
+                                            <td class="text-center" ><h2 class="gras"><?= money($pdv->stock(dateAjoute1($date2, 1))) ?></h2></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -113,8 +113,8 @@
                             <div>
                                 <h4>Observations</h4>
                                 <ul style="font-style: italic;">
-                                    <li>Vous avez perdu beaucoup plus de <b><?= $produits[0]->name() ?></b></li>
-                                    <li>Vous avez perdu en moyenne <b><?= ceil(comptage($produits, "perte", "somme") / dateDiffe($date1, $date2)) ?> produit</b> par <b>jour</b></li><br>
+                                    <li>Vous avez perdu beaucoup plus de <b><?= $pdvs[0]->name() ?></b></li>
+                                    <li>Vous avez perdu en moyenne <b><?= ceil(comptage($pdvs, "perte", "somme") / dateDiffe($date1, $date2)) ?> produit</b> par <b>jour</b></li><br>
 
                                     <li> <?php if ($pertelivraison == 0) { ?>
                                         Toutes les pertes ont eu lieu lors du rangement
@@ -142,13 +142,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($produits as $key => $produit) { ?>
+                                <?php foreach ($pdvs as $key => $pdv) { ?>
                                     <tr>
-                                        <td><span class="gras text-uppercase"><?= $produit->name() ?></span> <br> <small><?= $produit->description ?></small></td>
-                                        <td class="text-center"><h3 class="gras"><?= money($produit->production+$produit->perte) ?></h3></td>
+                                        <td><span class="gras text-uppercase"><?= $pdv->name() ?> <small><?= $params->devise ?></small></span></td>
+                                        <td class="text-center"><h3 class="gras"><?= money($pdv->production+$pdv->perte) ?></h3></td>
                                         <?php  foreach (Home\RESSOURCE::getAll() as $key => $ressource) { 
                                             $name = trim($ressource->name()); ?>
-                                            <td class="text-center"><?= round($produit->$name, 2); ?> <?= $ressource->abbr  ?></td>
+                                            <td class="text-center"><?= round($pdv->$name, 2); ?> <?= $ressource->abbr  ?></td>
                                         <?php } ?>
                                     </tr>
                                 <?php }  ?>
@@ -159,7 +159,7 @@
                                         <small>(Ce qu'ils auraient normalement dû consommé)</small></td>
                                         <?php  foreach (Home\RESSOURCE::getAll() as $key => $ressource) { 
                                             $name = trim($ressource->name()); ?>
-                                            <td class="text-center text-green gras"><?= round(comptage($produits, $name, "somme"), 2); ?> <?= $ressource->abbr  ?></td>
+                                            <td class="text-center text-green gras"><?= round(comptage($pdvs, $name, "somme"), 2); ?> <?= $ressource->abbr  ?></td>
                                         <?php } ?>
                                     </tr>
                                     <tr>
@@ -175,7 +175,7 @@
                                         <td colspan="2"><h5 class="gras text-uppercase">Comparatif de la Consommation</h5></td>
                                         <?php  foreach (Home\RESSOURCE::getAll() as $key => $ressource) { 
                                             $name = trim($ressource->name()); 
-                                            $a = comptage($produits, $name, "somme") - $ressource->consommee($date1, $date2); ?>
+                                            $a = comptage($pdvs, $name, "somme") - $ressource->consommee($date1, $date2); ?>
                                             <td class="text-center text-<?= ($a >= 0)?"green":"red" ?>"> Conso de <b><?= round(abs($a), 2) ?> <?= $ressource->abbr  ?></b> <br>en <?= ($a >= 0)?"moins":"plus" ?></td>
                                         <?php } ?>
                                     </tr>
@@ -205,7 +205,7 @@
                                             <small>(Appréciez par vous-même)</small></td>
                                             <?php  foreach (Home\RESSOURCE::getAll() as $key => $ressource) { 
                                                 $name = trim($ressource->name()); ?>
-                                                <td class="text-center text-red gras"><?= round(comptage($produits, "perte-$name", "somme"), 2); ?> <?= $ressource->abbr  ?></td>
+                                                <td class="text-center text-red gras"><?= round(comptage($pdvs, "perte-$name", "somme"), 2); ?> <?= $ressource->abbr  ?></td>
                                             <?php } ?>
                                         </tr>
                                     </tbody>
@@ -237,25 +237,25 @@
         };
 
         var radarData = {
-            labels: [<?php foreach ($produits as $key => $data){ ?> "<?= $data->name() ?>", <?php } ?>],
+            labels: [<?php foreach ($pdvs as $key => $data){ ?> "<?= $data->name() ?>", <?php } ?>],
             datasets: [
             {
                 label: "Production",
                 backgroundColor: "rgba(26,179,148,0.2)",
                 borderColor: "rgba(26,179,148,1)",
-                data: [<?php foreach ($produits as $key => $data){ ?> "<?= $data->production ?>", <?php } ?>]
+                data: [<?php foreach ($pdvs as $key => $data){ ?> "<?= $data->production ?>", <?php } ?>]
             },
             {
                 label: "Livraison",
                 backgroundColor: "rgba(220,220,220,0.2)",
                 borderColor: "rgba(220,220,220,1)",
-                data: [<?php foreach ($produits as $key => $data){ ?> "<?= $data->livraison ?>", <?php } ?>]
+                data: [<?php foreach ($pdvs as $key => $data){ ?> "<?= $data->livraison ?>", <?php } ?>]
             },
             {
                 label: "Perte",
                 backgroundColor: "rgba(220,10,10,0.2)",
                 borderColor: "rgba(220,10,10,1)",
-                data: [<?php foreach ($produits as $key => $data){ ?> "<?= $data->perte ?>", <?php } ?>]
+                data: [<?php foreach ($pdvs as $key => $data){ ?> "<?= $data->perte ?>", <?php } ?>]
             }
             ]
         };
@@ -275,7 +275,7 @@
                     label: "<?= $ressource->name()  ?>",
                     backgroundColor: "rgba(<?= $a ?>,<?= $a ?>,105,0.2)",
                     borderColor: "rgba(<?= $a ?>,<?= $a ?>,105,1)",
-                    data: [<?php foreach ($produits as $key => $produit){ ?> <?= $produit->$name ?>, <?php } ?>]
+                    data: [<?php foreach ($pdvs as $key => $produit){ ?> <?= $produit->$name ?>, <?php } ?>]
                 },
             <?php } ?>
             ]

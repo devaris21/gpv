@@ -114,7 +114,7 @@
                                 <h4>Observations</h4>
                                 <?php if (count($clients) > 0) { ?>
                                     <ul style="font-style: italic;">
-                                        <li><b>"<?= $clients[0]->name()  ?>"</b> s'est démarqué avec un total de <b><?= money($clients[0]->versement) ?> <?= $params->devise  ?></b> en versement <br>correspondant  à <b><?= $clients[1]->pct ?>%</b> de vos entrées en caisse sur cette période</li>
+                                        <li><b>"<?= $clients[0]->name()  ?>"</b> s'est démarqué avec un total de <b><?= money($clients[0]->versement) ?> <?= $params->devise  ?></b> en versement <br>correspondant  à <b><?= $clients[0]->pct ?>%</b> de vos entrées en caisse sur cette période</li>
 
                                         <?php usort($clients, "comparerPct"); ?>
                                         <?php if (count($clients) > 2) { ?>

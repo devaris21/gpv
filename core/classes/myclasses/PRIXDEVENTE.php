@@ -71,7 +71,7 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function production(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(production) as production  FROM ligneproductionjour, prixdevente WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY produit.id";
+		$requette = "SELECT SUM(production) as production  FROM ligneproductionjour, prixdevente WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY prixdevente.id";
 		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), $date1, $date2]);
 		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
 		return $item[0]->production;
@@ -81,15 +81,10 @@ class PRIXDEVENTE extends TABLE
 	public function perte(string $date1 = "2020-04-01", string $date2){
 		$total = 0;
 
-		$requette = "SELECT SUM(perte) as perte FROM ligneproductionjour, produit WHERE ligneproductionjour.produit_id = produit.id AND produit.id = ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY produit.id";
-		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), $date1, $date2]);
-		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
+		$requette = "SELECT SUM(perte) as perte  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id != ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
 		$total += $item[0]->perte;
-
-		$requette = "SELECT SUM(quantite)-SUM(quantite_vendu) as quantite FROM lignedevente, produit, vente WHERE lignedevente.produit_id = produit.id AND lignedevente.vente_id = vente.id AND vente.etat_id != ? AND produit.id = ? AND DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY produit.id";
-		$item = LIGNEDEVENTE::execute($requette, [ETAT::ANNULEE, $this->getId(), $date1, $date2]);
-		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
-		$total -= $item[0]->quantite;
 
 		return $total;
 	}
