@@ -79,11 +79,22 @@ $(function(){
 	}
 
 	//nouvelle commande
+	$("body").on("click", ".newproduit2", function(event) {
+		var url = "../../webapp/gestion/modules/master/client/ajax.php";
+		var id = $(this).attr("data-id");
+		$.post(url, {action:"newproduit2", id:id}, (data)=>{
+			$("tbody.commande").append(data);
+			$("button[data-id ="+id+"]").hide(200);
+			calcul()
+		},"html");
+	});
+
+
+	//nouvelle commande
 	$("body").on("click", ".newproduit", function(event) {
 		var url = "../../webapp/gestion/modules/master/client/ajax.php";
 		var id = $(this).attr("data-id");
-		var zone = $("select[name=zonelivraison_id]").val();
-		$.post(url, {action:"newproduit", id:id, zone:zone}, (data)=>{
+		$.post(url, {action:"newproduit", id:id}, (data)=>{
 			$("tbody.commande").append(data);
 			$("button[data-id ="+id+"]").hide(200);
 			calcul()

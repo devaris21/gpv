@@ -56,7 +56,7 @@
                             $commande->actualise(); 
                             $lots = $commande->lesRestes();
                             $datas = $commande->fourni("commande");
-                            $datas1 = $commande->fourni("vente", ["etat_id > "=>Home\ETAT::ANNULEE, "etat_id < "=>Home\ETAT::VALIDEE]);
+                            $datas1 = $commande->fourni("prospection", ["etat_id > "=>Home\ETAT::ANNULEE, "etat_id < "=>Home\ETAT::VALIDEE]);
                             $client = $commande->client;
                             ?>
                             <tr class="border-bottom">

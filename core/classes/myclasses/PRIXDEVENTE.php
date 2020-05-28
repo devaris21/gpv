@@ -125,8 +125,18 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function enBoutique(){
-		$datas = $this->fourni("miseenboutique");
+		$datas = $this->fourni("miseenboutique", ["etat_id !="=>ETAT::ANNULEE]);
 		$total = comptage($datas, "quantite", "somme");
+
+		$requette = "SELECT SUM(quantite_vendu) as perte  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id != ? AND prospection.typeprospection_id = ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE, TYPEPROSPECTION::LIVRAISON]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total -= $item[0]->perte;
+
+		$requette = "SELECT SUM(perte) as perte  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id != ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total -= $item[0]->perte;
 
 		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, prixdevente, vente WHERE lignedevente.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND lignedevente.vente_id = vente.id AND vente.etat_id IN (?, ?) GROUP BY prixdevente.id";
 		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ENCOURS, ETAT::VALIDEE]);
@@ -141,8 +151,8 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function enProspection(){
-		$requette = "SELECT SUM(quantite) as quantite  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id IN (?, ?) GROUP BY prixdevente.id";
-		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ENCOURS, ETAT::VALIDEE]);
+		$requette = "SELECT SUM(quantite) as quantite  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id = ? GROUP BY prixdevente.id";
+		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ENCOURS]);
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		return $item[0]->quantite;
 	}

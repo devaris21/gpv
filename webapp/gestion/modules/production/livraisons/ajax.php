@@ -40,27 +40,29 @@ if ($action == "annulerLivraison") {
 
 if ($action == "validerLivraison") {
 	$id = getSession("livraison_id");
-	$datas = VENTE::findBy(["id ="=>$id]);
+	$datas = PROSPECTION::findBy(["id ="=>$id]);
 	if (count($datas) > 0) {
 		$livraison = $datas[0];
 		$livraison->actualise();
-		$livraison->fourni("lignelivraison");
+		$livraison->fourni("ligneprospection");
 
 		$produits = explode(",", $tableau);
 		if (count($produits) > 0) {
+
+			$produits1 = explode(",", $tableau1);
+		foreach ($produits1 as $key => $value) {
+			$lot = explode("-", $value);
+			$array1[$lot[0]] = end($lot);
+		}
+
 			$tests = $produits;
 			foreach ($tests as $key => $value) {
 				$lot = explode("-", $value);
 				$id = $lot[0];
 				$qte = end($lot);
 
-				$produit = new PRODUIT();
-				$datas = PRODUIT::findBy(["id ="=>$id]);
-				if (count($datas) == 1) {
-					$produit = $datas[0];
-				}
-				foreach ($livraison->lignelivraisons as $key => $lgn) {
-					if (($lgn->produit_id == $id) && ($lgn->quantite >= $qte)) {
+				foreach ($livraison->ligneprospections as $cle => $lgn) {
+					if (($lgn->getId() == $id) && ($lgn->quantite >= $qte) && ($lgn->quantite >= ($qte + $array1[$key])) ) {
 						unset($tests[$key]);
 					}
 				}
@@ -70,11 +72,11 @@ if ($action == "validerLivraison") {
 					$lot = explode("-", $value);
 					$id = $lot[0];
 					$qte = end($lot);
-					foreach ($livraison->lignelivraisons as $key => $lgn) {
-						if ($lgn->produit_id == $id) {
-							$lgn->quantite_livree = $qte;
-							$lgn->save();
-							$lgn->reste = $livraison->groupecommande->reste($id);
+					foreach ($livraison->ligneprospections as $key => $lgn) {
+						if ($lgn->getId() == $id) {
+							$lgn->quantite_vendu = $qte;
+							$lgn->perte = $array1[$id];
+							$lgn->reste = $lgn->quantite - $qte - $array1[$id];
 							$lgn->save();
 
 							if ($lgn->reste > 0) {

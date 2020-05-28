@@ -5,7 +5,7 @@ unset_session("commande-encours");
 
 $title = "GPV | Toutes les ventes en cours";
 
-$prospections = PROSPECTION::getAll();
+$prospections = PROSPECTION::findBy(["typeprospection_id ="=>TYPEPROSPECTION::PROSPECTION]);
 
 
 ?>

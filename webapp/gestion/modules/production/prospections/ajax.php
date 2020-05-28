@@ -86,6 +86,7 @@ if ($action == "validerProspection") {
 			$tests = $array;
 			foreach ($tests as $key => $value) {
 				foreach ($prospection->ligneprospections as $cle => $lgn) {
+					$lgn->actualise();
 					if (($lgn->getId() == $key) && ($lgn->quantite >= ($value + $array1[$key]))) {
 						unset($tests[$key]);
 					}
@@ -94,7 +95,7 @@ if ($action == "validerProspection") {
 			if (count($tests) == 0) {
 				foreach ($array as $key => $value) {
 					foreach ($prospection->ligneprospections as $cle => $lgn) {
-						if ($lgn->prixdevente_id == $key) {
+						if ($lgn->getId() == $key) {
 							$lgn->quantite_vendu = $value;
 							$lgn->perte = $array1[$key];
 							$lgn->reste = $lgn->quantite - $value - $array1[$key];

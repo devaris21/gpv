@@ -17,6 +17,7 @@ class MISEENBOUTIQUE extends TABLE
 	public $quantite;
 	public $restant = 0;
 	public $employe_id;
+	public $etat_id = ETAT::VALIDEE;
 
 
 	public function enregistre(){

@@ -42,7 +42,7 @@
                             <label>Sexe <span1>*</span1></label>
                             <?php Native\BINDING::html("select", "sexe") ?>
                         </div>
-                        <div class="col-md-4 col-sm-6">
+                        <div class="col-md-4 col-sm-6 unmodified">
                             <label>Salaire mensuel <span1>*</span1></label>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="salaire">

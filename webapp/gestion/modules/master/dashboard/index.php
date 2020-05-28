@@ -89,7 +89,7 @@
                                 <li class="list-group-item"></li>
                             </ul>
 
-                            <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Vente directe</button>
+                            <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Nouvelle vente directe</button>
 
                         </div>
                         <div class="col-md-6 border-right border-left">
@@ -142,7 +142,7 @@
 
                             <?php if ($employe->isAutoriser("production")) { ?>
                                 <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
-                                <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Mise en boutique</button>
+                                <!-- <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Mise en boutique</button> -->
                             <?php } ?>
                             
 

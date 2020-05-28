@@ -68,14 +68,21 @@ $(function(){
         Loader.start();
         var url = "../../webapp/gestion/modules/production/livraisons/ajax.php";
         var formdata = new FormData($(this)[0]);
+
         var tableau = new Array();
+        var tableau1 = new Array();
         $(this).find("table tr").each(function(index, el) {
             var id = $(this).attr('data-id');
-            var val = $(this).find('input').val();
-            var item = id+"-"+val;
-            tableau.push(item);
+            
+            var vendu = $(this).find('input.vendus').val();
+            tableau.push(id+"-"+vendu);
+
+            var perdu = $(this).find('input.perdus').val();
+            tableau1.push(id+"-"+perdu);
         });
         formdata.append('tableau', tableau);
+        formdata.append('tableau1', tableau1);
+        
         formdata.append('action', "validerLivraison");
         $.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
             if (data.status) {

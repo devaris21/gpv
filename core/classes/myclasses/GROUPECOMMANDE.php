@@ -47,6 +47,12 @@ class GROUPECOMMANDE extends TABLE
 		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, $prixdevente_id]);
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		$total -= $item[0]->quantite;
+
+		$requette = "SELECT SUM(quantite_vendu) as quantite FROM ligneprospection, prixdevente, prospection, groupecommande WHERE groupecommande.id = ? AND prospection.groupecommande_id = groupecommande.id AND ligneprospection.prixdevente_id = prixdevente.id AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id != ? AND prixdevente.id = ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE, $prixdevente_id]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total -= $item[0]->quantite;
+
 		return $total;
 	}
 

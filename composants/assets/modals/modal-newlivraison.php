@@ -24,8 +24,8 @@
                                         $reste = $groupecommande->reste($value->getId());
                                         if ($reste > 0) {
                                             $value->actualise(); ?>
-                                            <tr class="border-0 border-bottom " id="ligne<?= $value->produit->getId() ?>" data-id="<?= $value->produit->getId() ?>">
-                                                <td><i class="fa fa-close text-red cursor" onclick="supprimeProduit(<?= $value->produit->getId() ?>)" style="font-size: 18px;"></i></td>
+                                            <tr class="border-0 border-bottom " id="ligne<?= $value->getId() ?>" data-id="<?= $value->getId() ?>">
+                                                <td><i class="fa fa-close text-red cursor" onclick="supprimeProduit(<?= $value->getId() ?>)" style="font-size: 18px;"></i></td>
                                                 <td >
                                                     <img style="width: 40px" src="<?= $rooter->stockage("images", "produits", $value->produit->image) ?>">
                                                 </td>
@@ -89,7 +89,7 @@
                             <div class="commercial">
                                 <label>Commercial pour la livraison <span style="color: red">*</span> </label>                                
                                 <div class="input-group">
-                                    <?php Native\BINDING::html("select-tableau-multiple", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
+                                    <?php Native\BINDING::html("select-tableau", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
                                 </div><br>
                             </div>
 

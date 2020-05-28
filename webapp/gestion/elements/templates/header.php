@@ -13,15 +13,15 @@
                     <span class="m-r-sm welcome-message text-uppercase" id="date_actu"></span> 
                     <span class="m-r-sm welcome-message gras" id="heure_actu"></span> 
                 </li>
-                <li class="border-right border-left">
-                        <a  onclick="voirPrixParZone()">
-                            <i class="fa fa-eye"></i> Prix par zone
-                        </a>
-                    </li>
+                <!-- <li class="border-right border-left">
+                    <a  onclick="voirPrixParZone()">
+                        <i class="fa fa-eye"></i> Prix par zone
+                    </a>
+                </li> -->
                 <?php if ($employe->isAutoriser("production")) { ?>
                     <li class="border-right">
                         <a  data-toggle="modal" data-target="#modal-productionjour" onclick=" modification('productionjour', <?= $productionjour->getId(); ?>) ">
-                            <i class="fa fa-file-text-o"></i> Production du jour
+                            <i class="fa fa-file-text-o"></i> Nouvelle Production
                         </a>
                     </li>
                 <?php } ?>

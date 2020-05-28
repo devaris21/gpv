@@ -4,28 +4,28 @@ namespace Home;
 unset_session("ressources");
 
 if ($this->getId() != null) {
-	$datas = FOURNISSEUR::findBy(["id ="=> $this->getId()]);
+	$datas = COMMERCIAL::findBy(["id ="=> $this->getId()]);
 	if (count($datas) > 0) {
-		$fournisseur = $datas[0];
-		$fournisseur->actualise();
+		$commercial = $datas[0];
+		$commercial->actualise();
 
-		$approvisionnements = $fournisseur->fourni("approvisionnement", ["etat_id ="=>ETAT::ENCOURS]);
+		$prospections = $commercial->fourni("prospection", ["etat_id ="=>ETAT::ENCOURS]);
 
-		$fournisseur->fourni("approvisionnement");
+		$commercial->fourni("prospection");
 
 
 
-		$fluxcaisse = $fournisseur->fourni("operation");
+		$fluxcaisse = $commercial->fourni("operation");
 		usort($fluxcaisse, "comparerDateCreated2");
 
-		$title = "GPV | ".$fournisseur->name();
+		$title = "GPV | ".$commercial->name();
 
-		session("fournisseur_id", $fournisseur->getId());
+		session("commercial_id", $commercial->getId());
 		
 	}else{
-		header("Location: ../master/fournisseurs");
+		header("Location: ../master/commercials");
 	}
 }else{
-	header("Location: ../master/fournisseurs");
+	header("Location: ../master/commercials");
 }
 ?>

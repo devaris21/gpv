@@ -77,7 +77,6 @@
                                 <td class="project-title border-right" style="width: 30%;">
                                     <h4 class="text-uppercase">livraison N°<?= $livraison->reference ?></h4>
                                     <h6 class="text-uppercase text-muted">Client :  <?= $livraison->groupecommande->client->name() ?></h6>
-                                    <h6 class="text-uppercase text-muted">Chauffeur :  <?= $livraison->chauffeur->name() ?></h6>
                                     <span>Emise <?= depuis($livraison->created) ?></span>
                                 </td>
                                 <td class="border-right" style="width: 25%">
@@ -86,11 +85,11 @@
                                             <img style="width: 40px" src="<?= $this->stockage("images", "vehicules", $livraison->vehicule->image) ?>">
                                         </div>
                                         <div class="col-9">
-                                            <h5 class="mp0"><?= $livraison->vehicule->typevehicule->name() ?></h5>
-                                            <h6 class="mp0"><?= $livraison->vehicule() ?></h6>
+                                            <h5 class="mp0"><?php //$livraison->vehicule->typevehicule->name() ?></h5>
+                                            <h6 class="mp0"><?php //$livraison->vehicule() ?></h6>
                                         </div>
                                     </div><hr class="mp3">
-                                    <h5 class="mp0"><small><?= $livraison->zonevente->name() ?></small><br> <?= $livraison->lieu ?></h5>
+                                    <h5 class="mp0"><small><?= $livraison->zonedevente->name() ?></small><br> <?= $livraison->lieu ?></h5>
                                 </td>
                                 <td class="border-right" style="width: 32%">
                                     <table class="table table-bordered">
@@ -99,22 +98,25 @@
                                                 <th></th>
                                                 <?php foreach ($livraison->ligneprospections as $key => $ligne) { 
                                                     $ligne->actualise(); ?>
-                                                    <th class="text-center text-uppercase"><?= $ligne->produit->name() ?></th>
+                                                    <th class="text-center text-uppercase"><?= $ligne->prixdevente->produit->name() ?> <br><small><?= $ligne->prixdevente->prix->price() ?> <?= $params->devise ?></small></th>
                                                 <?php } ?>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="no">
-                                                <td><h4 class="mp0"><?= ($livraison->etat_id == Home\ETAT::VALIDEE)?'livrés':'à livrer' ?> : </h4></td>
+                                           <tr class="no">
+                                                <td><h4 class="mp0">Qté : </h4></td>
                                                 <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
-                                                    <td class="text-center <?= ($livraison->etat_id == Home\ETAT::VALIDEE)?'text-warning':'' ?>"><?= $ligne->quantite_livree ?></td>
+                                                    <td class="text-center"><?= start0($ligne->quantite) ?> // 
+                                                        <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
+                                                        <span class="text-green"><?= start0($ligne->quantite_vendu) ?></span>
+                                                    <?php }  ?></td>
                                                 <?php   } ?>
                                             </tr>
                                             <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
                                                 <tr class="no">
-                                                    <td><h4 class="mp0">Restait :</h4></td>
+                                                    <td><h4 class="mp0">Perte :</h4></td>
                                                     <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
-                                                        <td class="text-center"><?= $ligne->reste ?></td>
+                                                        <td class="text-center"><?= start0($ligne->perte) ?></td>
                                                     <?php   } ?>
                                                 </tr>
                                             <?php } ?>

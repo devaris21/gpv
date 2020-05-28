@@ -19,21 +19,25 @@
                             <div class="table-responsive">
                                 <table class="table  table-striped">
                                     <tbody class="commande">
-                                        <?php foreach ($livraison->lignelivraisons as $key => $ligne) {
+                                        <?php foreach ($livraison->ligneprospections as $key => $ligne) {
                                             $ligne->actualise(); ?>
-                                            <tr class="border-0 border-bottom " id="ligne<?= $ligne->getId() ?>" data-id="<?= $ligne->produit->getId() ?>">
+                                            <tr class="border-0 border-bottom" data-id="<?= $ligne->getId() ?>">
                                                 <td >
-                                                    <img style="width: 40px" src="<?= $this->stockage("images", "produits", $ligne->produit->image) ?>">
+                                                    <img style="width: 40px" src="<?= $this->stockage("images", "produits", $ligne->prixdevente->produit->image) ?>">
                                                 </td>
                                                 <td class="text-left">
-                                                    <h4 class="mp0 text-uppercase"><?= $ligne->produit->name() ?></h4>
-                                                    <small><?= $ligne->produit->description ?></small>
+                                                    <h4 class="mp0 text-uppercase"><?= $ligne->prixdevente->produit->name() ?></h4>
+                                                    <small><?= $ligne->prixdevente->prix->price() ?> <?= $params->devise ?></small>
                                                 </td>
-                                                <td width="105">
-                                                    <label>Quantité livrée</label>
-                                                    <input type="number" number class="form-control text-center gras" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
+                                                <td width="140">
+                                                    <label>Quantité livrée / <?= $ligne->quantite ?></label>
+                                                    <input type="number" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
                                                 </td>
-                                                <td> / <?= $ligne->quantite ?></td>
+                                                <td  width="30"></td>
+                                                <td width="130">
+                                                    <label>Perte</label>
+                                                    <input type="number" number class="form-control text-center gras perdus" value="0" max="<?= $ligne->quantite ?>">
+                                                </td>
                                             </tr>
                                         <?php }  ?>
                                     </tbody>
@@ -49,13 +53,13 @@
                             <h5 class="text-uppercase">Finaliser la livraison</h5>
                         </div>
                         <div class="ibox-content"  style="background-color: #fafafa">
-                            <div>
+                            <!-- <div>
                                 <label>date de livraison <span style="color: red">*</span> </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="date" name="datelivraison" class="form-control" value="<?= dateAjoute() ?>" required>
                                 </div>
-                            </div><br>
+                            </div><br> -->
                             <div>
                                 <label>Nom du receptionniste <span style="color: red">*</span> </label>
                                 <div class="input-group">

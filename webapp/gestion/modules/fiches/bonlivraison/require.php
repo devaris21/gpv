@@ -3,12 +3,12 @@
 namespace Home;
 
 if ($this->getId() != null) {
-	$datas = VENTE::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
+	$datas = PROSPECTION::findBy(["id ="=> $this->getId(), 'etat_id !='=>ETAT::ANNULEE]);
 	if (count($datas) > 0) {
 		$livraison = $datas[0];
 		$livraison->actualise();
 
-		$livraison->fourni("lignelivraison");
+		$livraison->fourni("ligneprospection");
 
 		$title = "GPV | Bon de livraison ";
 		

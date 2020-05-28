@@ -21,7 +21,7 @@
                                     <tbody class="">
                                         <?php foreach ($prospection->ligneprospections as $key => $ligne) {
                                             $ligne->actualise(); ?>
-                                            <tr class="border-0 border-bottom ">
+                                            <tr class="border-0 border-bottom " data-id="<?= $ligne->getId() ?>">
                                                 <td >
                                                     <img style="width: 40px" src="<?= $this->stockage("images", "produits", $ligne->prixdevente->produit->image) ?>">
                                                 </td>
@@ -31,12 +31,12 @@
                                                 </td>
                                                 <td width="140">
                                                     <label>Quantité vendue /<?= $ligne->quantite ?></label>
-                                                    <input type="number" data-id="<?= $ligne->getId() ?>" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
+                                                    <input type="number" number class="form-control text-center gras vendus" value="<?= $ligne->quantite ?>" max="<?= $ligne->quantite ?>">
                                                 </td>
                                                 <td  width="30"></td>
                                                 <td width="130">
                                                     <label>Perte</label>
-                                                    <input type="number" number class="form-control text-center gras perdu" value="0" max="<?= $ligne->quantite ?>">
+                                                    <input type="number" number class="form-control text-center gras perdus" value="0" max="<?= $ligne->quantite ?>">
                                                 </td>
                                             </tr>
                                         <?php }  ?>

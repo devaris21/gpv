@@ -85,7 +85,7 @@
                                                     if ($item->prixdevente->getId() == $value->getId() ) { 
                                                         $test = $item->quantite;
                                                         if ($ligne->type == "vente") {
-                                                            $test = $item->quantite_vendu;
+                                                            $test = $item->quantite;
                                                         }
                                                         break;
                                                     }
@@ -131,10 +131,10 @@
                                     <button class="btn btn-primary dim" onclick="fairenewcommande(<?= $groupecommande->getId() ?>)"><i class="fa fa-cart-plus"></i> Faire nouvelle commande</button>
                                 </div>
 
-                                <div class=" col-md">
+                             <!--    <div class=" col-md">
                                     <button class="btn btn-success dim" onclick="newProgrammation(<?= $groupecommande->getId() ?>)"><i class="fa fa-truck"></i> Programmer livraison </button>
                                 </div>
-
+ -->
                                 <div class=" col-md">
                                     <button class="btn btn-warning dim" onclick="newlivraison(<?= $groupecommande->getId()  ?>)"><i class="fa fa-truck"></i> Faire livraison aujourd'hui</button>
                                 </div>

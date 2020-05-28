@@ -47,6 +47,45 @@ if ($action == "newproduit") {
 	}
 
 
+
+	if ($action == "newproduit2") {
+	$params = PARAMS::findLastId();
+	$rooter = new ROOTER;
+	$produits = [];
+	if (getSession("produits") != null) {
+		$produits = getSession("produits"); 
+	}
+	if (!in_array($id, $produits)) {
+		$produits[] = $id;
+		$datas = PRODUIT::findBy(["id ="=> $id]);
+		if (count($datas) == 1) {
+			$produit = $datas[0];
+			$produit->fourni("prixdevente", ["isActive = "=> TABLE::OUI]);
+			?>
+			<tr class="border-0 border-bottom " id="ligne<?= $id ?>" data-id="<?= $id ?>">
+				<td><i class="fa fa-close text-red cursor" onclick="supprimeProduit(<?= $id ?>)" style="font-size: 18px;"></i></td>
+				<td >
+					<img style="width: 40px" src="<?= $rooter->stockage("images", "produits", $produit->image) ?>">
+				</td>
+				<td class="text-left">
+					<h4 class="mp0 text-uppercase"><?= $produit->name() ?></h4>
+				</td>
+				<?php foreach ($produit->prixdeventes as $key => $pdv) {
+					$pdv->actualise(); ?>
+						<td width="80">
+							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
+							<input type="text" data-pdv="<?= $pdv->getId() ?>" number class="form-control text-center gras" style="padding: 3px">
+						</td>
+					<?php } ?>				
+				</tr>
+				<?php
+			}
+		}
+		session("produits", $produits);
+	}
+
+
+
 	if ($action == "supprimeProduit") {
 		$produits = [];
 		if (getSession("produits") != null) {
@@ -417,19 +456,20 @@ if ($action == "newproduit") {
 						$qte = end($lot);
 						$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
 						$pdv->actualise();
-						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->livrable()) {
+						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->enBoutique()) {
 							unset($tests[$key]);
 						}
 					}
 					if (count($tests) == 0) {
-						$vente = new VENTE();
+						$prospection = new PROSPECTION();
 						// if ($vehicule_id <= VEHICULE::TRICYCLE) {
 						// 	$_POST["chauffeur_id"] = 0;
 						// }
-						$vente->hydrater($_POST);
-						$vente->groupecommande_id = $groupecommande->getId();
-						$vente->montant = getSession("total");
-						$data = $vente->enregistre();
+						$prospection->hydrater($_POST);
+						$prospection->groupecommande_id = $groupecommande->getId();
+						$prospection->typeprospection_id = TYPEPROSPECTION::LIVRAISON;
+						$prospection->montant = getSession("total");
+						$data = $prospection->enregistre();
 						if ($data->status) {
 							$montant = 0;
 							$productionjour = PRODUCTIONJOUR::today();
@@ -454,11 +494,11 @@ if ($action == "newproduit") {
 									// 	$montant += $paye / 2;
 									// }
 
-									$lignedevente = new LIGNEDEVENTE;
-									$lignedevente->vente_id = $vente->getId();
-									$lignedevente->prixdevente_id = $id;
-									$lignedevente->quantite = $qte;
-									$lignedevente->enregistre();
+									$ligneprospection = new LIGNEPROSPECTION;
+									$ligneprospection->prospection_id = $prospection->getId();
+									$ligneprospection->prixdevente_id = $id;
+									$ligneprospection->quantite = $qte;
+									$ligneprospection->enregistre();
 								}
 							}
 
@@ -499,7 +539,7 @@ if ($action == "newproduit") {
 							// 	}
 							// }
 
-							$data = $vente->save();
+							$data = $prospection->save();
 							$data->setUrl("gestion", "fiches", "bonlivraison", $data->lastid);				
 						}	
 					}else{

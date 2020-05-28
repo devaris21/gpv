@@ -87,22 +87,18 @@ $(function(){
         var url = "../../webapp/gestion/modules/production/prospections/ajax.php";
         var formdata = new FormData($(this)[0]);
         var tableau = new Array();
+        var tableau1 = new Array();
         $(this).find("table tr").each(function(index, el) {
-            var id = $(this).find('input.vendus').attr('data-id');
-            var val = $(this).find('input.vendus').val();
-            var item = id+"-"+val;
-            tableau.push(item);
+            var id = $(this).attr('data-id');
+            
+            var vendu = $(this).find('input.vendus').val();
+            tableau.push(id+"-"+vendu);
+
+            var perdu = $(this).find('input.perdus').val();
+            tableau1.push(id+"-"+perdu);
         });
         formdata.append('tableau', tableau);
-
-        var tableau = new Array();
-        $(this).find("table tr").each(function(index, el) {
-            var id = $(this).find('input.vendus').attr('data-id');
-            var val = $(this).find('input.perdu').val();
-            var item = id+"-"+val;
-            tableau.push(item);
-        });
-        formdata.append('tableau1', tableau);
+        formdata.append('tableau1', tableau1);
 
         formdata.append('action', "validerProspection");
         $.post({url:url, data:formdata, contentType:false, processData:false}, function(data){

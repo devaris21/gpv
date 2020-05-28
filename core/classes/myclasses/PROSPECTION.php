@@ -10,15 +10,20 @@ class PROSPECTION extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $reference;
-	public $typeprospection_id;
+	public $groupecommande_id  = null;
+	public $typeprospection_id = TYPEPROSPECTION::PROSPECTION;
 	public $zonedevente_id;
-	public $commercial_id     = COMMERCIAL::MAGASIN;
-	public $etat_id           = ETAT::ENCOURS;
-	public $employe_id        = null;
+	public $lieu;
+	public $commercial_id      = COMMERCIAL::MAGASIN;
+	public $etat_id            = ETAT::ENCOURS;
+	public $employe_id         = null;
 	
-	public $montant           = 0;
-	public $vendu           = 0;
+	public $montant            = 0;
+	public $vendu              = 0;
 	public $comment;
+
+	public $nom_receptionniste;
+	public $contact_receptionniste;
 
 	
 
@@ -136,22 +141,30 @@ class PROSPECTION extends TABLE
 			$this->historique("La prospection en reference $this->reference vient d'être terminé !");
 			$data = $this->save();
 			if ($data->status) {
-				$vente = new VENTE();
-				$vente->cloner($this);
-				$vente->setId(null);
-				$data = $vente->enregistre();
-				if ($data->status) {
-					$montant = 0;
-					$datas = $this->fourni("ligneprospection");
-					foreach ($datas as $key => $ligne) {
-						$lgn = new LIGNEDEVENTE();
-						$lgn->vente_id = $vente->getId();
-						$lgn->prixdevente_id = $ligne->prixdevente_id;
-						$lgn->quantite = $ligne->quantite_vendu;
-						$lgn->save();
-						$montant += $ligne->prixdevente->prix->price * $ligne->quantite_vendu;
+				if ($this->typeprospection_id == TYPEPROSPECTION::PROSPECTION) {
+					$vente = new VENTE();
+					$vente->cloner($this);
+					$vente->setId(null);
+					$data = $vente->enregistre();
+					if ($data->status) {
+						$montant = 0;
+						$datas = $this->fourni("ligneprospection");
+						foreach ($datas as $key => $ligne) {
+							$ligne->actualise();
+							$lgn = new LIGNEDEVENTE();
+							$lgn->vente_id = $vente->getId();
+							$lgn->prixdevente_id = $ligne->prixdevente_id;
+							$lgn->quantite = $ligne->quantite_vendu;
+							$lgn->save();
+							$montant += $ligne->prixdevente->prix->price * $ligne->quantite_vendu;
+						}
+						$vente->payement($montant, json_decode(json_encode($vente), true));
 					}
-					$vente->payement($montant, json_decode(json_encode($vente), true));
+				}
+
+				if ($this->commercial_id != null) {
+					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
+					$this->commercial->save();
 				}
 			}
 		}else{
