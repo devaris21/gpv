@@ -503,8 +503,7 @@
                                                                         <img alt="image" style="width: 40px;" class="m-t-xs" src="<?= $this->stockage("images", "chauffeurs", $item->image) ?>">
                                                                     </td>
                                                                     <td>
-                                                                        <span class="gras"><?= $item->name(); ?></span><br>
-                                                                        Permis <?= $item->typepermis ?>
+                                                                        <span class="gras"><?= $item->name(); ?></span> 
                                                                     </td>
                                                                     <td>
                                                                         <i class="fa fa-map-marker"></i> <?= $item->adresse  ?><br>
