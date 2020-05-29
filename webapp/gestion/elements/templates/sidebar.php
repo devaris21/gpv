@@ -2,7 +2,7 @@
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
             <h1 class="logo-name text-center" style="font-size: 50px; letter-spacing: 5px; margin: 0% auto !important; padding: 0% !important;">GPV</h1>
-            <li class="nav-header" style="padding: 15px 10px !important">
+            <li class="nav-header" style="padding: 15px 10px !important; background-color: orange">
                 <div class="dropdown profile-element">                        
                     <div class="row">
                         <div class="col-3">
@@ -43,7 +43,7 @@
                 <li class="" id="operation">
                     <a href="<?= $this->url("gestion", "master", "operation") ?>"><i class="fa fa-money"></i> <span class="nav-label">Opération de caisse</span></a>
                 </li>
-                <li class="dropdown-divider"></li>
+                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
 
                 <?php if ($employe->isAutoriser("production")) { ?>
@@ -71,9 +71,9 @@
                         <a href="<?= $this->url("gestion", "production", "ressources", 7) ?>"><i class="fa fa-archive"></i> <span class="nav-label">Stock de ressources</span></a>
                     </li>
 
-
         
-                    <li class="dropdown-divider"></li>
+                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
+
                     <li class="" id="commerciaux">
                         <a href="<?= $this->url("gestion", "production", "commerciaux") ?>"><i class="fa fa-users"></i> <span class="nav-label">Les commerciaux</span></a>
                     </li>
@@ -84,7 +84,7 @@
                     <li class="" id="approvisionnements">
                         <a href="<?= $this->url("gestion", "production", "approvisionnements") ?>"><i class="fa fa-bus"></i> <span class="nav-label">Approvisionnements </span> <?php if (count($approvisionnements__) > 0) { ?> <span class="label label-warning float-right"><?= count($approvisionnements__) ?></span> <?php } ?></a>
                     </li>
-                    <li class="dropdown-divider"></li>
+                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
                 <?php } ?>
 
 <!-- 
@@ -95,7 +95,7 @@
                 <li class="" id="pannes">
                     <a href="<?= $this->url("gestion", "master", "pannes") ?>"><i class="fa fa-wrench"></i> <span class="nav-label">Pannes et entretien</span> <?php if (count($datas1__) > 0) { ?> <span class="label label-warning float-right"><?= count($datas1__) ?></span> <?php } ?></a>
                 </li>
-                <li class="dropdown-divider"></li> -->
+                <li class="dropdown-divider" style="background-color: #000"></li> -->
 
 
                 <?php if ($employe->isAutoriser("caisse")) { ?>
@@ -114,7 +114,7 @@
                         <!--  <li id="etatpersonnel"><a href="<?= $this->url("gestion", "caisse", "etatpersonnel", "$datea@$dateb") ?>">... du personnel</a></li> -->
                     </ul>
                 </li>
-                <li class="dropdown-divider"></li>
+                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
             <?php } ?>
 
@@ -137,3 +137,9 @@
 
 </div>
 </nav>
+
+<style type="text/css">
+    li.dropdown-divider{
+         !important;
+    }
+</style>

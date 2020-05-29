@@ -22,7 +22,7 @@
             </div>
             <div class="col-md-6">
                 <div class="ibox-content text-center">
-                    <img style="width: 80px" src="<?= $this->stockage("images", "societe", "logo.png") ?>">
+                    <img style="width: 80px" src="<?= $this->stockage("images", "societe", $params->image) ?>">
                     <h1 class="logo-name text-center" style="font-size: 90px; letter-spacing: 5px; margin: 0% !important; padding: 0% !important;">GPV</h1>
                     <form method="POST" class="m-t" role="form" id="formConnexion" >
                         <div class="form-group">
