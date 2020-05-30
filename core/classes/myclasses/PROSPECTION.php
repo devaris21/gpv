@@ -20,6 +20,7 @@ class PROSPECTION extends TABLE
 	
 	public $montant            = 0;
 	public $vendu              = 0;
+	public $monnaie              = 0;
 	public $comment;
 
 	public $nom_receptionniste;

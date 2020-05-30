@@ -52,7 +52,8 @@
 
                                 <div class="col-6 text-right">
                                     <h5><span>Commercial :</span> <span class="text-uppercase"><?= $prospection->commercial->name() ?></span></h5>
-                                    <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $prospection->zonedevente->name() ?></span></h5>   
+                                    <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $prospection->zonedevente->name() ?></span></h5>  
+                                    <h5><span>Monnaie de prospection :</span> <span class="text-uppercase"><?= money($prospection->monnaie) ?> <?= $params->devise ?></span></h5> 
                                 </div>
                             </div><br><br>
 
