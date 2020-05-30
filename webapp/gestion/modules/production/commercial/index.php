@@ -21,7 +21,7 @@
                         <div class="ibox-content">
                             <p></p>
                             <div class="">                                
-                             <ul class="nav nav-tabs">
+                               <ul class="nav nav-tabs">
                                 <li><a class="nav-link active" data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Toutes les prospections</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-2"><i class="fa fa-file-text"></i> Rapports journaliers</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-3"><i class="fa fa-money"></i> Payement de salaire</a></li>
@@ -30,7 +30,7 @@
 
 
 
-                             <?php if ($employe->isAutoriser("production")) { ?>
+                               <?php if ($employe->isAutoriser("production")) { ?>
 
                                 <div id="tab-1" class="tab-pane active"><br>
                                     <div class="row container-fluid">
@@ -108,28 +108,85 @@
 
 
                                     <div id="tab-2" class="tab-pane"><br>
-                                        <table class="table table-hover table-bordered table-striped table-hover text-center">
-                                            <thead>
+                                        <form id="filtrer" class="row">
+                                            <div class="col-sm-4">
+                                                <label>Pour le mois de</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                 <select class="form-control select2" name="mois" style="width: 100%">
+                                                    <?php foreach($tableau_mois as $key => $value) { ?>
+                                                        <option value="<?= $key ?>" <?= (date("m")==$key+1)?"selected":"" ?>><?= $value ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <select class="form-control select2" name="annee" style="width: 100%">
+                                                    <?php for ($i=2020; $i <= date("Y") ; $i++) { ?>
+                                                        <option value="<?= $i ?>"><?= $i ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                         <div class="col-sm-2">
+                                            <button class="btn btn-primary btn-sm dim"><i class="fa fa-plus"></i> Filtrer la liste </button>
+                                        </div>
+                                    </form><br>
+                                    <table class="table table-hover table-bordered table-striped table-hover text-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Nbr. de tours</th>
+                                                <th>Cumul Montant</th>
+                                                <th>Cumul recette</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tableau">
+                                            <?php 
+                                            foreach ($commercial->rapports(date("Y-m")."-01", dateAjoute()) as $key => $item) { ?>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Nbr. de tours</th>
-                                                    <th>Cumul Montant</th>
-                                                    <th>Cumul recette</th>
+                                                    <td><?= datecourt3($item->date) ?></td>
+                                                    <td><?= start0($item->count) ?> prospection(s)</td>
+                                                    <td class="gras text-muted"><?= money($item->montant) ?> <?= $params->devise ?></td>
+                                                    <td class="gras text-green"><?= money($item->vendu) ?> <?= $params->devise ?></td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php 
-                                                foreach ($commercial->rapports(7) as $key => $item) { ?>
-                                                    <tr>
-                                                        <td><?= datecourt3($item->date) ?></td>
-                                                        <td><?= start0($item->count) ?> prospection(s)</td>
-                                                        <td class="gras text-muted"><?= money($item->montant) ?> <?= $params->devise ?></td>
-                                                        <td class="gras text-green"><?= money($item->vendu) ?> <?= $params->devise ?></td>
-                                                    </tr>
-                                                <?php } ?>
+                                            <?php } ?>
 
-                                            </tbody>
-                                        </table>
+                                        </tbody>
+                                    </table>
+                                    <?php foreach ($fluxcaisse as $key => $transaction) {
+                                        $transaction->actualise(); ?>
+                                        <div class="timeline-item">
+                                            <div class="row">
+                                                <div class="col-2 date" style="padding-right: 1%; padding-left: 1%;">
+                                                    <i data-toggle="tooltip" tiitle="Imprimer le bon" class="fa fa-file-text"></i>
+                                                    <?= heurecourt($transaction->created) ?>
+                                                    <br/>
+                                                    <small class="text-navy"><?= datecourt($transaction->created) ?></small>
+                                                </div>
+                                                <div class="col-10 content">
+                                                    <p>
+                                                        <span class="">Bon de caisse N°<strong><?= $transaction->reference ?></strong></span>
+                                                        <span class="pull-right text-right <?= ($transaction->categorieoperation->typeoperationcaisse_id == Home\TYPEOPERATIONCAISSE::ENTREE)?"text-green":"text-red" ?>">
+                                                            <span class="gras" style="font-size: 16px"><?= money($transaction->montant) ?> <?= $params->devise ?> <?= ($transaction->etat_id == Home\ETAT::ENCOURS)?"*":"" ?></span> <br>
+                                                            <small>Par <?= $transaction->modepayement->name() ?></small><br>
+                                                            <a href="<?= $this->url("gestion", "fiches", "boncaisse", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de caisse</a>
+                                                        </span>
+                                                    </p>
+                                                    <p class="m-b-xs"><?= $transaction->comment ?> </p>
+                                                    <p class="m-b-xs"><?= $transaction->structure ?> - <?= $transaction->numero ?></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php } ?>                 
+                                </div>
+
+
+
+                                <?php if ($employe->isAutoriser("caisse")) { ?>
+                                    <div id="tab-3" class="tab-pane"><br>
                                         <?php foreach ($fluxcaisse as $key => $transaction) {
                                             $transaction->actualise(); ?>
                                             <div class="timeline-item">
@@ -156,92 +213,61 @@
                                             </div>
                                         <?php } ?>                 
                                     </div>
+                                <?php } ?>
 
-
-
-                                    <?php if ($employe->isAutoriser("caisse")) { ?>
-                                        <div id="tab-3" class="tab-pane"><br>
-                                            <?php foreach ($fluxcaisse as $key => $transaction) {
-                                                $transaction->actualise(); ?>
-                                                <div class="timeline-item">
-                                                    <div class="row">
-                                                        <div class="col-2 date" style="padding-right: 1%; padding-left: 1%;">
-                                                            <i data-toggle="tooltip" tiitle="Imprimer le bon" class="fa fa-file-text"></i>
-                                                            <?= heurecourt($transaction->created) ?>
-                                                            <br/>
-                                                            <small class="text-navy"><?= datecourt($transaction->created) ?></small>
-                                                        </div>
-                                                        <div class="col-10 content">
-                                                            <p>
-                                                                <span class="">Bon de caisse N°<strong><?= $transaction->reference ?></strong></span>
-                                                                <span class="pull-right text-right <?= ($transaction->categorieoperation->typeoperationcaisse_id == Home\TYPEOPERATIONCAISSE::ENTREE)?"text-green":"text-red" ?>">
-                                                                    <span class="gras" style="font-size: 16px"><?= money($transaction->montant) ?> <?= $params->devise ?> <?= ($transaction->etat_id == Home\ETAT::ENCOURS)?"*":"" ?></span> <br>
-                                                                    <small>Par <?= $transaction->modepayement->name() ?></small><br>
-                                                                    <a href="<?= $this->url("gestion", "fiches", "boncaisse", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de caisse</a>
-                                                                </span>
-                                                            </p>
-                                                            <p class="m-b-xs"><?= $transaction->comment ?> </p>
-                                                            <p class="m-b-xs"><?= $transaction->structure ?> - <?= $transaction->numero ?></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <?php } ?>                 
-                                        </div>
-                                    <?php } ?>
-
-
-                                </div>
 
                             </div>
+
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-sm-4">
-                    <div class="ibox selected">
+            <div class="col-sm-4">
+                <div class="ibox selected">
 
-                        <div class="ibox-content">
-                            <div class="tab-content">
-                                <div id="contact-1" class="tab-pane active">
-                                    <h2><?= $commercial->name() ?> 
+                    <div class="ibox-content">
+                        <div class="tab-content">
+                            <div id="contact-1" class="tab-pane active">
+                                <h2><?= $commercial->name() ?> 
 
-                                    <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
-                                        <i onclick="modification('commercial', <?= $commercial->getId() ?>)" data-toggle="modal" data-target="#modal-commercial" class="pull-right fa fa-pencil cursor"></i>
-                                    <?php } ?>
-                                </h2>
-                                <address>
-                                    <i class="fa fa-phone"></i>&nbsp; <?= $commercial->contact ?><br>
-                                    <i class="fa fa-map-marker"></i>&nbsp; <?= $commercial->adresse ?><br>
-                                </address><hr>
+                                <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
+                                    <i onclick="modification('commercial', <?= $commercial->getId() ?>)" data-toggle="modal" data-target="#modal-commercial" class="pull-right fa fa-pencil cursor"></i>
+                                <?php } ?>
+                            </h2>
+                            <address>
+                                <i class="fa fa-phone"></i>&nbsp; <?= $commercial->contact ?><br>
+                                <i class="fa fa-map-marker"></i>&nbsp; <?= $commercial->adresse ?><br>
+                            </address><hr>
 
-                                <div class="m-b-lg">
-                                    <span>Salaire mensuel fixe</span><br>
-                                    <h2 class="font-bold d-inline"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h2> 
-                                    <i onclick="modification('commercial', <?= $commercial->getId() ?>)" data-toggle="modal" data-target="#modal-salaire" class="fa fa-pencil fa-2x pull-right cursor"></i>
-                                    <br><br>
+                            <div class="m-b-lg">
+                                <span>Salaire mensuel fixe</span><br>
+                                <h2 class="font-bold d-inline"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h2> 
+                                <i onclick="modification('commercial', <?= $commercial->getId() ?>)" data-toggle="modal" data-target="#modal-salaire" class="fa fa-pencil fa-2x pull-right cursor"></i>
+                                <br><br>
 
-                                    <span>Bonus/Prime du mois</span><br>
-                                    <h3 class="font-bold text-muted"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h3>     
+                                <span>Bonus/Prime du mois</span><br>
+                                <h3 class="font-bold text-muted"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h3>     
 
-                                    <hr>
+                                <hr>
 
-                                    <span>Salaire à payer ce mois</span><br>
-                                    <h2 class="font-bold text-red"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h2> <br>
-                                    <?php if ($commercial->salaire > 0) { ?>
-                                     <button type="button" data-toggle="modal" data-target="#modal-fournisseur-rembourse" class="btn btn-danger dim btn-block"><i
-                                        class="fa fa-money"></i> Payer le salaire
-                                    </button>
-                                <?php } ?>                
-
-                            </div>
+                                <span>Salaire à payer ce mois</span><br>
+                                <h2 class="font-bold text-red"><?= money($commercial->salaire) ?> <?= $params->devise  ?></h2> <br>
+                                <?php if ($commercial->salaire > 0) { ?>
+                                   <button type="button" data-toggle="modal" data-target="#modal-fournisseur-rembourse" class="btn btn-danger dim btn-block"><i
+                                    class="fa fa-money"></i> Payer le salaire
+                                </button>
+                            <?php } ?>                
 
                         </div>
 
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 
@@ -254,9 +280,9 @@
 
 <?php 
 foreach ($prospections as $key => $prospection) {
- $prospection->actualise();
- $prospection->fourni("ligneprospection");
- include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
+   $prospection->actualise();
+   $prospection->fourni("ligneprospection");
+   include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
 } 
 ?>
 
@@ -293,6 +319,7 @@ foreach ($prospections as $key => $prospection) {
 
 <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
 <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
+<script type="text/javascript" src="<?= $this->relativePath("../../production/prospections/script.js") ?>"></script>
 
 
 </body>

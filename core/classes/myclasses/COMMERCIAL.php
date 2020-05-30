@@ -71,7 +71,7 @@ class COMMERCIAL extends PERSONNE
 
 
 
-	public function rapports($jours = 7)
+	public function rapports($date1, $date2)
 	{
 		$tableau = [];
 		for ($i=0; $i < $jours ; $i++) { 

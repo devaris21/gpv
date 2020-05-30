@@ -50,6 +50,7 @@ class VENTE extends TABLE
 		$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 		$payement->montant = $total;
 		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;
+		$payement->files = [];
 		$data = $payement->enregistre();
 		if ($data->status) {
 			$this->operation_id = $data->lastid;

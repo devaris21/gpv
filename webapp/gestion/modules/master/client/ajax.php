@@ -263,7 +263,7 @@ if ($action == "newproduit") {
 						}						
 					}else{
 						$data->status = false;
-						$data->message = "Veuillez verifier le montant de la commande !";
+						$data->message = "Veuillez verifier le montant total de la prospection !";
 					}
 				}else{
 					$data->status = false;
@@ -271,11 +271,11 @@ if ($action == "newproduit") {
 				}
 			}else{
 				$data->status = false;
-				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la commande !";
+				$data->message = "Veuillez selectionner des produits et leur quantité pour valider la prospection !";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Erreur lors de la validation de la commande, veuillez recommencer !";
+			$data->message = "Erreur lors de la validation de la prospection, veuillez recommencer !";
 		}
 		echo json_encode($data);
 	}

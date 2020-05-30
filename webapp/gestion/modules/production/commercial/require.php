@@ -6,6 +6,8 @@ unset_session("ressources");
 unset_session("produits");
 unset_session("commande-encours");
 
+$tableau_mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
 
 if ($this->getId() != null) {
 	$datas = COMMERCIAL::findBy(["id ="=> $this->getId()]);
