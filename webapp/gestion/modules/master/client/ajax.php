@@ -483,7 +483,6 @@ if ($action == "newproduit") {
 								if (count($datas) > 0) {
 									$pdv = $datas[0];
 									$pdv->actualise();
-									//$pdv->produit->livrer($qte);
 
 									// $paye = $produit->coutProduction("livraison", $qte);
 									// if (isset($chargement_manoeuvre) && $chargement_manoeuvre == "on") {
@@ -601,7 +600,6 @@ if ($action == "newproduit") {
 									$datas = PRODUIT::findBy(["id="=>$id]);
 									if (count($datas) > 0) {
 										$produit = $datas[0];
-										$produit->livrer($qte);
 
 										$lignecommande = new LIGNEDEVENTE;
 										$lignecommande->livraison_id = $livraison->getId();

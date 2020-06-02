@@ -338,26 +338,6 @@ foreach (ROLE::getAll() as $key => $value) {
 }
 
 
-$item = new APPROVISIONNEMENT();
-$item->etat_id = ETAT::VALIDEE;
-$item->operation_id = 0;
-$item->employe_id = 0;
-$item->reference = "INITIAL";
-$item->fournisseur_id = FOURNISSEUR::FOURNISSEURSYSTEME;
-$item->comment = "approvisionnemnt initial, système !";
-$item->visibility = 0;
-$item->setProtected(1);
-$item->save();
-
-
-$item = new PRODUCTIONJOUR();
-$item->ladate = PARAMS::DATE_DEFAULT;
-$item->comment = "production initial, système !";
-$item->etat_id = ETAT::VALIDEE;
-$item->setProtected(1);
-$item->save();
-
-
 $datas = [200, 250, 300, 500, 1000, 1500, 2000];
 foreach ($datas as $key => $value) {
 	$item = new PRIX();
@@ -367,61 +347,58 @@ foreach ($datas as $key => $value) {
 }
 
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus de passion";
-$item->description = "Hourdis";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus de passion";
+// $item->description = "Hourdis";
+// $item->enregistre();
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus d'orange";
-$item->description = "AC 15";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus d'orange";
+// $item->description = "AC 15";
+// $item->enregistre();
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus de bissap";
-$item->description = "AP 15";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus de bissap";
+// $item->description = "AP 15";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "EAU";
+// $item->class = "Sac";
+// $item->abbr = "Sacs";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Orange";
+// $item->class = "unités";
+// $item->abbr = "Chgs";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Sucre";
+// $item->class = "Tonne";
+// $item->abbr = "T";
+// $item->enregistre();
 
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "EAU";
-$item->class = "Sac";
-$item->abbr = "Sacs";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Orange";
-$item->class = "unités";
-$item->abbr = "Chgs";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Sucre";
-$item->class = "Tonne";
-$item->abbr = "T";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Bidons";
-$item->class = "Tonne";
-$item->abbr = "T";
-$item->enregistre();
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Bidons";
+// $item->class = "Tonne";
+// $item->abbr = "T";
+// $item->enregistre();
 
 
 $datas = ["standart"];

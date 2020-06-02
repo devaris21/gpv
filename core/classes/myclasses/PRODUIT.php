@@ -15,8 +15,6 @@ class PRODUIT extends TABLE
 	public $description = "";
 	public $image = "default.png";
 
-	public $stock = 0;
-
 
 	public function enregistre(){
 		$data = new RESPONSE;
@@ -88,12 +86,6 @@ class PRODUIT extends TABLE
 				$i++;			
 			}			
 		}
-	}
-
-
-	public function livrer(int $quantite){
-		$this->stock -= $quantite;
-		$data = $this->save();	
 	}
 
 

@@ -16,6 +16,7 @@ class PRIXDEVENTE extends TABLE
 	public $produit_id;
 	public $prix_id;
 	public $isActive = TABLE::OUI;
+	public $stock = 0;
 
 
 	public function enregistre(){
@@ -65,7 +66,7 @@ class PRIXDEVENTE extends TABLE
 		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
 		$total -= $item[0]->quantite;
 
-		return $total;
+		return $total + intval($this->stock);
 	}
 
 
@@ -163,7 +164,7 @@ class PRIXDEVENTE extends TABLE
 		$datas = $this->fourni("miseenboutique");
 		$b = comptage($datas, "quantite", "somme");
 
-		return $a - $b;
+		return $a - $b + intval($this->stock);
 	}
 
 

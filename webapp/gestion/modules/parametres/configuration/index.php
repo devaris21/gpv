@@ -305,7 +305,7 @@
 
 
 
-                                            <div class="col-md-4 col-sm-6 bloc">
+                                            <div class="col-md-3 col-sm-6 bloc">
                                                 <div class="ibox border">
                                                     <div class="ibox-title">
                                                         <h5 class="text-uppercase">Les zones de livraison</h5>
@@ -339,10 +339,10 @@
                                             </div>
 
 
-                                            <div class="col-sm-8 bloc">
+                                            <div class="col-md-9 bloc">
                                                 <div class="ibox border">
                                                     <div class="ibox-title">
-                                                        <h5 class="text-uppercase">Prix des produits par zone de livraison</h5>
+                                                        <h5 class="text-uppercase">Tranche des prix par produit</h5>
                                                         <div class="ibox-tools">
                                                             <a class="btn_modal" data-toggle="modal" data-target="#modal-prix">
                                                                 <i class="fa fa-plus"></i> Nouveau prix
@@ -368,7 +368,7 @@
                                                                             $datas = $prix->fourni("prixdevente", ["produit_id ="=>$produit->getId()]);
                                                                             $pz = $datas[0]; ?>
                                                                             <?php if ($pz->isActive == Home\TABLE::OUI) { ?>
-                                                                                <td onclick="changerMode(<?= $pz->getId() ?>)" class="text-center" ><i class="fa fa-circle text-green fa-2x  cursor"></i></td>
+                                                                                <td class="text-center" ><i onclick="changerMode(<?= $pz->getId() ?>)" class="fa fa-circle text-green fa-2x cursor"></i> | <span class="cursor" data-toggle="modal" data-target="#modal-prixdevente-stock" onclick="modification('prixdevente', <?= $pz->getId() ?>)"><?= start0($pz->stock)  ?></span></td>
                                                                             <?php }else{ ?>
                                                                                 <td onclick="changerMode(<?= $pz->getId() ?>)" class="text-center" ><i class="fa fa-circle-o fa- cursor"></i></td>
                                                                             <?php } ?>
