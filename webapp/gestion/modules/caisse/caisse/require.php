@@ -13,4 +13,5 @@ foreach ($operations as $key => $value) {
 $statistiques = OPERATION::statistiques();
 
 $title = "GPV | Compte de caisse";
+
 ?>
