@@ -51,13 +51,12 @@ class VENTE extends TABLE
 		$payement->montant = $total;
 		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;
 		$payement->files = [];
+		$payement->setId(null);
 		$data = $payement->enregistre();
 		if ($data->status) {
 			$this->operation_id = $data->lastid;
 			$data = $this->save();
 		}
-							// $data->url1 = $data->setUrl("gestion", "fiches", "boncaisse", $lot->lastid);
-							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
 		return $data;
 	}
 

@@ -55,6 +55,26 @@
                         <div class="ibox-content"  style="background-color: #fafafa">
 
                             <div>
+                                <label>Mode de payement <span style="color: red">*</span> </label>                                
+                                <div class="input-group">
+                                    <?php Native\BINDING::html("select", "modepayement"); ?>
+                                </div>
+                            </div><br>
+                            <div class="modepayement_facultatif">
+                                <div>
+                                    <label>Structure d'encaissement<span style="color: red">*</span> </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bank"></i></span><input type="text" name="structure" class="form-control">
+                                    </div>
+                                </div><br>
+                                <div>
+                                    <label>N° numero dédié<span style="color: red">*</span> </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-pencil"></i></span><input type="text" name="numero" class="form-control">
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div>
                                 <label>Commentaire </label>
                                 <textarea class="form-control" rows="4" name="comment"></textarea>
                             </div><br>

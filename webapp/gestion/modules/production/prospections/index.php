@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-               <div class="row">
+             <div class="row">
                 <div class="col-md-12">
                     <div class="widget style1 bg-orange">
                         <div class="row">
@@ -96,62 +96,63 @@
                                                 <?php foreach ($prospection->ligneprospections as $key => $ligne) { ?>
                                                     <td class="text-center"><?= start0($ligne->quantite) ?> // 
                                                         <?php if ($prospection->etat_id == Home\ETAT::VALIDEE) { ?>
-                                                        <span class="text-green"><?= start0($ligne->quantite_vendu) ?></span>
-                                                    <?php }  ?></td>
-                                                <?php   } ?>
-                                            </tr>
-                                            <?php if ($prospection->etat_id == Home\ETAT::VALIDEE) { ?>
-                                                <tr class="no">
-                                                    <td><h4 class="mp0">Perte :</h4></td>
-                                                    <?php foreach ($prospection->ligneprospections as $key => $ligne) { ?>
-                                                        <td class="text-center"><?= start0($ligne->perte) ?></td>
-                                                    <?php   } ?>
-                                                </tr>
+                                                            <span class="text-green"><?= start0($ligne->quantite_vendu) ?></span>
+                                                            <?php }  ?></td>
+                                                        <?php   } ?>
+                                                    </tr>
+                                                    <?php if ($prospection->etat_id == Home\ETAT::VALIDEE) { ?>
+                                                        <tr class="no">
+                                                            <td><h4 class="mp0">Perte :</h4></td>
+                                                            <?php foreach ($prospection->ligneprospections as $key => $ligne) { ?>
+                                                                <td class="text-center"><?= start0($ligne->perte) ?></td>
+                                                            <?php   } ?>
+                                                        </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <a href="<?= $this->url("gestion", "fiches", "bonsortie", $prospection->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de sortie</a><br>
+                                            <?php if ($prospection->etat_id == Home\ETAT::ENCOURS) { ?>
+                                                <button onclick="terminer(<?= $prospection->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
+                                                <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
+                                                    <button onclick="annulerProspection(<?= $prospection->getId() ?>)" class="btn btn-white btn-sm"><i class="fa fa-close text-red"></i></button>
+                                                <?php } ?>
                                             <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td>
-                                    <a href="<?= $this->url("gestion", "fiches", "bonsortie", $prospection->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de sortie</a><br>
-                                    <?php if ($prospection->etat_id == Home\ETAT::ENCOURS) { ?>
-                                        <button onclick="terminer(<?= $prospection->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
-                                        <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
-                                            <button onclick="annulerProspection(<?= $prospection->getId() ?>)" class="btn btn-white btn-sm"><i class="fa fa-close text-red"></i></button>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php  } ?>
-                    </tbody>
-                </table>
-                <?php if (count($prospections__) == 0) { ?>
-                    <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune prospection en cours pour le moment !</h1>
-                <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php  } ?>
+                            </tbody>
+                        </table>
+                        <?php if (count($prospections__) == 0) { ?>
+                            <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune prospection en cours pour le moment !</h1>
+                        <?php } ?>
 
+                    </div>
+                </div>
             </div>
+
+
+            <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
+
+            <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
+
+            <?php 
+            foreach ($prospections as $key => $prospection) {
+                if ($prospection->etat_id == Home\ETAT::ENCOURS) { 
+                    $prospection->actualise();
+                    $prospection->fourni("ligneprospection");
+                    include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
+                } 
+            } 
+            ?>
+
         </div>
     </div>
 
+    <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
 
-    <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
-
-    <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
-
-    <?php 
-        foreach ($prospections as $key => $prospection) {
-            if ($prospection->etat_id == Home\ETAT::ENCOURS) { 
-                $prospection->actualise();
-                $prospection->fourni("ligneprospection");
-                include($this->rootPath("composants/assets/modals/modal-prospection2.php"));
-            } 
-        } 
-    ?>
-
-</div>
-</div>
-
-
-<?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
+    <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
 
 
 </body>

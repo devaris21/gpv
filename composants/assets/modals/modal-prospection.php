@@ -42,7 +42,7 @@
                                 <div>
                                     <label>Choisissez le commercial <span style="color: red">*</span> </label>                               
                                     <div class="input-group">
-                                        <?php Native\BINDING::html("select-tableau", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
+                                        <?php Native\BINDING::html("select", "commercial"); ?>
                                     </div>
                                 </div><br>
 
@@ -56,7 +56,7 @@
                                 <div>
                                     <label>Monnaie pour la prospection </label>                           
                                     <div class="input-group">
-                                        <input type="number" number name="monnaie">
+                                        <input type="number" class="form-control" number name="monnaie">
                                     </div>
                                 </div><br>
 

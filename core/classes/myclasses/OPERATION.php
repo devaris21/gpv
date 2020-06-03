@@ -53,6 +53,9 @@ class OPERATION extends TABLE
 						if (intval($this->montant) > 0) {
 							$data = $this->save();
 							if ($data->status) {
+								if (!(isset($this->files) && is_array($this->files))) {
+									$this->files = [];
+								}
 								$this->uploading($this->files);
 							}
 						}else{

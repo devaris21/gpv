@@ -146,7 +146,7 @@ class PROSPECTION extends TABLE
 
 
 
-	public function terminer(){
+	public function terminer(Array $post){
 		$data = new RESPONSE;
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::VALIDEE;
@@ -157,9 +157,11 @@ class PROSPECTION extends TABLE
 				if ($this->typeprospection_id == TYPEPROSPECTION::PROSPECTION) {
 					$vente = new VENTE();
 					$vente->cloner($this);
+					$vente->typevente_id = TYPEVENTE::PROSPECTION;
 					$vente->setId(null);
 					$data = $vente->enregistre();
 					if ($data->status) {
+						$vente->actualise();
 						$montant = 0;
 						$datas = $this->fourni("ligneprospection");
 						foreach ($datas as $key => $ligne) {
@@ -171,7 +173,23 @@ class PROSPECTION extends TABLE
 							$lgn->save();
 							$montant += $ligne->prixdevente->prix->price * $ligne->quantite_vendu;
 						}
-						$vente->payement($montant, json_decode(json_encode($vente), true));
+
+						$params = PARAMS::findLastId();
+						$tva = ($montant * $params->tva) / 100;
+						$total = $montant + $tva;
+
+						$payement = new OPERATION();
+						$payement->hydrater($post);
+						$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
+						$payement->montant = $total;
+						$payement->comment = "Réglement de la vente ".$vente->typevente->name()." N°".$vente->reference;
+						$payement->files = [];
+						$payement->setId(null);
+						$data = $payement->enregistre();
+						if ($data->status) {
+							$vente->operation_id = $data->lastid;
+							$data = $vente->save();
+						}
 					}
 				}
 

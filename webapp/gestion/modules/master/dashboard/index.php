@@ -23,14 +23,14 @@
                                 <h5>Vendu aujourd'hui</h5>
                             </div>
                             <div class="ibox-content">
-                                <h2 class="no-margins"><?= money(comptage(Home\VENTE::today(), "montant", "somme")); ?> <?= $params->devise ?></h2>
+                                <h2 class="no-margins"><?= money(comptage(Home\VENTE::today(), "vendu", "somme")); ?> <?= $params->devise ?></h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Prospections du jour</h5>
+                                <h5>Prospections en cours</h5>
                             </div>
                             <div class="ibox-content">
                                 <div class="row text-center">
@@ -38,7 +38,7 @@
                                         <h2 class="no-margins"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h2 class="no-margins text-green"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::VALIDEE, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
+                                        <h2 class="no-margins text-green"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::VALIDEE, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION, 'DATE(created) ='=>dateAjoute()]))); ?></h2>
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +186,7 @@
                     <div class="col-lg-8">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Programme de livraison du jour</h5>
+                                <h5>Programme de prospection du jour</h5>
                                 <div class="ibox-tools">
                                     <a href="<?= $this->url("gestion", "production", "programmes") ?>" data-toggle="tooltip" title="Modifier le programme">
                                         <i class="fa fa-calendar"></i> Modifier le programme
@@ -197,33 +197,43 @@
                                 <table class="table table-hover no-margins">
                                     <thead>
                                         <tr>
-                                            <th>Client</th>
-                                            <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
-                                                <th class="text-center"><?= $produit->name() ?></th>
-                                            <?php } ?>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Action</th>
+                                            <th>Commercial</th>
+                                          <!--   <?php 
+                                            $lots = Home\PRIXDEVENTE::findBy(["isActive ="=>Home\TABLE::OUI]);
+                                            foreach ($lots as $key => $pdv) {
+                                                $pdv->actualise(); ?>
+                                                <th class="text-center mp0"><?= $pdv->produit->name() ?><br><small><?= $pdv->prix->price() ?> <?= $params->devise  ?></small></th>
+                                            <?php } ?> -->
+                                            <th class="">Heure de sortie</th>
+                                            <th class="">Total</th>
+                                            <th class="">vendu</th>
+                                            <th class="">heure de retour</th>
+                                            <th class="">statut</th>
+                                            <th class="">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach (/*Home\VENTE::programmee(dateAjoute())*/ [] as $key => $livraison) {
-                                            $livraison->actualise();
-                                            $datas = $livraison->fourni("lignelivraison"); ?>
+                                        <?php foreach (Home\PROSPECTION::programmee(dateAjoute()) as $key => $prospection) {
+                                            $prospection->actualise(); ?>
                                             <tr>
-                                                <td><?= $livraison->groupecommande->client->name()  ?></td>
-                                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { 
+                                                <td><?= $prospection->commercial->name()  ?></td>
+                                                <!-- <?php foreach ($lots as $key => $pdv) { 
                                                     $a = ""; ?>
                                                     <?php foreach ($datas as $key => $ligne) { 
-                                                        if($ligne->produit_id == $produit->getId()){
-                                                            $a = $ligne->quantite;
+                                                        if($ligne->prixdevente_id == $pdv->produit->getId()){
+                                                            $a = $ligne->quantite_vendu;
                                                             break;
                                                         } } ?>
                                                         <th class="text-center"><?= $a ?></th>
-                                                    <?php  } ?>
-                                                    <td class="text-center"><span class="label label-<?= $livraison->etat->class ?>"><?= $livraison->etat->name ?></span> </td>
+                                                    <?php  } ?> -->
+                                                    <td><?= heurecourt($prospection->created)  ?></td>
+                                                    <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
+                                                    <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>
+                                                    <td><?= heurecourt($prospection->dateretour)  ?></td>
+                                                    <td class="text-center"><span class="label label-<?= $prospection->etat->class ?>"><?= $prospection->etat->name ?></span> </td>
                                                     <td class="text-center">
-                                                        <?php if ($livraison->etat_id == Home\ETAT::PARTIEL) { ?>
-                                                            <button onclick="validerProg(<?= $livraison->getId() ?>)" class="cursor simple_tag pull-right"><i class="fa fa-file-text-o"></i> Faire la livraison</button>
+                                                        <?php if ($prospection->etat_id == Home\ETAT::PARTIEL) { ?>
+                                                            <button onclick="validerProg(<?= $prospection->getId() ?>)" class="cursor simple_tag pull-right"><i class="fa fa-file-text-o"></i> Faire la prospection</button>
                                                         <?php } ?>
                                                     </td>
                                                 </tr>

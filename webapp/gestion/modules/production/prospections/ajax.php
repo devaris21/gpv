@@ -106,7 +106,7 @@ if ($action == "validerProspection") {
 				}
 				$prospection->hydrater($_POST);
 				$prospection->vendu = getSession("total");
-				$data = $prospection->terminer();
+				$data = $prospection->terminer($_POST);
 				
 			}else{
 				$data->status = false;

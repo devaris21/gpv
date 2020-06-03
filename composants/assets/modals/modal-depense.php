@@ -1,9 +1,9 @@
-<div class="modal inmodal fade" id="modal-entree">
-    <div class="modal-dialog modal-lg">
+<div class="modal inmodal fade" id="modal-depense">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title text-danger">Opération d'entrée en caisse</h4>
+                <h4 class="modal-title text-danger">Opération de sortie de caisse</h4>
                 <small class="font-bold text-danger">Renseigner ces champs pour enregistrer les informations</small>
             </div>
             <form method="POST" class="formShamman" classname="operation">
@@ -65,7 +65,7 @@
                 <div class="container">
                     <input type="hidden" name="id">
                     <button type="button" class="btn btn-sm  btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
-                    <button class="btn dim btn-primary pull-right"><i class="fa fa-refresh"></i> Valider l'opération</button>
+                    <button class="btn dim btn-danger pull-right"><i class="fa fa-refresh"></i> Valider l'opération</button>
                 </div>
                 <br>
             </form>
