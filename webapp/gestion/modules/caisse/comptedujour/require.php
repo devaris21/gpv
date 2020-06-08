@@ -8,7 +8,7 @@ if ($this->getId() != "") {
 }
 
 $commandes = COMMANDE::findBy(["DATE(created) = " => $date, "etat_id !="=>ETAT::ANNULEE]);
-$livraisons = VENTE::findBy(["DATE(created) = " => $date, "etat_id > "=>ETAT::ANNULEE, "etat_id !="=>ETAT::PARTIEL]);
+$livraisons = PROSPECTION::findBy(["DATE(created) = " => $date, "typeprospection_id="=>TYPEPROSPECTION::LIVRAISON, "etat_id > "=>ETAT::ANNULEE, "etat_id !="=>ETAT::PARTIEL]);
 $approvisionnements = APPROVISIONNEMENT::findBy(["visibility ="=>1, "DATE(created) = " => $date, "etat_id !="=>ETAT::ANNULEE]);
 
 $operations = OPERATION::findBy(["DATE(created) = " => $date]);
@@ -27,6 +27,7 @@ $datas = PRODUCTIONJOUR::findBy(["ladate = " => $date]);
 if (count($datas) == 1) {
 	$productionjour = $datas[0];
 	$productionjour->actualise();
+	$productionjour->fourni("ligneproductionjour");
 }
 
 

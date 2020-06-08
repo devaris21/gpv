@@ -12,6 +12,16 @@ foreach ($datas as $key => $value) {
 	$item->save();
 }
 
+$item = new BOUTIQUE();
+$item->name = "Boutique principal";
+$item->setProtected(1);
+$item->save();
+
+$item = new ENTREPOT();
+$item->name = "Entrepôt principal";
+$item->setProtected(1);
+$item->save();
+
 $datas = ["Directe", "Par Prospection/livraison"];
 foreach ($datas as $key => $value) {
 	$item = new TYPEVENTE();
@@ -107,7 +117,7 @@ $item->save();
 
 
 
-$datas = ["master", "production", "caisse", "parametres", "paye des manoeuvre", "modifier-supprimer", "archives"];
+$datas = ["master", "production", "ventes", "approvisionnement", "caisse", "parametres", "paye des manoeuvre", "modifier-supprimer", "archives"];
 foreach ($datas as $key => $value) {
 	$item = new ROLE();
 	$item->name = $value;

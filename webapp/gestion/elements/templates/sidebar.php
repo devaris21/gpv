@@ -40,52 +40,57 @@
                 <li class="" id="clients">
                     <a href="<?= $this->url("gestion", "master", "clients") ?>"><i class="fa fa-users"></i> <span class="nav-label">Liste des clients</span></a>
                 </li>
-                <li class="" id="operation">
-                    <a href="<?= $this->url("gestion", "master", "operation") ?>"><i class="fa fa-money"></i> <span class="nav-label">Opération de caisse</span></a>
+
+                <li class="" id="commerciaux">
+                    <a href="<?= $this->url("gestion", "master", "commerciaux") ?>"><i class="fa fa-bicycle"></i> <span class="nav-label">Liste des commerciaux</span></a>
                 </li>
                 <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
 
-                <?php if ($employe->isAutoriser("production")) { ?>
+                <?php if ($employe->isAutoriser("ventes")) { ?>
                     <li class="" id="prospections">
-                        <a href="<?= $this->url("gestion", "production", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Les Prospections</span> <?php if (count($prospections__) > 0) { ?> <span class="label label-warning float-right"><?= count($prospections__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "ventes", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Les Prospections</span> <?php if (count($prospections__) > 0) { ?> <span class="label label-warning float-right"><?= count($prospections__) ?></span> <?php } ?></a>
                     </li>
-
                     <li class="" id="commandes">
-                        <a href="<?= $this->url("gestion", "production", "commandes") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Les Commandes</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "ventes", "commandes") ?>"><i class="fa fa-handshake-o"></i> <span class="nav-label">Commandes de clients</span> <?php if (count($groupes__) > 0) { ?> <span class="label label-warning float-right"><?= count($groupes__) ?></span> <?php } ?></a>
                     </li>
-
                     <li class="" id="livraisons">
-                        <a href="<?= $this->url("gestion", "production", "livraisons") ?>"><i class="fa fa-truck"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "ventes", "livraisons") ?>"><i class="fa fa-truck"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a>
+                    </li>
+                    <li class="" id="ventes">
+                        <a href="<?= $this->url("gestion", "ventes", "ventes", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de vente</span></a>
                     </li>
 
-                    <li class="groupe">
-                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Productions & ventes</span> <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li class="" id="production"><a href="<?= $this->url("gestion", "production", "production", 7) ?>">Rapport de production</a></li>
-                            <li class="" id="ventes"><a href="<?= $this->url("gestion", "production", "ventes", 7) ?>">Rapport de ventes</a></li>
-                            <li class="" id="miseenboutique"><a href="<?= $this->url("gestion", "production", "miseenboutique") ?>">Mise en boutique</a></li>
-                        </ul>
+
+                    <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
+
+
+                    <li class="" id="production">
+                        <a href="<?= $this->url("gestion", "production", "production", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de production</span></a>
                     </li>
-                    <li class="" id="ressources">
-                        <a href="<?= $this->url("gestion", "production", "ressources", 7) ?>"><i class="fa fa-archive"></i> <span class="nav-label">Stock de ressources</span></a>
+                    <li class="" id="miseenboutique">
+                        <a href="<?= $this->url("gestion", "production", "miseenboutique") ?>"><i class="fa fa-home"></i> <span class="nav-label">Entrepôts & boutiques</span></a>
+                    </li>
+                    <li class="" id="miseenboutique">
+                        <a href="<?= $this->url("gestion", "production", "miseenboutique") ?>"><i class="fa fa-reply"></i> <span class="nav-label">Mise en boutique</span></a>
                     </li>
 
-        
-                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
-                    <li class="" id="commerciaux">
-                        <a href="<?= $this->url("gestion", "production", "commerciaux") ?>"><i class="fa fa-users"></i> <span class="nav-label">Les commerciaux</span></a>
-                    </li>
+                    <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
                     <li class="" id="fournisseurs">
-                        <a href="<?= $this->url("gestion", "production", "fournisseurs") ?>"><i class="fa fa-address-book-o"></i> <span class="nav-label">Liste des Fournisseurs</span></a>
+                        <a href="<?= $this->url("gestion", "approvisionnement", "fournisseurs") ?>"><i class="fa fa-address-book-o"></i> <span class="nav-label">Liste des Fournisseurs</span></a>
                     </li>
                     <li class="" id="approvisionnements">
-                        <a href="<?= $this->url("gestion", "production", "approvisionnements") ?>"><i class="fa fa-bus"></i> <span class="nav-label">Approvisionnements </span> <?php if (count($approvisionnements__) > 0) { ?> <span class="label label-warning float-right"><?= count($approvisionnements__) ?></span> <?php } ?></a>
+                        <a href="<?= $this->url("gestion", "approvisionnement", "approvisionnements") ?>"><i class="fa fa-bus"></i> <span class="nav-label">Approvisionnements </span> <?php if (count($approvisionnements__) > 0) { ?> <span class="label label-warning float-right"><?= count($approvisionnements__) ?></span> <?php } ?></a>
                     </li>
-                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
+                    <li class="" id="ressources">
+                        <a href="<?= $this->url("gestion", "approvisionnement", "ressources", 7) ?>"><i class="fa fa-cubes"></i> <span class="nav-label">Stock de ressources</span></a>
+                    </li>
                 <?php } ?>
+
+                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
+
 
 <!-- 
                 
@@ -99,11 +104,14 @@
 
 
                 <?php if ($employe->isAutoriser("caisse")) { ?>
-                   <li class="" id="comptedujour">
+                 <li class="" id="comptedujour">
                     <a href="<?= $this->url("gestion", "caisse", "comptedujour") ?>"><i class="fa fa-calendar"></i> <span class="nav-label">Rapport du Jour</span></a>
                 </li>
-                <li class="" id="caisse">
-                    <a href="<?= $this->url("gestion", "caisse", "caisse") ?>"><i class="fa fa-money"></i> <span class="nav-label">Compte de caisse</span></a>
+                <li class="" id="operation">
+                    <a href="<?= $this->url("gestion", "master", "operation") ?>"><i class="fa fa-money"></i> <span class="nav-label">Conmpte de caisse</span></a>
+                </li>
+                <li class="" id="tresorerie">
+                    <a href="<?= $this->url("gestion", "caisse", "tresorerie") ?>"><i class="fa fa-money"></i> <span class="nav-label">Trésorerie & compta</span></a>
                 </li>
                 <li class="groupe">
                     <a href="#"><i class="fa fa-file-text-o"></i> <span class="nav-label">Etats récapitulatifs</span> <span class="fa arrow"></span></a>
@@ -140,6 +148,6 @@
 
 <style type="text/css">
     li.dropdown-divider{
-         !important;
-    }
+       !important;
+   }
 </style>

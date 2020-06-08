@@ -137,6 +137,7 @@
 
             <?php include($this->rootPath("composants/assets/modals/modal-prospection.php")); ?> 
 
+
             <?php 
             foreach ($prospections as $key => $prospection) {
                 if ($prospection->etat_id == Home\ETAT::ENCOURS) { 
@@ -150,10 +151,10 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
 
     <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
 
+    <script type="text/javascript" src="<?= $this->relativePath("../../master/client/script.js") ?>"></script>
 
 </body>
 

@@ -1,28 +1,36 @@
 
 <div class="modal inmodal fade" id="modal-produit">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
-           <div class="modal-header">
+         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title">Formulaire de produits</h4>
             <p class="font-bold">Renseigner ces champs pour enregistrer les informations</p>
         </div>
         <form method="POST" class="formShamman" classname="produit">
             <div class="modal-body">
-             <div class="row">
-                <div class="col-sm-6 col-md-4">
+               <div class="row">
+                <div class="col-sm-6">
                     <label>Nom du produit<span1>*</span1></label>
                     <div class="form-group">
                         <input type="text" class="form-control" name="name" required>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-4">
+                <div class="col-sm-6">
                     <label>Description du produit <span1>*</span1></label>
                     <div class="form-group">
                         <textarea rows="4" class="form-control" name="comment" ></textarea>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-4">
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label>Couleur associée<span1>*</span1></label>
+                    <div class="form-group">
+                        <input type="color" class="form-control" name="couleur" value="#fff">
+                    </div>
+                </div>
+                <div class="col-sm-6">
                     <label>Image</label>
                     <div class="">
                         <img style="width: 80px;" src="" class="img-thumbnail logo">

@@ -123,6 +123,7 @@
                                                                 <tr>
                                                                     <th>#</th>
                                                                     <th></th>
+                                                                    <th></th>
                                                                     <th>Libéllé</th>
                                                                     <th>description</th>
                                                                     <th></th>
@@ -135,6 +136,8 @@
                                                                     <tr>
                                                                         <td><?= $i ?></td>
                                                                         <td ><img style="width: 40px" src="<?= $this->stockage("images", "produits", $item->image); ?>"></td>
+
+                                                            <td><div class="border" style="width: 20px; height: 20px; background-color: <?= $item->couleur ?>"></div></td>
                                                                         <td class="gras"><?= $item->name(); ?></td>
                                                                         <td><?= $item->description; ?></td>
                                                                         <td data-toggle="modal" data-target="#modal-produit" title="modifier le produit" onclick="modification('produit', <?= $item->getId() ?>)"><i class="fa fa-pencil text-blue cursor"></i></td>

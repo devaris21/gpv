@@ -11,6 +11,7 @@ class RESSOURCE extends TABLE
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
+	public $typeressource_id;
 	public $name;
 	public $description;
 	public $unite;

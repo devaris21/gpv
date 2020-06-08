@@ -13,7 +13,8 @@ class PRODUIT extends TABLE
 
 	public $name;
 	public $description = "";
-	public $image = "default.png";
+	public $image       = "default.png";
+	public $couleur     = "";
 
 
 	public function enregistre(){

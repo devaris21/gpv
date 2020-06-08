@@ -121,8 +121,12 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function enBoutique(){
-		$datas = $this->fourni("miseenboutique", ["etat_id !="=>ETAT::ANNULEE]);
-		$total = comptage($datas, "quantite", "somme");
+		$total = 0;
+
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignemiseenboutique, prixdevente, miseenboutique WHERE lignemiseenboutique.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND lignemiseenboutique.miseenboutique_id = miseenboutique.id AND miseenboutique.etat_id != ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total += $item[0]->quantite;
 
 		$requette = "SELECT SUM(quantite_vendu) as perte  FROM ligneprospection, prixdevente, prospection WHERE ligneprospection.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneprospection.prospection_id = prospection.id AND prospection.etat_id != ? AND prospection.typeprospection_id = ? GROUP BY prixdevente.id";
 		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE, TYPEPROSPECTION::LIVRAISON]);
@@ -156,15 +160,20 @@ class PRIXDEVENTE extends TABLE
 
 
 	public function enStock(){
+		$total = 0;
+
 		$requette = "SELECT SUM(production) as production  FROM ligneproductionjour, prixdevente, productionjour WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND ligneproductionjour.productionjour_id = productionjour.id AND productionjour.etat_id = ? GROUP BY prixdevente.id";
 		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), ETAT::PARTIEL]);
 		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
-		$a =  $item[0]->production;
+		$total +=  $item[0]->production;
 
-		$datas = $this->fourni("miseenboutique");
-		$b = comptage($datas, "quantite", "somme");
 
-		return $a - $b + intval($this->stock);
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignemiseenboutique, prixdevente, miseenboutique WHERE lignemiseenboutique.prixdevente_id = prixdevente.id AND prixdevente.id = ? AND lignemiseenboutique.miseenboutique_id = miseenboutique.id AND miseenboutique.etat_id != ? GROUP BY prixdevente.id";
+		$item = LIGNEPROSPECTION::execute($requette, [$this->getId(), ETAT::ANNULEE]);
+		if (count($item) < 1) {$item = [new LIGNEPROSPECTION()]; }
+		$total -= $item[0]->quantite;
+
+		return $total + intval($this->stock);
 	}
 
 

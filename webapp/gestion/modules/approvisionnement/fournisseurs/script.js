@@ -30,22 +30,4 @@ $(function(){
     });
 
 
-
-    $(".formRangement").submit(function(event) {
-        Loader.start();
-        var url = "../../webapp/gestion/modules/production/rangement/ajax.php";
-        var formdata = new FormData($(this)[0]);
-        var val = $(this).find("select[name=manoeuvre_id]").val();
-        formdata.append('manoeuvres', val);
-        formdata.append('action', "rangement");
-        $.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
-            if (data.status) {
-                window.location.reload();
-            }else{
-                Alerter.error('Erreur !', data.message);
-            }
-        }, 'json')
-        return false;
-    });
-
 })

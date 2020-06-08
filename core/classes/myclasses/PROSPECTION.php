@@ -32,7 +32,7 @@ class PROSPECTION extends TABLE
 		$data = new RESPONSE;
 		$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonedevente_id]);
 		if (count($datas) == 1) {
-			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id, "disponibilite_id ="=>DISPONIBILITE::LIBRE]);
+			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id]);
 			if (count($datas) == 1) {
 				$commercial = $datas[0];
 				$this->employe_id = getSession("employe_connecte_id");

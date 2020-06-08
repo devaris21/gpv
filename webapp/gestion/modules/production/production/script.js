@@ -1,4 +1,7 @@
 $(function(){
+	$(".tabs-container li:nth-child(1) a.nav-link").addClass('active')
+	ele = $("#produits div.tab-pane:first").addClass('active')
+
     $("body").on("click", ".btnproduit", function(event) {
         var id = $(this).attr("data-id");
         $("td.produit-"+id).toggle(200);

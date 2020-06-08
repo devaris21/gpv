@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-             <div class="row">
+               <div class="row">
                 <div class="col-md-12">
                     <div class="widget style1 lazur-bg">
                         <div class="row">
@@ -63,37 +63,68 @@
                 </div>
             </div>
             <div class="ibox-content">
-             <?php if (count($datas) > 0) { ?>
-               <table class="table table-striped table-hover table-commande">
-                <thead>
-                    <tr>
-                        <th>A la date du</th>
-                        <th>Produit concerné</th>
-                        <th>Quantité</th>
-                        <th>Stock restant</th>
-                        <th>Effectué par</th>
-                        <th >Actions</th>
-                    </tr>
-                </thead>
+              <?php if (count($datas) > 0) { ?>
+               <table class="table table-hover table-commande">
                 <tbody>
                     <?php foreach ($datas as $key => $mise) {
-                        $mise->actualise(); ?>
-                        <tr>
-                            <td><?= datecourt3($mise->created) ?></td>
-                            <td><?= $mise->prixdevente->produit->name() ?> <?= $mise->prixdevente->prix->price() ?> <?= $params->devise ?></td>
-                            <td><?= $mise->quantite ?> unité(s)</td>
-                            <td><?= $mise->restant ?> unité(s)</td>
-                            <td><?= $mise->employe->name() ?></td>
-                            <td onclick="suppressionWithPassword('miseenboutique', <?= $mise->getId() ?>)"><i class="fa fa-close cursor text-danger"></i></td>
-                        </tr>
-                    <?php  } ?>
-                </tbody>
-            </table>
-        <?php }else{ ?>
-            <h1 style="margin: 6% auto;" class="text-center text-muted"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune mise en boutique effectuée pour le moment</h1>
-        <?php } ?>
+                        $mise->actualise(); 
+                        $lots = $mise->fourni("lignemiseenboutique");
+                        ?>
+                        <tr class="border-bottom">
+                            <td class="project-status">
+                                <span class="label label-<?= $mise->etat->class ?>"><?= $mise->etat->name ?></span>
+                            </td>
+                            <td class="project-title border-right" style="width: 35%;">
+                                <h3 class="text-uppercase">Mise en boutique N°<?= $mise->reference ?></h3>
+                                <h5 class="text-uppercase text-muted">du <?= datecourt($mise->created) ?></h5>
+                                <h6 class="text-uppercase text-muted">Employé :<?= $mise->employe->name() ?></h6>
+                                <h6 class="text-uppercase text-muted">Sortie d'entrepot <?= $mise->entrepot->name() ?></h6>
+                                <h6 class="text-uppercase text-muted">Mise en boutique :<?= $mise->boutique->name() ?></h6>
+                            </td>
+                            <td class="border-right">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <?php foreach ($lots as $key => $ligne) { 
+                                                $ligne->actualise(); ?>
+                                                <th class="text-center">
+                                                    <h5 class="mp0"><?= $ligne->prixdevente->produit->name() ?></h5>
+                                                    <h6 class="mp0"><?= $ligne->prixdevente->prix->price() ?></h6>
+                                                </th>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><h4 class="mp0">mis : </h4></td>
+                                            <?php foreach ($lots as $key => $ligne) { ?>
+                                                <td class="text-center"><?= start0($ligne->quantite) ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                        <tr>
+                                            <td><h4 class="mp0">Reste : </h4></td>
+                                            <?php foreach ($lots as $key => $ligne) { ?>
+                                                <td class="text-center"><?= start0($ligne->restant) ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <br>
+                                <a href="<?= $this->url("gestion", "fiches", "bonmiseenboutique", $mise->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Voir le bon</a><br>
+                            </td>
+                        </td>
+                    </tr>
+                <?php  } ?>
+            </tbody>
+        </table>
+    <?php }else{ ?>
+        <h1 style="margin: 6% auto;" class="text-center text-muted"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune commande en cours pour le moment</h1>
+    <?php } ?>
 
-    </div>
+</div>
 </div>
 </div>
 

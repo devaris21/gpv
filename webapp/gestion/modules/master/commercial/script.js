@@ -2,7 +2,7 @@ $(function(){
 
 
 	$("#formAcompte").submit(function(event) {
-		var url = "../../webapp/gestion/modules/production/commercial/ajax.php";
+		var url = "../../webapp/gestion/modules/master/commercial/ajax.php";
 		alerty.confirm("Voulez-vous vraiment créditer ce montant sur ce compte ?", {
 			title: "Créditer l'acompte",
 			cancelLabel : "Non",
@@ -33,7 +33,7 @@ $(function(){
 
 
 	$("form#filtrer").submit(function(event) {
-		var url = "../../webapp/gestion/modules/production/commercial/ajax.php";
+		var url = "../../webapp/gestion/modules/master/commercial/ajax.php";
 		var formdata = new FormData($(this)[0]);
 		formdata.append('action', "filtrer");
 		Loader.start();

@@ -4,7 +4,7 @@ $(function(){
 		$("div[data-toggle=buttons] label").removeClass('active');
 		$(this).addClass('active');
 
-		var url = "../../webapp/gestion/modules/caisse/caisse/ajax.php";
+		var url = "../../webapp/gestion/modules/caisse/tresorerie/ajax.php";
 		var jour = $(this).attr("jour");
 		var formdata = new FormData();
 		formdata.append('jour', jour);
@@ -33,7 +33,7 @@ $(function(){
 
 
 	valider = function(id){
-		var url = "../../webapp/gestion/modules/caisse/caisse/ajax.php";
+		var url = "../../webapp/gestion/modules/caisse/tresorerie/ajax.php";
 		alerty.confirm("Confirmez-vous être maintenant en possession effective de ladite somme ?", {
 			title: "Validation de l'opération",
 			cancelLabel : "Non",

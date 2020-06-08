@@ -55,7 +55,7 @@
                                     </div><br><br>
 
                                     <div class="text">
-                                        <span>Opération de <?= $operation->categorieoperation->typeoperationcaisse->name() ?> N°<?= $operation->reference ?> d'un montant de</span> <span class="lettre text-capitalize"><?= enLettre($operation->montant) ?> <?= $params->devise  ?></span><br>
+                                        <span>Opération de <i><?= $operation->categorieoperation->typeoperationcaisse->name() ?> N°<?= $operation->reference ?></i> d'un montant de</span> <span class="lettre text-capitalize"><?= enLettre($operation->montant) ?> <?= $params->devise  ?></span><br>
                                         <span>pour <i><?= $operation->comment ?></i>.</span>
                                         <p class="m-b-xs"><?= $operation->structure ?> - <?= $operation->numero ?></p><br>
                                     </div>
