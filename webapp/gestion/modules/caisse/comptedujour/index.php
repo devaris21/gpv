@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-sm-9" style="border-right: 2px solid black">
 
-                             <?php if ($employe->isAutoriser("production")) { ?>
+                               <?php if ($employe->isAutoriser("production")) { ?>
 
                                 <div class="">
                                     <div class="ibox ">
@@ -67,8 +67,6 @@
                                                         <th class="">Total</th>
                                                         <th class="">vendu</th>
                                                         <th class="">heure de retour</th>
-                                                        <th class="">statut</th>
-                                                        <th class="">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -80,12 +78,6 @@
                                                             <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
                                                             <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>
                                                             <td><?= heurecourt($prospection->dateretour)  ?></td>
-                                                            <td class="text-center"><span class="label label-<?= $prospection->etat->class ?>"><?= $prospection->etat->name ?></span> </td>
-                                                            <td class="text-center">
-                                                                <?php if ($prospection->etat_id == Home\ETAT::PARTIEL) { ?>
-                                                                    <button onclick="validerProg(<?= $prospection->getId() ?>)" class="cursor simple_tag pull-right"><i class="fa fa-file-text-o"></i> Faire la prospection</button>
-                                                                <?php } ?>
-                                                            </td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -95,7 +87,7 @@
 
                                 </div>
 
-<hr>
+                                <hr>
 
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -168,18 +160,18 @@
                                                             <tr>
                                                                 <?php foreach ($livraison->lignelivraisons as $key => $ligne) {
                                                                     if ($ligne->quantite > 0) { ?>
-                                                                       <td data-toogle="tooltip" title="effectivement livré" class="text-center text-green"><?= $ligne->quantite_livree ?></td>
-                                                                       <td data-toogle="tooltip" title="perte" class="text-center text-red"><?= $ligne->quantite - $ligne->quantite_livree  ?></td>
-                                                                   <?php   } 
-                                                               } ?>
-                                                           </tr>
-                                                       </tbody>
-                                                   </table>
-                                                   <h6 class="mp0 pull-right"><span>Véhicule :</span> <span class="text-uppercase"><?= $livraison->vehicule->name() ?></span></h6>
-                                                   <hr>
-                                               <?php } ?>
-                                           </div>
-                                       <?php }else{ ?>
+                                                                     <td data-toogle="tooltip" title="effectivement livré" class="text-center text-green"><?= $ligne->quantite_livree ?></td>
+                                                                     <td data-toogle="tooltip" title="perte" class="text-center text-red"><?= $ligne->quantite - $ligne->quantite_livree  ?></td>
+                                                                 <?php   } 
+                                                             } ?>
+                                                         </tr>
+                                                     </tbody>
+                                                 </table>
+                                                 <h6 class="mp0 pull-right"><span>Véhicule :</span> <span class="text-uppercase"><?= $livraison->vehicule->name() ?></span></h6>
+                                                 <hr>
+                                             <?php } ?>
+                                         </div>
+                                     <?php }else{ ?>
                                         <p class="text-center text-muted italic">Aucune livraison ce jour </p>
                                     <?php } ?>
                                 </div>
@@ -486,27 +478,27 @@
                                             <p class="text-center text-muted">Aucun entretien ce jour !</p>
                                         <?php } ?>                         
                                     </div><br>
- -->
+                                -->
 
 
-                                    <h4 class="text-uppercase">COMMENTAIRE</h4>
-                                    <p class="text-justify"><?= $productionjour->comment ?></p>
-                                </div>
+                                <h4 class="text-uppercase">COMMENTAIRE</h4>
+                                <p class="text-justify"><?= $productionjour->comment ?></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-            <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
-
-
         </div>
+
+
+        <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
+
+
     </div>
+</div>
 
 
-    <?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
+<?php include($this->rootPath("webapp/gestion/elements/templates/script.php")); ?>
 
 
 </body>

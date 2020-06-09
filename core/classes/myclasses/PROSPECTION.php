@@ -69,7 +69,9 @@ class PROSPECTION extends TABLE
 
 	//les livraions programmées du jour
 	public static function programmee(String $date){
-		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
+		$array = static::findBy(["DATE(dateretour) ="=>$date]);
+		$array1 = static::findBy(["etat_id ="=>ETAT::ENCOURS]);
+		return array_merge($array1, $array);
 	}
 
 
