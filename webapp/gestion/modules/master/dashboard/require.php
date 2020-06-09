@@ -15,8 +15,8 @@ foreach (PRIXDEVENTE::getAll() as $key => $pdv) {
 	$pdv->actualise();
 	$data = new \stdclass();
 	$data->name = $pdv->produit->name()." // ".$pdv->prix->price()/*." ".$params->devise*/;
-	$data->boutique = $pdv->enBoutique();
-	$data->stock = $pdv->enStock();
+	$data->boutique = $pdv->enBoutique(dateAjoute());
+	$data->stock = $pdv->enEntrepot(dateAjoute());
 	$data->commande = $pdv->commandee();
 	if (!($data->boutique==0 && $data->stock==0 && $data->commande==0)) {
 		$tableau[] = $data;

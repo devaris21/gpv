@@ -198,12 +198,6 @@
                                     <thead>
                                         <tr>
                                             <th>Commercial</th>
-                                          <!--   <?php 
-                                            $lots = Home\PRIXDEVENTE::findBy(["isActive ="=>Home\TABLE::OUI]);
-                                            foreach ($lots as $key => $pdv) {
-                                                $pdv->actualise(); ?>
-                                                <th class="text-center mp0"><?= $pdv->produit->name() ?><br><small><?= $pdv->prix->price() ?> <?= $params->devise  ?></small></th>
-                                            <?php } ?> -->
                                             <th class="">Heure de sortie</th>
                                             <th class="">Total</th>
                                             <th class="">vendu</th>
@@ -217,15 +211,6 @@
                                             $prospection->actualise(); ?>
                                             <tr>
                                                 <td><?= $prospection->commercial->name()  ?></td>
-                                                <!-- <?php foreach ($lots as $key => $pdv) { 
-                                                    $a = ""; ?>
-                                                    <?php foreach ($datas as $key => $ligne) { 
-                                                        if($ligne->prixdevente_id == $pdv->produit->getId()){
-                                                            $a = $ligne->quantite_vendu;
-                                                            break;
-                                                        } } ?>
-                                                        <th class="text-center"><?= $a ?></th>
-                                                    <?php  } ?> -->
                                                     <td><?= heurecourt($prospection->created)  ?></td>
                                                     <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
                                                     <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>

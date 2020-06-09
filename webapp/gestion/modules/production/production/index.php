@@ -14,7 +14,7 @@
 
           <?php include($this->rootPath("webapp/gestion/elements/templates/header.php")); ?>  
 
-            <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-sm-7">
                 <h2 class="text-uppercase">Le Stock des ressources de production</h2>
                 <span>au <?= datecourt(dateAjoute())  ?></span>
@@ -44,7 +44,7 @@
 
                         <div class="tabs-left">
                             <ul class="nav nav-tabs">
-                             <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
+                               <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
                                 <li style="background-color: <?= $produit->couleur; ?>"><a class="nav-link text-uppercase" data-toggle="tab" href="#tab-<?= $produit->getId() ?>">production de <?= $produit->name(); ?></a></li>
                             <?php }  ?>
                         </ul>
@@ -108,15 +108,15 @@
                                                 <?php } ?>
                                                 <tr style="height: 18px;"></tr>
                                                 <tr>
-                                                    <td style="width: 40%"><h4 class="text-center gras text-uppercase mp0">En entrepot</h4></td>
+                                                    <td ><h4 class="text-center gras text-muted text-uppercase">En boutique</h4></td>
                                                     <?php foreach ($lots as $key => $pdv) { ?>
-                                                        <td><h4 class="text-muted gras" ><?= start0($pdv->stockGlobal()) ?></h4></td>
+                                                        <td><h4 class="gras" ><?= start0($pdv->enBoutique(dateAjoute())) ?></h4></td>
                                                     <?php } ?>
                                                 </tr>
                                                 <tr>
-                                                    <td ><h4 class="text-center gras text-muted text-uppercase">En boutique</h4></td>
+                                                    <td style="width: 40%"><h4 class="text-center gras text-uppercase mp0">En entrepot</h4></td>
                                                     <?php foreach ($lots as $key => $pdv) { ?>
-                                                        <td><h4 class="gras" ><?= start0($pdv->enBoutique()) ?></h4></td>
+                                                        <td><h4 class="text-muted gras" ><?= start0($pdv->enEntrepot(dateAjoute())) ?></h4></td>
                                                     <?php } ?>
                                                 </tr>
                                                 <tr>

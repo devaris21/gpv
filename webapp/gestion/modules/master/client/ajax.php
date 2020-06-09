@@ -32,7 +32,7 @@ if ($action == "newproduit") {
 					<h4 class="mp0 text-uppercase"><?= $produit->name() ?></h4>
 				</td>
 				<?php foreach ($produit->prixdeventes as $key => $pdv) {
-					if ($pdv->enBoutique() > 0) {
+					if ($pdv->enBoutique(dateAjoute()) > 0) {
 						$pdv->actualise(); ?>
 						<td width="80">
 							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
@@ -142,7 +142,7 @@ if ($action == "newproduit") {
 					$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
 					if (count($datas) == 1) {
 						$pdv = $datas[0];
-						if ($pdv->enBoutique() < $qte) {
+						if ($pdv->enBoutique(dateAjoute()) < $qte) {
 							$test = false;
 							break;
 						}	
@@ -222,7 +222,7 @@ if ($action == "newproduit") {
 							$qte = end($lot);
 							$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
 							$pdv->actualise();
-							if ($qte > 0 && $pdv->enBoutique() >= $qte ) {
+							if ($qte > 0 && $pdv->enBoutique(dateAjoute()) >= $qte ) {
 								unset($tests[$key]);
 							}
 						}
@@ -456,7 +456,7 @@ if ($action == "newproduit") {
 						$qte = end($lot);
 						$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
 						$pdv->actualise();
-						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->enBoutique()) {
+						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->enBoutique(dateAjoute())) {
 							unset($tests[$key]);
 						}
 					}
