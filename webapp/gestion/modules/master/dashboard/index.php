@@ -49,7 +49,7 @@
                             </div>
                             <div class="col border-right border-left">
                                 <span class="h5 font-bold block"><?= money(comptage(Home\VENTE::todayDirect(), "vendu", "somme")); ?> <small><?= $params->devise ?></small></span>
-                                <small class="text-muted block">Prospections</small>
+                                <small class="text-muted block">Ventes par prospection</small>
                             </div>
                             <div class="col text-danger">
                                 <span class="h5 font-bold block"><?= money(Home\OPERATION::sortie(dateAjoute() , dateAjoute(+1))) ?> <small><?= $params->devise ?></small></span>

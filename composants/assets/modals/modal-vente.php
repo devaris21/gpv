@@ -71,18 +71,37 @@
                             </div>
 
                             <input type="hidden" name="client_id" value="<?= Home\CLIENT::ANONYME ?>">
-                        </form><br>
-                        <h2 class="font-bold total text-right total">0 Fcfa</h2>
-                        <hr/>
-                        <button onclick="validerVente()" class="btn btn-warning btn-block dim"><i class="fa fa-check"></i> Valider la vente</button>
+                            <br>
+                            <div class="text-right">
+                                <label class="mp0">Montant total</label>
+                                <h2 class="mp0 gras text-danger text-right total">0 Fcfa</h2>
+                            </div><br>
+
+                            <div class="row">
+                                <div class="offset-5 col-7 text-right">
+                                    <label>Montant reçu du client </label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="recu" number>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <label class="mp0">Montant à rendre</label>
+                                <h3 class="mp0 gras text-muted text-right rendu">0 Fcfa</h2>
+                                </div>
+
+                            </form><br>
+                            <hr/>
+                            <button onclick="validerVente()" class="btn btn-warning btn-block dim"><i class="fa fa-check"></i> Valider la vente</button>
+                        </div>
                     </div>
+
                 </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 </div>
 
 

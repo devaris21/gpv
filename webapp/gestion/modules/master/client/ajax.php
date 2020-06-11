@@ -117,9 +117,12 @@ if ($action == "newproduit") {
 			}
 		}
 		session("total", $montant);
+		session("recu", $recu);
+		session("rendu", intval($recu) - $montant);
 
 		$data = new \stdclass();
 		$data->total = money(getSession("total"))." ".$params->devise;
+		$data->rendu = money(getSession("rendu"))." ".$params->devise;
 		echo json_encode($data);
 	}
 
@@ -150,12 +153,14 @@ if ($action == "newproduit") {
 				}
 
 				if ($test) {
-					if (getSession("total") > 0) {
+					if (getSession("total") > 0 && getSession("rendu") >= 0) {
 						if ($modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE ) {
 
 							$vente = new VENTE();
 							$vente->hydrater($_POST);
 							$vente->montant = $vente->vendu = getSession("total");
+							$vente->recu = getSession("recu");
+							$vente->rendu = getSession("rendu");
 							$data = $vente->enregistre();
 							if ($data->status) {
 								foreach ($prixdeventes as $key => $value) {
@@ -185,7 +190,7 @@ if ($action == "newproduit") {
 						}
 					}else{
 						$data->status = false;
-						$data->message = "Veuillez verifier le montant de la commande !";
+						$data->message = "Veuillez verifier le montant de la vente et/ou de la monnaie!";
 					}
 				}else{
 					$data->status = false;
@@ -193,7 +198,7 @@ if ($action == "newproduit") {
 				}				
 			}else{
 				$data->status = false;
-				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la commande !";
+				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la vente !";
 			}
 		}else{
 			$data->status = false;

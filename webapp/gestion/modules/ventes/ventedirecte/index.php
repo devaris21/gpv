@@ -79,7 +79,7 @@
                                     <h6 class="text-uppercase text-muted">Commercial :  <?= $vente->commercial->name() ?></h6>
                                     <span>Emise <?= depuis($vente->created) ?></span>
                                 </td>
-                                <td class="border-right" style="width: 50%">
+                                <td class="border-right" style="width: 40%">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr class="no">
