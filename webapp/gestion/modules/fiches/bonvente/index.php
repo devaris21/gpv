@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="col-sm text-right">
                                     <h5 class="mp0">
-                                        <span>Montant rendu :</span>
+                                        <span>Monnaie rendu :</span>
                                         <h4 class="text-muted gras d-inline mp0"><?= money($vente->rendu) ?> <?= $params->devise ?></h4>
                                     </h5>   
                                 </div>
