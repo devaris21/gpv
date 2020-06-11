@@ -17,7 +17,7 @@ if ($action == "annulerLivraison") {
 		$employe = $datas[0];
 		$employe->actualise();
 		if ($employe->checkPassword($password)) {
-			$datas = VENTE::findBy(["id ="=>$id]);
+			$datas = PROSPECTION::findBy(["id ="=>$id]);
 			if (count($datas) == 1) {
 				$livraison = $datas[0];
 				$data = $livraison->annuler();

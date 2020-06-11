@@ -311,9 +311,9 @@
                                             <div class="col-md-3 col-sm-6 bloc">
                                                 <div class="ibox border">
                                                     <div class="ibox-title">
-                                                        <h5 class="text-uppercase">Les zones de livraison</h5>
+                                                        <h5 class="text-uppercase">Les zones de vente</h5>
                                                         <div class="ibox-tools">
-                                                            <a class="btn_modal" data-toggle="modal" data-target="#modal-zonelivraison">
+                                                            <a class="btn_modal" data-toggle="modal" data-target="#modal-zonedevente">
                                                                 <i class="fa fa-plus"></i> Ajouter
                                                             </a>
                                                         </div>
@@ -331,8 +331,8 @@
                                                                 <?php $i =0; foreach (Home\ZONEDEVENTE::findBy([], [], ["name"=>"ASC"]) as $key => $item) { ?>
                                                                     <tr>
                                                                         <td class="gras"><?= $item->name(); ?></td>
-                                                                        <td data-toggle="modal" data-target="#modal-zonelivraison" title="modifier la zone de livraison" onclick="modification('zonelivraison', <?= $item->getId() ?>)"><i class="fa fa-pencil text-blue cursor"></i></td>
-                                                                        <td title="supprimer la zone de livraison" onclick="suppressionWithPassword('zonelivraison', <?= $item->getId() ?>)"><i class="fa fa-close cursor text-danger"></i></td>
+                                                                        <td data-toggle="modal" data-target="#modal-zonedevente" title="modifier la zone de livraison" onclick="modification('zonedevente', <?= $item->getId() ?>)"><i class="fa fa-pencil text-blue cursor"></i></td>
+                                                                        <td title="supprimer la zone de livraison" onclick="suppressionWithPassword('zonedevente', <?= $item->getId() ?>)"><i class="fa fa-close cursor text-danger"></i></td>
                                                                     </tr>
                                                                 <?php } ?>
                                                             </tbody>

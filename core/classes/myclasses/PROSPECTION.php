@@ -17,6 +17,8 @@ class PROSPECTION extends TABLE
 	public $commercial_id      = COMMERCIAL::MAGASIN;
 	public $etat_id            = ETAT::ENCOURS;
 	public $employe_id         = null;
+
+	public $vente_id         = null;
 	
 	public $montant            = 0;
 	public $vendu              = 0;
@@ -122,22 +124,31 @@ class PROSPECTION extends TABLE
 
 	public function annuler(){
 		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
+		if ($this->etat_id != ETAT::ANNULEE) {
+
+			if ($this->etat_id == ETAT::VALIDEE) {
+				$this->actualise();
+				$data = $this->vente->annuler();
+			}
+			
 			$this->etat_id = ETAT::ANNULEE;
 			$this->historique("La prospection en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
-				$this->groupecommande->etat_id = ETAT::ENCOURS;
-				$this->groupecommande->save();
+				if ($this->typeprospection_id == TYPEPROSPECTION::LIVRAISON) {
+					$this->groupecommande->etat_id = ETAT::ENCOURS;
+					$this->groupecommande->save();
 
-				if ($this->chauffeur_id > 0) {
-					$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
-					$this->chauffeur->save();
+					if ($this->chauffeur_id > 0) {
+						$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
+						$this->chauffeur->save();
+					}
+
+					$this->vehicule->etat_id = ETATVEHICULE::RAS;
+					$this->vehicule->save();
 				}
-
-				$this->vehicule->etat_id = ETATVEHICULE::RAS;
-				$this->vehicule->save();
+				
 			}
 		}else{
 			$data->status = false;
@@ -194,11 +205,12 @@ class PROSPECTION extends TABLE
 						}
 					}
 				}
-
+				
 				if ($this->commercial_id != null) {
 					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
-					$this->commercial->save();
 				}
+				$this->vente_id = $vente->getId();
+				$this->commercial->save();
 			}
 		}else{
 			$data->status = false;

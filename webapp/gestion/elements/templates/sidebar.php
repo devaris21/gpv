@@ -40,14 +40,19 @@
                 <li class="" id="clients">
                     <a href="<?= $this->url("gestion", "master", "clients") ?>"><i class="fa fa-users"></i> <span class="nav-label">Liste des clients</span></a>
                 </li>
-
                 <li class="" id="commerciaux">
                     <a href="<?= $this->url("gestion", "master", "commerciaux") ?>"><i class="fa fa-bicycle"></i> <span class="nav-label">Liste des commerciaux</span></a>
+                </li>
+                 <li class="" id="rechercher">
+                    <a href="<?= $this->url("gestion", "master", "rechercher") ?>"><i class="fa fa-search"></i> <span class="nav-label">Rechercher</span></a>
                 </li>
                 <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
 
                 <?php if ($employe->isAutoriser("ventes")) { ?>
+                    <li class="" id="ventedirecte">
+                        <a href="<?= $this->url("gestion", "ventes", "ventedirecte") ?>"><i class="fa fa-arrow-right"></i> <span class="nav-label">Ventes directes</span> </a>
+                    </li>
                     <li class="" id="prospections">
                         <a href="<?= $this->url("gestion", "ventes", "prospections") ?>"><i class="fa fa-archive"></i> <span class="nav-label">Les Prospections</span> <?php if (count($prospections__) > 0) { ?> <span class="label label-warning float-right"><?= count($prospections__) ?></span> <?php } ?></a>
                     </li>
@@ -57,8 +62,8 @@
                     <li class="" id="livraisons">
                         <a href="<?= $this->url("gestion", "ventes", "livraisons") ?>"><i class="fa fa-truck"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a>
                     </li>
-                    <li class="" id="ventes">
-                        <a href="<?= $this->url("gestion", "ventes", "ventes", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de vente</span></a>
+                    <li class="" id="rapportvente">
+                        <a href="<?= $this->url("gestion", "ventes", "rapportvente", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de vente</span></a>
                     </li>
 
 

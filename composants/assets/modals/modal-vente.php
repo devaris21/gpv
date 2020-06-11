@@ -65,11 +65,16 @@
                                 </div>
                             </div><br>
 
+                            <div class="">
+                                <label> Ajouter une note </label>
+                                <textarea class="form-control" rows="4" name="comment"></textarea>
+                            </div>
+
                             <input type="hidden" name="client_id" value="<?= Home\CLIENT::ANONYME ?>">
                         </form><br>
                         <h2 class="font-bold total text-right total">0 Fcfa</h2>
                         <hr/>
-                        <button onclick="validerVente()" class="btn btn-primary btn-block dim"><i class="fa fa-check"></i> Valider la commande</button>
+                        <button onclick="validerVente()" class="btn btn-warning btn-block dim"><i class="fa fa-check"></i> Valider la vente</button>
                     </div>
                 </div>
 

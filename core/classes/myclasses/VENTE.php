@@ -19,6 +19,8 @@ class VENTE extends TABLE
 	public $operation_id      = null;
 	
 	public $montant           = 0;
+	public $rendu           = 0;
+	public $recu           = 0;
 	public $comment;
 
 	
@@ -60,8 +62,8 @@ class VENTE extends TABLE
 		return $data;
 	}
 
-	public static function today(){
-		return static::findBy(["DATE(created) ="=>dateAjoute(), "etat_id !="=>ETAT::ANNULEE]);
+	public static function todayDirect(){
+		return static::findBy(["DATE(created) ="=>dateAjoute(), "typevente_id="=>TYPEVENTE::DIRECT, "etat_id !="=>ETAT::ANNULEE]);
 	}
 
 
@@ -106,22 +108,13 @@ class VENTE extends TABLE
 
 	public function annuler(){
 		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
+		if ($this->etat_id != ETAT::ANNULEE) {
 			$this->etat_id = ETAT::ANNULEE;
 			$this->historique("La vente en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
-				$this->groupecommande->etat_id = ETAT::ENCOURS;
-				$this->groupecommande->save();
-
-				if ($this->chauffeur_id > 0) {
-					$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
-					$this->chauffeur->save();
-				}
-
-				$this->vehicule->etat_id = ETATVEHICULE::RAS;
-				$this->vehicule->save();
+				$this->operation->annuler();
 			}
 		}else{
 			$data->status = false;

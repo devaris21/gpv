@@ -115,6 +115,11 @@ class OPERATION extends TABLE
 	}
 
 
+	public function annuler(){
+		return $this->supprime();
+	}
+
+
 
 	public static function entree(string $date1 = "2020-04-01", string $date2){
 		$requette = "SELECT SUM(montant) as montant  FROM operation, categorieoperation WHERE operation.categorieoperation_id = categorieoperation.id AND categorieoperation.typeoperationcaisse_id = ? AND operation.valide = 1 AND DATE(operation.created) >= ? AND DATE(operation.created) <= ?";
@@ -141,7 +146,7 @@ class OPERATION extends TABLE
 
 
 	public static function versements(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? ";
+		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? AND operation.valide = 1";
 		$item = OPERATION::execute($requette, [CATEGORIEOPERATION::VENTE, CLIENT::ANONYME, $date1, $date2]);
 		if (count($item) < 1) {$item = [new OPERATION()]; }
 		return $item[0]->montant;

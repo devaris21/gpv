@@ -49,6 +49,7 @@ class PRIXDEVENTE extends TABLE
 
 	public function name()
 	{
+		$this->actualise();
 		return $this->produit->name()." / ".$this->prix->price;
 	}
 

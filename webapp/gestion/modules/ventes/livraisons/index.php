@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-             <div class="row">
+               <div class="row">
                 <div class="col-md-12">
                     <div class="widget style1 bg-orange">
                         <div class="row">
@@ -103,63 +103,63 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                           <tr class="no">
-                                                <td><h4 class="mp0">Qté : </h4></td>
-                                                <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
-                                                    <td class="text-center"><?= start0($ligne->quantite) ?> // 
-                                                        <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
+                                         <tr class="no">
+                                            <td><h4 class="mp0">Qté : </h4></td>
+                                            <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
+                                                <td class="text-center"><?= start0($ligne->quantite) ?> // 
+                                                    <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
                                                         <span class="text-green"><?= start0($ligne->quantite_vendu) ?></span>
-                                                    <?php }  ?></td>
-                                                <?php   } ?>
-                                            </tr>
-                                            <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
-                                                <tr class="no">
-                                                    <td><h4 class="mp0">Perte :</h4></td>
-                                                    <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
-                                                        <td class="text-center"><?= start0($ligne->perte) ?></td>
+                                                        <?php }  ?></td>
                                                     <?php   } ?>
                                                 </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td>
-                                    <a href="<?= $this->url("gestion", "fiches", "bonsortie", $livraison->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de sortie</a><br>
-                                    <?php if ($livraison->etat_id == Home\ETAT::ENCOURS) { ?>
-                                        <button onclick="terminer(<?= $livraison->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
+                                                <?php if ($livraison->etat_id == Home\ETAT::VALIDEE) { ?>
+                                                    <tr class="no">
+                                                        <td><h4 class="mp0">Perte :</h4></td>
+                                                        <?php foreach ($livraison->ligneprospections as $key => $ligne) { ?>
+                                                            <td class="text-center"><?= start0($ligne->perte) ?></td>
+                                                        <?php   } ?>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <a href="<?= $this->url("gestion", "fiches", "bonsortie", $livraison->getId()) ?>" target="_blank" class="btn btn-block btn-white btn-sm"><i class="fa fa-file-text text-blue"></i> Bon de sortie</a><br>
+                                        <?php if ($livraison->etat_id == Home\ETAT::ENCOURS) { ?>
+                                            <button onclick="terminer(<?= $livraison->getId() ?>)" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Terminer</button>
+                                        <?php } ?>
                                         <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
                                             <button onclick="annulervente(<?= $livraison->getId() ?>)" class="btn btn-white btn-sm"><i class="fa fa-close text-red"></i></button>
                                         <?php } ?>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php  } ?>
-                    </tbody>
-                </table>
-                <?php if (count($livraisons__) == 0) { ?>
-                    <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune livraison en cours pour le moment !</h1>
-                <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php  } ?>
+                        </tbody>
+                    </table>
+                    <?php if (count($livraisons__) == 0) { ?>
+                        <h1 style="margin-top: 30% auto;" class="text-center text-muted aucun"><i class="fa fa-folder-open-o fa-3x"></i> <br> Aucune livraison en cours pour le moment !</h1>
+                    <?php } ?>
 
+                </div>
             </div>
         </div>
-    </div>
 
 
-    <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
+        <?php include($this->rootPath("webapp/gestion/elements/templates/footer.php")); ?>
 
-    <?php include($this->rootPath("composants/assets/modals/modal-clients.php")); ?> 
+        <?php include($this->rootPath("composants/assets/modals/modal-clients.php")); ?> 
 
-    <?php 
-    foreach ($livraisons as $key => $livraison) {
-        if ($livraison->etat_id == Home\ETAT::ENCOURS) { 
-            $livraison->actualise();
-            $livraison->fourni("ligneprospection");
-            include($this->rootPath("composants/assets/modals/modal-livraison2.php"));
+        <?php 
+        foreach ($livraisons as $key => $livraison) {
+            if ($livraison->etat_id == Home\ETAT::ENCOURS) { 
+                $livraison->actualise();
+                $livraison->fourni("ligneprospection");
+                include($this->rootPath("composants/assets/modals/modal-livraison2.php"));
+            } 
         } 
-    } 
-    ?>
+        ?>
 
-</div>
+    </div>
 </div>
 
 
