@@ -55,35 +55,58 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <div class="ibox">
-                                                    <div class="ibox-content">
-                                                        <h5>Vente directe de la periode</h5>
-                                                        <h1 class="no-margins">-200,100</h1>
-                                                        <div class="stat-percent font-bold text-danger">12% <i class="fa fa-level-down"></i></div>
-                                                        <small>Part du marché</small>
-                                                    </div>
-                                                </div>
+                                                <ul class="list-group text-left clear-list m-t">
+                                                    <?php $total =0;
+                                                    foreach (Home\PRIX::getAll() as $key => $prix) { 
+                                                        $vendu = $prix->vendu(dateAjoute(-$id), dateAjoute()); ?>
+                                                        <li class="list-group-item">
+                                                            <i class="fa fa-flask"></i>&nbsp;&nbsp;&nbsp; <?= $prix->price() ?> <?= $params->devise ?>       
+                                                            <span class="float-right">
+                                                                <small class=""><?= money($vendu * $prix->price) ?> <?= $params->devise ?></small>&nbsp;&nbsp;
+                                                                <span class="label label-default"><?= money($vendu) ?></span>
+                                                            </span>
+                                                        </li>
+                                                    <?php } ?>
+                                                    <li class="list-group-item"></li>
+                                                </ul>
 
                                                 <div class="ibox">
                                                     <div class="ibox-content">
-                                                        <h5>Vente par prospection de la période</h5>
+                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
                                                         <h1 class="no-margins">-200,100</h1>
-                                                        <div class="stat-percent font-bold text-danger">12% <i class="fa fa-level-down"></i></div>
-                                                        <small>Part du marché</small>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Nouvelle vente directe</button>
 
-                                                <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
+                                            <div class="col-md-9 border-right border-left">
+                                                <div class="row">
+                                                    <div class="col-sm-6 border-right">
+                                                        <h5>Parfun le plus vendu</h5>
+                                                        <canvas id="myChart1"></canvas>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <h5>Prix le plus vendu</h5>
+                                                        <canvas id="myChart2"></canvas>
+                                                    </div>
+                                                </div><br>
+
+                                                <div class="row">
+                                                    <div class="col-sm-4 border-right">
+                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart3"></canvas>
+                                                    </div>
+                                                    <div class="col-sm-4 border-right">
+                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart4"></canvas>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart5"></canvas>
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <div class="col-md-3">
-
-                                            </div>
-                                            
                                         </div>
+                                        
                                     </div>
                                 </div>
 
@@ -187,8 +210,8 @@
                                                             </div>
                                                         </div>
                                                     <?php } ?>
-
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -271,6 +294,111 @@
 
     } ?>
 
+    var ctx = document.getElementById('myChart1').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'doughnut',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+
+    var ctx = document.getElementById('myChart2').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'doughnut',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+    var ctx = document.getElementById('myChart3').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+
+    var ctx = document.getElementById('myChart4').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+        var ctx = document.getElementById('myChart5').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
 
 });
 </script>

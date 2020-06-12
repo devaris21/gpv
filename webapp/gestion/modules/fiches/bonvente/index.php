@@ -21,9 +21,9 @@
                         <div class="ibox-content" style="padding: 5% !important">
                             <div class="row">
                                 <div class="col-4">
-                                    <img style="width: 120%" src="<?= $this->stockage("images", "societe", $params->image) ?>">
+                                    <img style="width: 120%; margin-top: -15%" src="<?= $this->stockage("images", "societe", $params->image) ?>">
                                 </div>
-                                <div class="col-8">
+                                <div class="col-8 text-right">
                                     <h6 class="gras text-uppercase text-orange"><?= $params->societe ?></h6>
                                     <h6 class="mp0"><?= $params->adresse ?></h6>
                                     <h6 class="mp0"><?= $params->postale ?></h6>

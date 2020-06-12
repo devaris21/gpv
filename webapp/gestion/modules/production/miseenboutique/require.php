@@ -3,7 +3,7 @@ namespace Home;
 
 $title = "GPV | Rangements de la production";
 
-$datas = MISEENBOUTIQUE::findBy();
+$datas = MISEENBOUTIQUE::findBy([], [], ["created"=>"DESC"]);
 
 
 ?>

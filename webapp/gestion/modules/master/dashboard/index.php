@@ -92,8 +92,8 @@
                                         <li class="list-group-item">
                                             <i class="fa fa-flask" style="color: <?= $produit->couleur; ?>"></i> <small><?= $pdv->prix ?></small>          
                                             <span class="float-right">
-                                                <small title="en boutique" class="gras text-<?= ($pdv->boutique > 0)?"green":"danger" ?>"><?= money($pdv->boutique) ?></small>&nbsp;|&nbsp;
-                                                <small title="en entrepôt" class=""><?= money($pdv->stock) ?></small>
+                                                <span title="en boutique" class="gras text-<?= ($pdv->boutique > 0)?"green":"danger" ?>"><?= money($pdv->boutique) ?></span>&nbsp;|&nbsp;
+                                                <span title="en entrepôt" class=""><?= money($pdv->stock) ?></span>
                                             </span>
                                         </li>
                                     <?php } ?>

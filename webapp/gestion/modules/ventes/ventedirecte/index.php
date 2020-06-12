@@ -19,7 +19,7 @@
                 <h2 class="text-uppercase text-warning gras">Toutes les ventes directes</h2>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-7 gras ">Afficher même les aancienes ventes directes </div>
+                        <div class="col-xs-7 gras ">Afficher même les anciennes ventes directes </div>
                         <div class="offset-1"></div>
                         <div class="col-xs-4">
                             <div class="switch">
@@ -79,7 +79,7 @@
                                     <h6 class="text-uppercase text-muted">Commercial :  <?= $vente->commercial->name() ?></h6>
                                     <span>Emise <?= depuis($vente->created) ?></span>
                                 </td>
-                                <td class="border-right" style="width: 40%">
+                                <td class="border-right" style="width: 35%">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr class="no">

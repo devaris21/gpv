@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-             <div class="row">
+               <div class="row">
                 <div class="col-md-12">
                     <div class="widget style1 bg-orange">
                         <div class="row">
@@ -78,8 +78,10 @@
                                     <h6 class="text-uppercase text-muted">Zone de prospection :  <?= $prospection->zonedevente->name() ?></h6>
                                     <h6 class="text-uppercase text-muted">Commercial :  <?= $prospection->commercial->name() ?></h6>
                                     <span>Emise <?= depuis($prospection->created) ?></span>
+
+                                    <h3 class="gras text-orange"><?= money($prospection->montant) ?> <?= $params->devise  ?></h3>
                                 </td>
-                                <td class="border-right" style="width: 50%">
+                                <td class="border-right" style="width: 40%">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr class="no">
