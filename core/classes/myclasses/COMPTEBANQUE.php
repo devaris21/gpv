@@ -17,7 +17,6 @@ class COMPTEBANQUE extends TABLE
 	public $initial = 0;
 	public $etablissement;
 	public $numero;
-	public $comment;
 
 
 	public function enregistre(){
@@ -81,7 +80,7 @@ class COMPTEBANQUE extends TABLE
 
 
 	public function depots(string $date1, string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM mouvement, categoriemouvement WHERE mouvement.typemouvement = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
+		$requette = "SELECT SUM(montant) as montant  FROM mouvement, typemouvement WHERE mouvement.typemouvement_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
 		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::DEPOT, $date1, $date2]);
 		if (count($item) < 1) {$item = [new MOUVEMENT()]; }
 		return $item[0]->montant;
@@ -89,7 +88,7 @@ class COMPTEBANQUE extends TABLE
 
 
 	public function retraits(string $date1, string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM mouvement, categoriemouvement WHERE mouvement.typemouvement = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
+		$requette = "SELECT SUM(montant) as montant  FROM mouvement, typemouvement WHERE mouvement.typemouvement_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
 		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::RETRAIT, $date1, $date2]);
 		if (count($item) < 1) {$item = [new MOUVEMENT()]; }
 		return $item[0]->montant;
@@ -97,7 +96,7 @@ class COMPTEBANQUE extends TABLE
 
 
 	public function solde(string $date1, string $date2){
-		return $this->depots($date1, $date2) - $this->depots($date1, $date2);
+		return $this->depots($date1, $date2) - $this->retraits($date1, $date2) + $this->initial;
 	}
 
 
