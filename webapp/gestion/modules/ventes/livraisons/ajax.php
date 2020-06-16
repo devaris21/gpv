@@ -88,7 +88,7 @@ if ($action == "validerLivraison") {
 					}
 				}
 				$livraison->hydrater($_POST);
-				$data = $livraison->terminer();
+				$data = $livraison->terminerLivraison();
 				
 			}else{
 				$data->status = false;

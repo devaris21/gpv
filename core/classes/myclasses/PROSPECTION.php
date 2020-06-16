@@ -221,6 +221,29 @@ class PROSPECTION extends TABLE
 
 
 
+	public function terminerLivraison(){
+		$data = new RESPONSE;
+		if ($this->etat_id == ETAT::ENCOURS) {
+			$this->etat_id = ETAT::VALIDEE;
+			$this->dateretour = date("Y-m-d H:i:s");
+			$this->historique("La livraion en reference $this->reference vient d'être terminé !");
+			$data = $this->save();
+			if ($data->status) {			
+				if ($this->commercial_id != null) {
+					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
+				}
+				$this->vente_id = $vente->getId();
+				$this->commercial->save();
+			}
+		}else{
+			$data->status = false;
+			$data->message = "Vous ne pouvez plus faire cette opération sur cette prospection !";
+		}
+		return $data;
+	}
+
+
+
 
 	public function montant(){
 		$total = 0;

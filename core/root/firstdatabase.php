@@ -55,6 +55,33 @@ foreach ($datas as $key => $value) {
 	$item->save();
 }
 
+
+$datas = ["Dépôt", "Retrait"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEMOUVEMENT();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+
+$datas = ["Caisse courante"];
+foreach ($datas as $key => $value) {
+	$item = new COMPTEBANQUE();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+$datas = ["Amortissement linéaire", "Amortissement dégressif"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEAMORTISSEMENT();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+
 $datas = ["Accrochage", "Crevaison", "Autre"];
 foreach ($datas as $key => $value) {
 	$item = new TYPEENTRETIENVEHICULE();

@@ -15,6 +15,7 @@ class OPERATION extends TABLE
 	public $categorieoperation_id;
 	public $modepayement_id;
 	public $employe_id;
+	public $comptebanque_id = COMPTEBANQUE::COURANT;
 	public $etat_id = ETAT::VALIDEE;
 	public $comment;
 	public $client_id = CLIENT::ANONYME;

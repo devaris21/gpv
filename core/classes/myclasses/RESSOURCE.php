@@ -102,6 +102,15 @@ class RESSOURCE extends TABLE
 	}
 
 
+	public function achat(string $date1 = "2020-04-01", string $date2){
+		$total = 0;
+		$requette = "SELECT SUM(quantite_recu) as quantite  FROM ligneapprovisionnement, ressource, approvisionnement WHERE ligneapprovisionnement.ressource_id = ressource.id AND ressource.id = ? AND ligneapprovisionnement.approvisionnement_id = approvisionnement.id AND approvisionnement.etat_id = ? AND DATE(approvisionnement.created) >= ? AND DATE(approvisionnement.created) <= ? GROUP BY ressource.id";
+		$item = LIGNEAPPROVISIONNEMENT::execute($requette, [$this->getId(), ETAT::VALIDEE, $date1, $date2]);
+		if (count($item) < 1) {$item = [new LIGNEAPPROVISIONNEMENT()]; }
+		return $item[0]->quantite;
+	}
+
+
 
 	public function consommee(string $date1 = "2020-04-01", string $date2){
 		$total = 0;
@@ -110,6 +119,15 @@ class RESSOURCE extends TABLE
 			$total += $ligne->consommation;			
 		}
 		return $total;
+	}
+
+
+	public function en_cours(){
+		$total = 0;
+		$requette = "SELECT SUM(quantite) as quantite  FROM ligneapprovisionnement, ressource, approvisionnement WHERE ligneapprovisionnement.ressource_id = ressource.id AND ressource.id = ? AND ligneapprovisionnement.approvisionnement_id = approvisionnement.id AND approvisionnement.etat_id = ? GROUP BY ressource.id";
+		$item = LIGNEAPPROVISIONNEMENT::execute($requette, [$this->getId(), ETAT::ENCOURS]);
+		if (count($item) < 1) {$item = [new LIGNEAPPROVISIONNEMENT()]; }
+		return $item[0]->quantite;
 	}
 
 
@@ -125,6 +143,19 @@ class RESSOURCE extends TABLE
 		}
 		return 0;
 	}
+
+
+
+	public function price(){
+		$total = 0;
+		$requette = "SELECT SUM(quantite_recu) as quantite, SUM(ligneapprovisionnement.price) as price FROM ligneapprovisionnement, ressource, approvisionnement WHERE ligneapprovisionnement.ressource_id = ressource.id AND ressource.id = ? AND ligneapprovisionnement.approvisionnement_id = approvisionnement.id AND approvisionnement.etat_id = ? GROUP BY ressource.id";
+		$item = LIGNEAPPROVISIONNEMENT::execute($requette, [$this->getId(), ETAT::VALIDEE]);
+		if (count($item) < 1) {$item = [new LIGNEAPPROVISIONNEMENT()]; }
+		$total += $item[0]->price / $item[0]->quantite;
+
+		return $total;
+	}
+
 
 
 
