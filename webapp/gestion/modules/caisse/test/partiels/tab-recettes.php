@@ -17,7 +17,7 @@
             <div class="col-md-3">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5 class="text-uppercase text-green">Entrées</h5>
+                        <h5 class="text-uppercase text-green">Recette sur la période</h5>
                         <span class="label label-primary float-right">Mensuel</span>
                     </div>
                     <div class="ibox-content">
@@ -32,7 +32,7 @@
                 <div class="ibox ">
                     <div class="ibox-title">
                         <span class="label label-primary float-right">Mensuel</span>
-                        <h5 class="text-uppercase text-red">Dépenses</h5>
+                        <h5 class="text-uppercase text-red">Dépenses sur la période</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins text-red"><?= money(Home\OPERATION::sortie(date("Y-m")."-01" , dateAjoute())) ?></h1>

@@ -104,7 +104,7 @@
                         $reste = $item->resteAmortissement();
                         $total += $reste; ?>
                         <tr>
-                            <td><i class="fa fa-file-text-o fa-2x cursor"></i></td>
+                            <td><i class="fa fa-file-text-o fa-2x cursor" data-toggle="modal" data-target="#modal-immobilisation-<?= $item->getId() ?>"></i></td>
                             <td><?= $item->name() ?></td>
                             <td><?= money($item->montant) ?> <?= $params->devise ?></td>
                             <td><?= money($reste) ?> <?= $params->devise ?></td>
@@ -113,7 +113,7 @@
                         </tr>
                     <?php } ?>
                     <tr>
-                        <td colspan="2"><h2 class="mp0">Total =</h2></td>
+                        <td colspan="3"><h2 class="mp0">Total =</h2></td>
                         <td colspan="2"><h2 class="mp0"><?= money($total) ?> <?= $params->devise ?></h2></td>
                     </tr>
                 </tbody>

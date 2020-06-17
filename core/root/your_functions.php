@@ -319,6 +319,17 @@ function datecourt3($timestamp)
 }
 
 
+function datecourt4($timestamp)
+{
+	if ($timestamp == '' OR $timestamp==null) {
+		$dateformat = '...';
+	}else{
+		$dateformat = ucfirst(strftime('%B %Y', strtotime($timestamp)));
+	}
+	return $dateformat;
+}
+
+
 
 #fonction pour afficher la date dans son court format
 function datelong($timestamp)

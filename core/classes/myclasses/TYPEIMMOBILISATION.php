@@ -11,6 +11,10 @@ class TYPEIMMOBILISATION extends TABLE
 	
 	public $name;
 
+	const CORPORELLE = 1;
+	const INCORPORELLE = 2;
+	const FINANCIERE = 3;
+
 	public function enregistre(){
 		$data = new RESPONSE;
 		if ($this->name != "") {

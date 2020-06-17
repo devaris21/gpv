@@ -41,7 +41,7 @@ class COMPTEBANQUE extends TABLE
 		$montant = intval($montant);
 		if ($montant > 0) {
 			$mouvement = new MOUVEMENT();
-			$mouvement->typemouvement_id = TYPEMOUVEMEN::DEPOT;
+			$mouvement->typemouvement_id = TYPEMOUVEMENT::DEPOT;
 			$mouvement->comptebanque_id = $this->getId();
 			$mouvement->montant = $montant;
 			$mouvement->comment = $comment;
@@ -58,9 +58,9 @@ class COMPTEBANQUE extends TABLE
 		$params = PARAMS::findLastId();
 		$montant = intval($montant);
 		if ($montant > 0) {
-			if ($this->solde(dateAjoute()) >= $montant) {
+			if ($this->solde(PARAMS::DATE_DEFAULT, dateAjoute()) >= $montant) {
 				$mouvement = new MOUVEMENT();
-				$mouvement->typemouvement_id = TYPEMOUVEMEN::RETRAIT;
+				$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
 				$mouvement->comptebanque_id = $this->getId();
 				$mouvement->montant = $montant;
 				$mouvement->comment = $comment;
@@ -80,37 +80,57 @@ class COMPTEBANQUE extends TABLE
 
 
 	public function depots(string $date1, string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM mouvement, typemouvement WHERE mouvement.typemouvement_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
-		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::DEPOT, $date1, $date2]);
+		$requette = "SELECT SUM(montant) as montant FROM mouvement WHERE mouvement.typemouvement_id = ? AND mouvement.comptebanque_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
+		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::DEPOT, $this->getId(), $date1, $date2]);
 		if (count($item) < 1) {$item = [new MOUVEMENT()]; }
 		return $item[0]->montant;
 	}
 
 
 	public function retraits(string $date1, string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM mouvement, typemouvement WHERE mouvement.typemouvement_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
-		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::RETRAIT, $date1, $date2]);
+		$requette = "SELECT SUM(montant) as montant FROM mouvement WHERE mouvement.typemouvement_id = ? AND mouvement.comptebanque_id = ? AND mouvement.valide = 1 AND DATE(mouvement.created) >= ? AND DATE(mouvement.created) <= ?";
+		$item = MOUVEMENT::execute($requette, [TYPEMOUVEMENT::RETRAIT, $this->getId(), $date1, $date2]);
 		if (count($item) < 1) {$item = [new MOUVEMENT()]; }
 		return $item[0]->montant;
 	}
 
 
 	public function solde(string $date1, string $date2){
-		return $this->depots($date1, $date2) - $this->retraits($date1, $date2) + $this->initial;
+		$total = $this->depots($date1, $date2) - $this->retraits($date1, $date2);
+		if ($this->created <= $date2) {
+			return $total + $this->initial;
+		}
+		return $total;
 	}
 
 
 
-	public function transaction(int $montant, COMPTEBANQUE $compte){
+	public function transaction(int $montant, COMPTEBANQUE $compte, string $comment){
 		$params = PARAMS::findLastId();
 		$montant = intval($montant);
-		$data = $this->retrait($montant, "Retrait de ".money($montant)." ".$params->devise. " du compte pour approvisionner ".$compte->name());
+		$data = $this->retrait($montant, "Retrait de ".money($montant)." ".$params->devise. " du compte pour approvisionner ".$compte->name()." - $comment");
 		if ($data->status) {
-			$data = $compte->depot($montant, "Approvionnement du compte de ".money($montant)." ".$params->devise. " à partir de ".$this->name());
+			$data = $compte->depot($montant, "Approvionnement du compte de ".money($montant)." ".$params->devise. " à partir de ".$this->name()." - $comment");
 		}
 		return $data;
 	}
 
+
+
+	public function evolution(string $date1, string $date2){
+		$tableaux = [];
+		$nb = ceil(dateDiffe($date1, $date2));
+		$date = $date1;
+		for ($i=$nb; $i > 0 ; $i--) { 
+			$date = dateAjoute1($date, 1);
+			$data = new \stdclass;
+			$data->time = strtotime($date);
+			$data->montant = $this->solde($date1, $date);
+
+			$tableaux[] = $data;
+		}
+		return $tableaux;
+	}
 
 
 	public function sentenseCreate(){

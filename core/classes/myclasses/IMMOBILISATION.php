@@ -11,6 +11,7 @@ class IMMOBILISATION extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $name;
+	public $typeimmobilisation_id;
 	public $montant;
 	public $started;
 	public $comment;
@@ -63,11 +64,16 @@ class IMMOBILISATION extends TABLE
 	}
 
 
-	public function resteAmortissement(){
+	public function amortis(){
 		$requette = "SELECT SUM(ligneamortissement.montant) as montant  FROM amortissement, ligneamortissement, immobilisation WHERE amortissement.immobilisation_id = immobilisation.id AND ligneamortissement.amortissement_id = amortissement.id AND immobilisation.id = ? AND amortissement.valide = 1 ";
 		$item = LIGNEAMORTISSEMENT::execute($requette, [$this->getId()]);
 		if (count($item) < 1) {$item = [new LIGNEAMORTISSEMENT()]; }
-		return $this->montant - $item[0]->montant;
+		return $item[0]->montant;
+	}
+
+
+	public function resteAmortissement(){
+		return $this->montant - $this->amortis();
 	}
 
 

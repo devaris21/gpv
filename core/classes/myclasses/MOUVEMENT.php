@@ -13,7 +13,7 @@ class MOUVEMENT extends TABLE
 	public $reference;
 	public $montant;
 	public $typemouvement_id;
-	public $comptebanque_id = COMPTEBANQUE::COURANT;
+	public $comptebanque_id;
 	public $etat_id = ETAT::VALIDEE;
 	public $comment;
 	public $employe_id;
@@ -27,18 +27,28 @@ class MOUVEMENT extends TABLE
 		if (count($datas) == 1) {
 			$datas = TYPEMOUVEMENT::findBy(["id ="=>$this->typemouvement_id]);
 			if (count($datas) == 1) {
-				if (intval($this->montant) > 0) {
-					$this->reference = "MVT/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
-					if ($this->typemouvement_id == TYPEMOUVEMENT::DEPOT || ($this->typemouvement_id == TYPEMOUVEMENT::RETRAIT && $this->montant >= $this->solde(dateAjoute()))) {
-						$data = $this->save();
+				if ($this->comptebanque_id == null) {
+					$this->comptebanque_id = getSession("comptebanque_id");
+				}
+				$datas = COMPTEBANQUE::findBy(["id ="=>$this->comptebanque_id]);
+				if (count($datas) == 1) {
+					$banque = $datas[0];
+					if (intval($this->montant) > 0) {
+						$this->reference = "MVT/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
+						if ($this->typemouvement_id == TYPEMOUVEMENT::DEPOT || ($this->typemouvement_id == TYPEMOUVEMENT::RETRAIT && $this->montant <= $banque->solde(PARAMS::DATE_DEFAULT, dateAjoute()))) {
+							$data = $this->save();
+						}else{
+							$data->status = false;
+							$data->message = "Le montant que vous essayez de transferer est plus élévé que le solde du compte !";
+						}
 					}else{
 						$data->status = false;
-						$data->message = "Le montant que vous essayez de transferer est plus élévé que le solde du compte !";
+						$data->message = "Le montant pour cette opération est incorrecte, verifiez-le !";
 					}
 				}else{
 					$data->status = false;
-					$data->message = "Le montant pour cette opération est incorrecte, verifiez-le !";
-				}				
+					$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+				}	
 			}else{
 				$data->status = false;
 				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";

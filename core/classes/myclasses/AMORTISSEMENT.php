@@ -26,7 +26,7 @@ class AMORTISSEMENT extends TABLE
 				if ($this->duree > 0 ) {
 					$data = $this->save();
 					if ($data->status ) {
-						$diif = date("Y", strtotime($this->started)) - date("Y");
+						$diff = date("Y", strtotime($this->started)) - date("Y");
 						if ($diff > 0) {
 							if ($amortissement->typeamortissement_id == TYPEAMORTISSEMENT::LINEAIRE) {
 								$annuite = round(($immobilisation->montant * (1 / $this->duree)), 2);

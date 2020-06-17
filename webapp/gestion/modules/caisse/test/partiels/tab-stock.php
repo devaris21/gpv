@@ -59,7 +59,7 @@
 
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <h2 class="text-uppercase">Stock des intrants</h2>
                 <table class="table table-striped table-hover text-center">
                     <thead>
@@ -100,7 +100,7 @@
                 </table>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <h2 class="text-uppercase">Stock des produits </h2>
                 <table class="table table-hover">
                     <thead>

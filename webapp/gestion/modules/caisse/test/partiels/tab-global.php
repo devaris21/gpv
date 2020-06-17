@@ -6,9 +6,9 @@
                 <h1 class="mp0 d-inline">Trésorerie générale</h1> <span> /// Pour l'exercixe 2019 - 2020</span>
             </div>
 
-            <div class="offset-5 col-sm-2 text-center">
+            <div class="offset-4 col-sm-3 text-center">
                 <div class="form-group">
-                    <?php Native\BINDING::html("select", "client"); ?>
+                    <?php Native\BINDING::html("select-tableau", Home\EXERCICECOMPTABLE::findBy([], [], ["created"=>"DESC"]), null, "exercicecomptable_id"); ?>
                 </div>
             </div>
         </div>
@@ -18,10 +18,8 @@
             <div class="col-md-3">
                 <ul class="list-group clear-list">
                     <li class="list-group-item fist-item">
-                        <span class="label label-success">1</span> Please contact me
-                        <span class="float-right">
-                            09:00 pm
-                        </span>
+                        Solde prévisionnel
+                        <span class="float-right">154 015 000</span>
                     </li>
                     <li class="list-group-item">
                         Impôts et TVA
@@ -83,7 +81,7 @@
                 <button class="btn btn-primary dim"><i class="fa fa-cart-plus"></i> Faire nouvelle commande</button>
             </div>
             <div class="col-md">
-                <button class="btn btn-success dim"><i class="fa fa-truck"></i> Programmer livraison </button>
+                <button class="btn btn-success dim"><i class="fa fa-truck"></i> Bilan comptable </button>
             </div>
             <div class="col-md">
                 <button class="btn btn-success dim"><i class="fa fa-truck"></i> Voir le budget prévisionnel </button>
