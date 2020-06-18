@@ -18,6 +18,7 @@ class IMMOBILISATION extends TABLE
 
 	public $duree;
 	public $typeamortissement_id;
+	public $comptebanque_id;
 
 
 
@@ -28,16 +29,30 @@ class IMMOBILISATION extends TABLE
 			if ($this->started <= dateAjoute()) {
 				if ($this->montant > 0) {
 					if ($this->montant >= $params->minImmobilisation) {
-						$data = $this->save();
-						if ($data->status && dateDiffe($this->started, dateAjoute()) < (365*$this->duree)) {
-							if ($this->typeimmobilisation_id != TYPEIMMOBILISATION::FINANCIERE) {
-								$amortissement = new AMORTISSEMENT();
-								$amortissement->cloner($this);
-								$amortissement->setId(null);
-								$amortissement->immobilisation_id = $this->getId();
-								$amortissement->typeamortissement_id = $this->typeamortissement_id;
-								$data = $amortissement->enregistre();
+						$datas = COMPTEBANQUE::findBy(["id ="=>$this->comptebanque_id]);
+						if (count($datas) == 1) {
+							$compte = $datas[0];
+							if ($compte->solde() >= $this->montant) {
+								$compte->retrait($this->montant, "Retrait de ".money($this->montant)." pour nouvelle immobilisation de ".$this->name());
+
+								$data = $this->save();
+								if ($data->status && dateDiffe($this->started, dateAjoute()) < (365*$this->duree)) {
+									if ($this->typeimmobilisation_id != TYPEIMMOBILISATION::FINANCIERE) {
+										$amortissement = new AMORTISSEMENT();
+										$amortissement->cloner($this);
+										$amortissement->setId(null);
+										$amortissement->immobilisation_id = $this->getId();
+										$amortissement->typeamortissement_id = $this->typeamortissement_id;
+										$data = $amortissement->enregistre();
+									}
+								}
+							}else{
+								$data->status = false;
+								$data->message = "Le compte selectionné n'a pas un solde suffisant !";
 							}
+						}else{
+							$data->status = false;
+							$data->message = "Une erreur s'est produite lors de l'operation, veuillez recommencer !";
 						}
 					}else{
 						$data->status = false;

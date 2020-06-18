@@ -90,7 +90,7 @@
                 <button class="btn btn-warning dim"><i class="fa fa-truck"></i> Documents de synthèse </button>
             </div>
             <div class="col-md">
-                <button class="btn btn-success dim"><i class="fa fa-truck"></i> Cloture de l'exercice </button>
+                <button data-toggle="modal" data-target="#modal-cloture" class="btn btn-success dim"><i class="fa fa-truck"></i> Cloture de l'exercice </button>
             </div>
         </div>
     </div>

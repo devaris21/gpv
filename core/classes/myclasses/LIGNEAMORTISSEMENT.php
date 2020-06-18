@@ -11,6 +11,7 @@ class LIGNEAMORTISSEMENT extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $amortissement_id;
+	public $exercicecomptable_id;
 	public $montant;
 	public $restait = 0;
 
@@ -18,8 +19,10 @@ class LIGNEAMORTISSEMENT extends TABLE
 
 	public function enregistre(){
 		$data = new RESPONSE;
+		$exercicecomptable = EXERCICECOMPTABLE::findLastId();
 		$datas = AMORTISSEMENT::findBy(["id ="=>$this->amortissement_id]);
 		if (count($datas) == 1) {
+			$this->exercicecomptable_id = $exercicecomptable->getId();
 			$data = $this->save();
 		}else{
 			$data->status = false;

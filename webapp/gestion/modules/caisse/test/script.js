@@ -86,4 +86,28 @@ $(function(){
 		})
 	}
 
+
+
+	$("#formCloture").submit(function(event) {
+		var url = "../../webapp/gestion/modules/caisse/test/ajax.php";
+		alerty.confirm("Voulez-vous vraiment clôturer l'exercice comptable en cours ?", {
+			title: "Clôture de l'exercice comptable",
+			cancelLabel : "Non",
+			okLabel : "OUI, clôturer",
+		}, function(){
+			var formdata = new FormData($("#formCloture")[0]);
+			formdata.append('action', "cloturer");
+			Loader.start();
+			$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
+				if (data.status) {
+					window.location.reload();
+				}else{
+					Alerter.error('Erreur !', data.message);
+				}
+			}, 'json')
+		})
+		return false;
+	});
+
+
 })

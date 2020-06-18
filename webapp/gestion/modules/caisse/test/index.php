@@ -416,6 +416,7 @@
 
 <?php include($this->rootPath("composants/assets/modals/modal-capital.php")); ?>  
 <?php include($this->rootPath("composants/assets/modals/modal-immobilisation.php")); ?>
+<?php include($this->rootPath("composants/assets/modals/modal-cloture.php")); ?>
 
 <?php foreach (Home\IMMOBILISATION::getAll() as $key => $immobilisation) {
     $immobilisation->actualise();

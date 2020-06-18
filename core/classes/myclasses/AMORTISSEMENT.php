@@ -13,6 +13,7 @@ class AMORTISSEMENT extends TABLE
 
 	public $typeamortissement_id = TYPEAMORTISSEMENT::LINEAIRE;
 	public $immobilisation_id;
+	public $etat_id = ETAT::ENCOURS;
 	public $duree;
 
 
@@ -69,54 +70,52 @@ class AMORTISSEMENT extends TABLE
 
 
 	public static function encours(){
-		return static::findBy(["etat_id ="=>ETAT::ENCOURS, "visibility = "=>1]);
+		return static::findBy(["etat_id ="=>ETAT::ENCOURS]);
 	}
 	
 
-	public function annuler(){
-		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
-			$this->etat_id = ETAT::ANNULEE;
-			$this->datelivraison = date("Y-m-d H:i:s");
-			$this->historique("L'approvisionnement en reference $this->reference vient d'être annulée !");
-			$data = $this->save();
-			if ($data->status) {
-				$this->actualise();
-				if ($this->operation_id > 0) {
-					$this->operation->supprime();
-					$this->fournisseur->dette -= $this->montant - $this->avance;
-					$this->fournisseur->save();
-				}else{
-						//paymenet par prelevement banquaire
-					$this->fournisseur->acompte += $this->avance;
-					$this->fournisseur->dette -= $this->montant - $this->avance;
-					$this->fournisseur->save();
+
+	public static function cloture(){
+		$exercice = EXERCICECOMPTABLE::encours();
+		foreach (static::encours() as $key => $amor) {
+			$amor->actualise();
+			if ($amor->immobilisation->resteAmortissement() > 0) {
+				$nb = ceil(dateDiffe($exercice->created, dateAjoute()) / 12);
+
+				$annuite = round(($amor->immobilisation->montant * (1 / $amor->duree) * $nb/12), 2);
+				if($amor->typeamortissement_id == TYPEAMORTISSEMENT::DEGRESSIF) {
+					if ($amor->duree < 4) {
+						$taux = 1.25;
+					}elseif ($amor->duree < 6) {
+						$taux = 1.75;
+					}else{
+						$taux = 2.25;
+					}
+					$a = round(($amor->immobilisation->resteAmortissement() * (1 / $amor->duree) * $taux * $nb/12), 2);
+					if ($a > $annuite) {
+						$annuite = $a;
+					}
 				}
+
+				if ($annuite > $amor->immobilisation->resteAmortissement()) {
+					$annuite = $amor->immobilisation->resteAmortissement();
+				}
+
+				$ligne = new LIGNEAMORTISSEMENT();
+				$ligne->exercicecomptable_id = $exercice->getId();
+				$ligne->amortissement_id = $amor->getId();
+				$ligne->montant = $annuite;
+				$data = $ligne->enregistre();
+				if ($data->status) {
+					$ligne->restait = $amor->immobilisation->resteAmortissement();
+					$ligne->save();
+				}
+			}else{
+				$amor->etat_id ==  ETAT::VALIDEE;
+				$amor->save();
 			}
-		}else{
-			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cet approvisionnement !";
 		}
-		return $data;
 	}
-
-
-
-	public function terminer(){
-		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
-			$this->etat_id = ETAT::VALIDEE;
-			$this->employe_id_reception = getSession("employe_connecte_id");
-			$this->datelivraison = date("Y-m-d H:i:s");
-			$this->historique("L'approvisionnement en reference $this->reference vient d'être terminé !");
-			$data = $this->save();
-		}else{
-			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cet approvisionnement !";
-		}
-		return $data;
-	}
-
 
 	
 	public function sentenseCreate(){}

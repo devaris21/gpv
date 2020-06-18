@@ -95,7 +95,13 @@ class COMPTEBANQUE extends TABLE
 	}
 
 
-	public function solde(string $date1, string $date2){
+	public function solde(string $date1=null, string $date2=null){
+		if ($date1  == null) {
+			$date1 = PARAMS::DATE_DEFAULT;
+		}
+		if ($date2  == null) {
+			$date2 = dateAjoute();
+		}
 		$total = $this->depots($date1, $date2) - $this->retraits($date1, $date2);
 		if ($this->created <= $date2) {
 			return $total + $this->initial;
