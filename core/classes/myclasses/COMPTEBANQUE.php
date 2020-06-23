@@ -12,6 +12,8 @@ class COMPTEBANQUE extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	const COURANT = 1;
+	const FONDCOMMERCE = 2;
+	const APPROVISIONNEMENT = 3;
 
 	public $name;
 	public $initial = 0;
@@ -103,11 +105,22 @@ class COMPTEBANQUE extends TABLE
 			$date2 = dateAjoute();
 		}
 		$total = $this->depots($date1, $date2) - $this->retraits($date1, $date2);
-		if ($this->created <= $date2) {
+		if ($this->created <= dateAjoute1($date2, 1)) {
 			return $total + $this->initial;
 		}
 		return $total;
 	}
+
+
+
+	public static function tresorerie(){
+		$total = 0;
+		foreach (static::getAll() as $key => $value) {
+			$total += $value->solde();
+		}
+		return $total;
+	}
+
 
 
 

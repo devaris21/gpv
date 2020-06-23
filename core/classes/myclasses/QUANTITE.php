@@ -3,41 +3,30 @@ namespace Home;
 use Native\RESPONSE;/**
  * 
  */
-class PRIX extends TABLE
+class QUANTITE extends TABLE
 {
 
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
-	public $price;
+	public $name;
 
 	public function enregistre(){
 		$data = new RESPONSE;
-		if ($this->price > 0) {
+		if ($this->name != "") {
 			$data = $this->save();
-			if ($data->status) {
-				foreach (PRODUIT::getAll() as $key => $produit) {
-					$ligne = new PRIXDEVENTE();
-					$ligne->prix_id = $data->lastid;
-					$ligne->produit_id = $produit->getId();
-					$ligne->enregistre();
-				}
-			}
 		}else{
 			$data->status = false;
-			$data->message = "Veuillez renseigner le nom de la zone de livraison !";
+			$data->message = "Veuillez renseigner le nom de la quantité !";
 		}
 		return $data;
 	}
 
 
-	public function price(){
-		return money($this->price);
+	public function name(){
+		return $this->name."L";
 	}
 
-	public function name(){
-		return money($this->price);
-	}
 
 	public function enBoutique(string $date){
 		$total = 0;
@@ -55,7 +44,6 @@ class PRIX extends TABLE
 		}
 		return $total;
 	}
-
 
 
 	public function livree(string $date1 = "2020-06-01", string $date2){
@@ -107,13 +95,13 @@ class PRIX extends TABLE
 
 	
 	public function sentenseCreate(){
-		return $this->sentense = "Ajout d'une nouvelle zone de livraison : $this->price dans les paramétrages";
+		return $this->sentense = "Ajout d'une nouvelle quantité : $this->name dans les paramétrages";
 	}
 	public function sentenseUpdate(){
-		return $this->sentense = "Modification des informations de la zone de livraison $this->id : $this->price ";
+		return $this->sentense = "Modification des informations de la quantité $this->id : $this->name ";
 	}
 	public function sentenseDelete(){
-		return $this->sentense = "Suppression definitive de la zone de livraison $this->id : $this->price";
+		return $this->sentense = "Suppression definitive de la quantité $this->id : $this->name";
 	}
 
 

@@ -118,6 +118,9 @@
                 <li class="" id="tresorerie">
                     <a href="<?= $this->url("gestion", "caisse", "tresorerie") ?>"><i class="fa fa-money"></i> <span class="nav-label">Trésorerie & compta</span></a>
                 </li>
+                <li class="" id="tresorerie">
+                    <a href="<?= $this->url("gestion", "caisse", "test", $exercicecomptable->getId()) ?>"><i class="fa fa-money"></i> <span class="nav-label">Test</span></a>
+                </li>
                 <li class="groupe">
                     <a href="#"><i class="fa fa-file-text-o"></i> <span class="nav-label">Etats récapitulatifs</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">

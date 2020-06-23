@@ -6,12 +6,29 @@ $datas = ["Caisse courante"];
 foreach ($datas as $key => $value) {
 	$item = new COMPTEBANQUE();
 	$item->name = $value;
+	$item->initial = 700000;
 	$item->setProtected(1);
 	$item->save();
 }
 
-//ajustement 
-OPERATION::execute("UPDATE operation set comptebanque_id = 1", []);
+$datas = ["Fonds de commerce"];
+foreach ($datas as $key => $value) {
+	$item = new COMPTEBANQUE();
+	$item->name = $value;
+	$item->initial = 5000000;
+	$item->setProtected(1);
+	$item->save();
+}
+
+$datas = ["Caisse d'approvisionnement"];
+foreach ($datas as $key => $value) {
+	$item = new COMPTEBANQUE();
+	$item->name = $value;
+	$item->initial = 300000;
+	$item->setProtected(1);
+	$item->save();
+}
+
 
 
 $datas = ["Dépôt", "Retrait"];
@@ -95,6 +112,73 @@ foreach ($datas as $key => $value) {
 	$item->setProtected(1);
 	$item->save();
 }
+
+
+
+//ajustement 
+foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::VENTE]) as $key => $ope) {
+	$reglementclient = new REGLEMENTCLIENT();
+	$reglementclient->cloner($ope);
+	$reglementclient->setId(null);
+	$data = $reglementclient->enregistre();
+	if ($data->status) {
+		foreach ($ope->fourni("vente") as $key => $vente) {
+			$vente->reglementclient_id = $reglementclient->getId();
+			$vente->save();
+			$ope->delete();
+		}
+		foreach ($ope->fourni("commande") as $key => $commande) {
+			$commande->reglementclient_id = $reglementclient->getId();
+			$commande->save();
+			$ope->delete();
+		}
+	}
+}
+
+
+foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::APPROVISIONNEMENT]) as $key => $ope) {
+	$reglementfour = new REGLEMENTFOURNISSEUR();
+	$reglementfour->cloner($ope);
+	$reglementfour->setId(null);
+	$data = $reglementfour->enregistre();
+	if ($data->status) {
+		foreach ($ope->fourni("approvisionnement") as $key => $vente) {
+			$vente->reglementfournisseur_id = $reglementfour->getId();
+			$vente->save();
+			$ope->delete();
+		}
+	}
+}
+
+
+foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::PAYE]) as $key => $ope) {
+	$pay = new PAYE();
+	$pay->cloner($ope);
+	$pay->setId(null);
+	$data = $pay->enregistre();
+	if ($data->status) {
+		$ope->delete();
+	}
+}
+
+
+foreach (OPERATION::findBy(["categorieoperation_id >="=>15, "categorieoperation_id <="=>17]) as $key => $ope) {
+	$pay = new MOUVEMENT();
+	$pay->cloner($ope);
+	$pay->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+	$pay->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+	$pay->setId(null);
+	$data = $pay->enregistre();
+	var_dump($data);
+	if ($data->status) {
+		$ope->delete();
+	}
+}
+
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 1 WHERE prix_id <= 3");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 4 ");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 4 WHERE prix_id > 4 ");
+//QUANTITE::query("DELETE FROM prixdevente WHERE isActive = 0 ");
 
 
 ?>

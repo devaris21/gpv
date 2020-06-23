@@ -14,6 +14,7 @@ class PRIXDEVENTE extends TABLE
 
 
 	public $produit_id;
+	public $quantite_id;
 	public $prix_id;
 	public $isActive = TABLE::OUI;
 	public $stock = 0;

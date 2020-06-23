@@ -49,10 +49,9 @@ class CLIENT extends TABLE
 		$data = new RESPONSE;
 		$params = PARAMS::findLastId();
 		if (intval($montant) > 0 ) {
-			$payement = new OPERATION();
+			$payement = new REGLEMENTCLIENT();
 			$payement->hydrater($post);
 			if ($payement->modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE) {
-				$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 				$payement->client_id = $this->getId();
 				$payement->comment = "Acréditation du compte du client ".$this->name()." d'un montant de ".money($montant)." ".$params->devise;
 				$data = $payement->enregistre();
@@ -84,10 +83,9 @@ class CLIENT extends TABLE
 		$params = PARAMS::findLastId();
 		if (intval($montant) > 0 ) {
 			if ($this->acompte >= intval($montant)) {
-				$payement = new OPERATION();
+				$payement = new REMBOURSEMENTCLIENT();
 				$payement->hydrater($post);
 				if ($payement->modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE) {
-					$payement->categorieoperation_id = CATEGORIEOPERATION::REMBOURSEMENT;
 					$payement->client_id = $this->getId();
 					$payement->comment = "Rembourser à partir du acompte du client ".$this->name()." d'un montant de ".money($montant)." ".$params->devise."\n ".$_POST["comment1"];
 					$data = $payement->enregistre();
@@ -155,7 +153,7 @@ class CLIENT extends TABLE
 		$params = PARAMS::findLastId();
 		if (intval($montant) > 0 ) {
 			if (intval($montant) <= $this->dette ) {
-				$payement = new OPERATION();
+				$payement = new REGLEMENTCLIENT();
 				$payement->hydrater($post);
 
 				if ($payement->modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE || ($payement->modepayement_id == MODEPAYEMENT::PRELEVEMENT_ACOMPTE && $montant <= $this->acompte)) {
@@ -166,7 +164,6 @@ class CLIENT extends TABLE
 						$data = $this->save();
 					}else{
 						$this->dette -= intval($montant);
-						$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 						$payement->client_id = $this->getId();
 						$payement->comment = "Reglement de la dette du client ".$this->name()." d'un montant de ".money($montant)." ".$params->devise;
 						$data = $payement->enregistre();

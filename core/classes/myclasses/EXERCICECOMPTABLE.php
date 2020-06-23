@@ -41,6 +41,15 @@ class EXERCICECOMPTABLE extends TABLE
 	}
 
 
+	public function datefin(){
+		if ($this->etat_id == ETAT::ENCOURS) {
+			return dateAjoute();
+		}else{
+			return $this->datefin;
+		}
+	}
+
+
 
 	public static function cloture(){
 		$data = new RESPONSE;

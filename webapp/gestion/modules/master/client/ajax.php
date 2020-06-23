@@ -357,9 +357,8 @@ if ($action == "newproduit") {
 										$client->dette($total - intval($avance));
 									}
 
-									$payement = new OPERATION();
+									$payement = new REGLEMENTCLIENT();
 									$payement->hydrater($_POST);
-									$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 									$payement->montant = $commande->avance;
 									$payement->client_id = $client_id;
 									$payement->comment = "Réglement de la facture pour la commande N°".$commande->reference;
@@ -528,7 +527,7 @@ if ($action == "newproduit") {
 							// 			}
 
 							// 			$livraison->actualise();
-							// 			$payement = new OPERATION();
+							// 			$payement = new REGLEMENTCLIENT();
 							// 			$payement->hydrater($_POST);
 							// 			$payement->categorieoperation_id = CATEGORIEOPERATION::LOCATION_VENTE;
 							// 			$payement->montant = $avance;

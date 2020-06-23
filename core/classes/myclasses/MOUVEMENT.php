@@ -39,7 +39,7 @@ class MOUVEMENT extends TABLE
 							$data = $this->save();
 						}else{
 							$data->status = false;
-							$data->message = "Le montant que vous essayez de transferer est plus élévé que le solde du compte !";
+							$data->message = "Le montant que vous essayez de retirer est plus élévé que le solde du compte !";
 						}
 					}else{
 						$data->status = false;

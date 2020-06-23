@@ -86,8 +86,8 @@
                 </table>
             </div>
 
-            <div class="col-md-6">
-                <h2 class="text-uppercase">Immobilisations <button data-toggle="modal" data-target="#modal-immobilisation" class="btn btn-sm btn-primary dim pull-right"><i class="fa fa-plus"></i> Ajouter nouveau</button></h2>
+            <div class="col-md-6 border-left">
+                <h2 class="text-uppercase">Immobilisations <button data-toggle="modal" data-target="#modal-immobilisation" class="btn btn-sm btn-warning dim pull-right"><i class="fa fa-plus"></i> Ajouter nouveau</button></h2>
                 <table class="table table-stripped table-hover">
                     <thead>
                         <tr>
@@ -104,7 +104,7 @@
                             $reste = $item->resteAmortissement();
                             $total += $reste; ?>
                             <tr>
-                                <td><i class="fa fa-file-text-o fa-2x cursor" data-toggle="modal" data-target="#modal-immobilisation-<?= $item->getId() ?>"></i></td>
+                                <td><i class="fa fa-file-text-o cursor" data-toggle="modal" data-target="#modal-immobilisation-<?= $item->getId() ?>"></i></td>
                                 <td><?= $item->name() ?></td>
                                 <td><?= money($item->montant) ?> <?= $params->devise ?></td>
                                 <td><?= money($reste) ?> <?= $params->devise ?></td>

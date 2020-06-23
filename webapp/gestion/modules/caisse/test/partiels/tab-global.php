@@ -3,7 +3,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-5">
-                <h1 class="mp0 d-inline">Trésorerie générale</h1> <span> /// Pour l'exercixe 2019 - 2020</span>
+                <h1 class="mp0 d-inline">Trésorerie générale</h1> <span> /// <?= datecourt($exercice->created) ?> - <?= datecourt($exercice->datefin) ?></span>
             </div>
 
             <div class="offset-4 col-sm-3 text-center">
@@ -60,17 +60,17 @@
                 <div class="row text-center">
                     <div class="col">
                         <div class=" m-l-md">
-                            <span class="h5 font-bold block">$ 406,100</span>
-                            <small class="text-muted block">Trésorerie Net</small>
+                            <span class="h6 font-bold block text-blue"><?= money(Home\COMPTEBANQUE::tresorerie()) ?> <?= $params->devise ?></span>
+                            <small class="text-muted block">Trésorerie nette</small>
                         </div>
                     </div>
                     <div class="col">
-                        <span class="h5 font-bold block">$ 150,401</span>
-                        <small class="text-muted block">Resultat Net</small>
+                        <span class="h5 font-bold block text-primary"><?= money($caisse->solde()) ?> <?= $params->devise ?></span>
+                        <small class="text-muted block">Caisse courante</small>
                     </div>
                     <div class="col">
-                        <span class="h5 font-bold block">$ 16,822</span>
-                        <small class="text-muted block">Net en caisse</small>
+                        <span class="h6 font-bold block text-warning"><?= money(Home\OPERATION::resultat($exercice->created , $exercice->datefin())) ?> <?= $params->devise ?></span>
+                        <small class="text-muted block">Resultat net</small>
                     </div>
                 </div>
             </div>

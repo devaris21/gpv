@@ -64,10 +64,7 @@ class BINDING
 				if (in_array("startnull", $types)) { ?>
 					<option value="0"> -- Aucun --</option>
 				<?php }
-				foreach ($datas as $key => $item) { 
-					if(isset($item->abbreviation)){$item->name .= " :: ".$item->abbreviation; }
-					if(isset($item->sigle)){$item->name .= " :: ".$item->sigle; }
-					?>
+				foreach ($datas as $key => $item) { ?>
 					<option value="<?= $item->getId() ?>" <?= ($item->getId() == $element->$column)?"selected":"" ?>><?= $item->name() ?></option>
 				<?php } ?>
 			</select>

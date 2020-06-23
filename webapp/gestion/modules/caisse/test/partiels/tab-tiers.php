@@ -10,7 +10,7 @@
                             <i class="fa fa-trophy fa-5x"></i>
                         </div>
                         <div class="col-8 text-right">
-                            <span> Today income </span>
+                            <span> Masse salariale</span>
                             <h2 class="font-bold">$ 4,232</h2>
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                             <i class="fa fa-cloud fa-5x"></i>
                         </div>
                         <div class="col-8 text-right">
-                            <span> Today degrees </span>
+                            <span> Dette clients </span>
                             <h2 class="font-bold">26'C</h2>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                             <i class="fa fa-envelope-o fa-5x"></i>
                         </div>
                         <div class="col-8 text-right">
-                            <span> New messages </span>
+                            <span> Dette fournisseurs </span>
                             <h2 class="font-bold">260</h2>
                         </div>
                     </div>

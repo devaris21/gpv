@@ -11,16 +11,16 @@ class VENTE extends TABLE
 
 	public $reference;
 	public $typevente_id;
-	public $groupecommande_id = null;
+	public $groupecommande_id  = null;
 	public $zonedevente_id;
-	public $commercial_id     = COMMERCIAL::MAGASIN;
-	public $etat_id           = ETAT::ENCOURS;
-	public $employe_id        = null;
-	public $operation_id      = null;
+	public $commercial_id      = COMMERCIAL::MAGASIN;
+	public $etat_id            = ETAT::ENCOURS;
+	public $employe_id         = null;
+	public $reglementclient_id = null;
 	
-	public $montant           = 0;
-	public $rendu           = 0;
-	public $recu           = 0;
+	public $montant            = 0;
+	public $rendu              = 0;
+	public $recu               = 0;
 	public $comment;
 
 	
@@ -49,14 +49,13 @@ class VENTE extends TABLE
 
 		$payement = new OPERATION();
 		$payement->hydrater($post);
-		$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 		$payement->montant = $total;
 		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;
 		$payement->files = [];
 		$payement->setId(null);
 		$data = $payement->enregistre();
 		if ($data->status) {
-			$this->operation_id = $data->lastid;
+			$this->reglementclient_id = $data->lastid;
 			$data = $this->save();
 		}
 		return $data;

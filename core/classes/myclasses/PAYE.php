@@ -5,30 +5,26 @@ use Native\EMAIL;
 /**
  * 
  */
-class OPERATION extends TABLE
+class PAYE extends TABLE
 {
 	public static $tableName = __CLASS__;
 	public static $namespace = __NAMESPACE__;
 
 	public $reference;
-	public $montant;
-	public $categorieoperation_id;
-	public $modepayement_id;
-	public $employe_id;
-	public $etat_id = ETAT::VALIDEE;
-	public $comment;
-	public $client_id = CLIENT::ANONYME;
+	public $mouvement_id;
 	public $commercial_id;
-	public $fournisseur_id;
+	public $comment;
+	public $etat_id = ETAT::VALIDEE;
+	public $modepayement_id;
 	public $structure;
 	public $numero;
 	public $date_approbation;
 	public $isModified = 0;
-
-	public $acompteClient = 0;
-	public $detteClient = 0;
+	public $employe_id;
 
 	public $image;
+	public $montant;
+	public $comptebanque_id;
 
 
 	public function enregistre(){
@@ -36,54 +32,38 @@ class OPERATION extends TABLE
 		$this->employe_id = getSession("employe_connecte_id");
 		$datas = EMPLOYE::findBy(["id ="=>$this->employe_id]);
 		if (count($datas) == 1) {
-			$datas = CATEGORIEOPERATION::findBy(["id ="=>$this->categorieoperation_id]);
-			if (count($datas) == 1) {
-				$cat = $datas[0];
-				if ( $cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::ENTREE || ($cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::SORTIE && $this->modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE)) {
+			$this->reference = "PAYE/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
+			if (!in_array($this->modepayement_id, [MODEPAYEMENT::ESPECE, MODEPAYEMENT::PRELEVEMENT_ACOMPTE])) {
+				$this->etat_id = ETAT::ENCOURS;
+			}else{
+				$this->etat_id = ETAT::VALIDEE;
+			}
 
-					if ( $cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::ENTREE || ($cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::SORTIE && static::resultat(PARAMS::DATE_DEFAULT, dateAjoute1()) >= $this->montant) || ($this->categorieoperation_id == CATEGORIEOPERATION::APPROVISIONNEMENT) ) {
-
-						$this->reference = "BCA/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
-						if (($cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::ENTREE) && !in_array($this->modepayement_id, [MODEPAYEMENT::ESPECE, MODEPAYEMENT::PRELEVEMENT_ACOMPTE]) ) {
-							$this->etat_id = ETAT::ENCOURS;
-						}else{
-							$this->etat_id = ETAT::VALIDEE;
+			if (intval($this->montant) > 0) {
+				$mouvement = new MOUVEMENT();
+				$mouvement->montant = $this->montant;
+				$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+				if ($this->comptebanque_id == null || $this->comptebanque_id == 0) {
+					$mouvement->comptebanque_id  = COMPTEBANQUE::COURANT;
+				}
+				$data = $mouvement->enregistre();
+				if ($data->status) {
+					$this->mouvement_id = $mouvement->getId();
+					$data = $this->save();
+					if ($data->status) {
+						if (!(isset($this->files) && is_array($this->files))) {
+							$this->files = [];
 						}
-						
-						if (intval($this->montant) > 0) {
-							$mouvement = new MOUVEMENT();
-							$mouvement->montant = $this->montant;
-							$mouvement->typemouvement_id == TYPEMOUVEMENT::DEPOT;
-							$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
-							$data = $mouvement->enregistre();
-							if ($data->status) {
-								$data = $this->save();
-								if ($data->status) {
-									if (!(isset($this->files) && is_array($this->files))) {
-										$this->files = [];
-									}
-									$this->uploading($this->files);
-								}
-							}
-						}else{
-							$data->status = false;
-							$data->message = "Le montant pour cette opération est incorrecte, verifiez-le !";
-						}
-					}else{
-						$data->status = false;
-						$data->message = "Vous ne pouvez pas effectuer cette opération, le solde du compte est insuffisant !";
+						$this->uploading($this->files);
 					}
-				}else{
-					$data->status = false;
-					$data->message = "Vous ne pouvez pas utiliser ce mode de payement pour effectuer cette opération !!";
-				}				
+				}
 			}else{
 				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+				$data->message = "Le montant pour cette opération est incorrecte, verifiez-le !";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+			$data->message = "++Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
 		}
 		return $data;
 	}
@@ -153,7 +133,7 @@ class OPERATION extends TABLE
 
 
 	public static function versements(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? AND operation.valide = 1";
+		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.fournisseur_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? AND operation.valide = 1";
 		$item = OPERATION::execute($requette, [CATEGORIEOPERATION::VENTE, CLIENT::ANONYME, $date1, $date2]);
 		if (count($item) < 1) {$item = [new OPERATION()]; }
 		return $item[0]->montant;

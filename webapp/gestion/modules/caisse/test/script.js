@@ -1,18 +1,13 @@
 $(function(){
-	$("div[data-toggle=buttons] label").click(function(event) {
-		Loader.start();
-		$("div[data-toggle=buttons] label").removeClass('active');
-		$(this).addClass('active');
-
-		var url = "../../webapp/gestion/modules/caisse/tresorerie/ajax.php";
-		var jour = $(this).attr("jour");
+	$("select[name=exercicecomptable_id]").change(function(event) {
+		var url = "../../webapp/gestion/modules/caisse/test/ajax.php";
+		var val = $(this).val();
 		var formdata = new FormData();
-		formdata.append('jour', jour);
-		formdata.append('action', "filtrer");
+		formdata.append('id', val);
+		formdata.append('action', "changer");
 		$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
-			$("tbody.tableau").html(data);
-			Loader.stop();
-		}, 'html')
+			location.href = data.url;
+		}, 'json')
 	});
 
 

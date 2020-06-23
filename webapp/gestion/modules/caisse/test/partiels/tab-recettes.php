@@ -1,98 +1,117 @@
 <div role="tabpanel" id="tab-recettes" class="tab-pane">
     <div class="panel-body">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="ibox ">
-                    <div class="ibox-title border">
-                        <span class="label label-success float-right">An</span>
-                        <h5 class="d-inline text-uppercase">Chif. affaire</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins"><?= money(Home\COMMANDE::CA(date("Y")."-01-01" , dateAjoute())) ?></h1>
-                        <div class="stat-percent font-bold text-warning"><?= money(Home\CLIENT::dettes()) ?></div>
-                        <small>Dette des clients</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5 class="text-uppercase text-green">Recette sur la période</h5>
-                        <span class="label label-primary float-right">Mensuel</span>
-                    </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins text-green"><?= money(Home\OPERATION::entree(date("Y-m")."-01" , dateAjoute())) ?></h1>
-                        <div class="stat-percent font-bold text-green"><?= money(Home\OPERATION::entree(date("Y")."-01-01" , dateAjoute())) ?></div>
-                        <small>Total annuel</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <span class="label label-primary float-right">Mensuel</span>
-                        <h5 class="text-uppercase text-red">Dépenses sur la période</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins text-red"><?= money(Home\OPERATION::sortie(date("Y-m")."-01" , dateAjoute())) ?></h1>
-                        <div class="stat-percent font-bold text-red"><?= money(Home\OPERATION::sortie(date("Y")."-01-01" , dateAjoute())) ?></div>
-                        <small>Total annuel</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <span class="label label-primary float-right">Mensuel</span>
-                        <h5 class="text-uppercase">Résultats</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins"><?= money(Home\OPERATION::resultat(date("Y-m")."-01" , dateAjoute())) ?></h1>
-                        <div class="stat-percent font-bold text-info"><?= money(Home\OPERATION::resultat(date("Y")."-01-01" , dateAjoute())) ?></div>
-                        <small>Total annuel</small>
-                    </div>
-                </div>
-            </div>
-        </div><br>
-
 
         <div class="row">
-            <div class="col-md-12">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-operation">
-                        <thead>
-                            <tr class="text-center text-uppercase">
-                                <th colspan="2" style="visibility: hidden; width: 65%"></th>
-                                <th>Entrée</th>
-                                <th>Sortie</th>
-                                <th>Résultats</th>
-                            </tr>
-                        </thead>
-                        <tbody class="tableau">
+            <div class="col-lg-8">
+                <div class="ibox ">
+                    <div class="ibox-content">
+                        <div class="m-t-sm">
+                            <div class="border-right">
+                                <div class="flot-chart">
+                                    <div class="flot-chart-content" id="flot-dashboard-chart-2" height="700px"></div>
+                                </div>
+                            </div><hr>
+                            <div class="row stat-list text-center">
+                                <div class="col-4">
+                                    <h3 class="no-margins text-green"><?= money(Home\OPERATION::entree($exercice->created , $exercice->datefin())) ?> <?= $params->devise ?> </h3>
+                                    <small>Chiffres d'affaires</small>
+
+                                    <div class="progress progress-mini" style="margin-top: 5%;">
+                                        <div class="progress-bar" style="width: 100%; background-color: #dedede"></div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <h2 class="no-margins gras"><?= money(Home\OPERATION::resultat($exercice->created, $exercice->datefin())) ?> <small><?= $params->devise ?></small></h2>
+                                    <small>Marge brute</small>
+                                    <div class="progress progress-mini">
+                                        <div class="progress-bar" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h3 class="no-margins text-red"><?= money(Home\OPERATION::sortie($exercice->created , $exercice->datefin())) ?> <?= $params->devise ?> </h3>
+                                    <small>Dépenses totales</small>
+                                </div>
+                            </div>                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="widget navy-bg p-lg text-center">
+                            <div class="m-b-md">
+                                <h3 class="font-bold no-margins">10 000 000 Fcfa</h3><br>
+
+                                <h4 class="font-bold no-margins">Chiffre d'Affaire</h4>
+                                <h1 class="m-xs">45%</h1>
+
+                                <small>des prévisions atteintes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="widget red-bg p-lg text-center">
+                            <div class="m-b-md">
+                               <h3 class="font-bold no-margins">10 000 000 Fcfa</h3><br>
+
+                                <h4 class="font-bold no-margins">Dépenses</h4>
+                                <h1 class="m-xs">45%</h1>
+
+                                <small>des prévisions atteintes</small>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+               <div class="ibox">
+                <div class="ibox-content" style="padding-bottom: 0;">
+                    <button data-toggle="modal" data-target="#modal-entree" class="btn btn-sm btn-primary dim"><i class="fa fa-check"></i> Nouvelle entrée</button>
+                    <button data-toggle="modal" data-target="#modal-depense" class="btn btn-sm btn-danger dim pull-right"><i class="fa fa-check"></i> Nouvelle dépense</button><hr class="mp3">
+                </div>
+            </div>
+        </div>
+
+    </div><hr>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-operation">
+                    <thead>
+                        <tr class="text-center text-uppercase">
+                            <th colspan="2" style="visibility: hidden; width: 65%"></th>
+                            <th>Entrée</th>
+                            <th>Sortie</th>
+                            <th>Résultats</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableau">
+                        <tr>
+                            <td colspan="2">Repport du solde de la veille (<?= datecourt(dateAjoute(-8)) ?>) </td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , dateAjoute(-8))) ?> <?= $params->devise ?></td>
+                        </tr>
+                        <?php foreach ($operations as $key => $operation) {  ?>
                             <tr>
-                                <td colspan="2">Repport du solde de la veille (<?= datecourt(dateAjoute(-8)) ?>) </td>
-                                <td class="text-center">-</td>
-                                <td class="text-center">-</td>
-                                <td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , dateAjoute(-8))) ?> <?= $params->devise ?></td>
-                            </tr>
-                            <?php foreach ($operations as $key => $operation) {  ?>
-                                <tr>
-                                    <td class="text-center" style="background-color: rgba(<?= hex2rgb($operation->categorieoperation->color) ?>, 0.6);" width="15"><a target="_blank" href="<?= $this->url("gestion", "fiches", "boncaisse", $operation->getId())  ?>"><i class="fa fa-file-text-o fa-2x"></i></a> 
-                                    </td>
-                                    <td>
-                                        <h6 style="margin-bottom: 3px" class="mp0 text-uppercase gras <?= ($operation->categorieoperation->typeoperationcaisse_id == Home\TYPEOPERATIONCAISSE::ENTREE)?"text-green":"text-red" ?>"><?= $operation->categorieoperation->name() ?>  
-
-                                        <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
-                                            |
-                                            &nbsp;&nbsp;<i onclick="modifierOperation(<?= $operation->getId() ?>)" class="cursor fa fa-pencil text-dark"></i> 
-                                            &nbsp;&nbsp;<i class="cursor fa fa-close text-red" onclick="suppressionWithPassword('operation', <?= $operation->getId() ?>)"></i>
-                                        <?php } ?>
-
-                                        <span class="pull-right"><i class="fa fa-clock-o"></i> <?= datelong($operation->created) ?></span>
-                                    </h6>
-                                    <i><?= $operation->comment ?> ## <u style="font-size: 9px; font-style: italic;"><?= $operation->structure ?> - <?= $operation->numero ?></u></i>
+                                <td class="text-center" style="background-color: rgba(<?= hex2rgb($operation->categorieoperation->color) ?>, 0.6);" width="15"><a target="_blank" href="<?= $this->url("gestion", "fiches", "boncaisse", $operation->getId())  ?>"><i class="fa fa-file-text-o fa-2x"></i></a> 
                                 </td>
+                                <td>
+                                    <h6 style="margin-bottom: 3px" class="mp0 text-uppercase gras <?= ($operation->categorieoperation->typeoperationcaisse_id == Home\TYPEOPERATIONCAISSE::ENTREE)?"text-green":"text-red" ?>"><?= $operation->categorieoperation->name() ?>  
+
+                                    <?php if ($employe->isAutoriser("modifier-supprimer")) { ?>
+                                        |
+                                        &nbsp;&nbsp;<i onclick="modifierOperation(<?= $operation->getId() ?>)" class="cursor fa fa-pencil text-dark"></i> 
+                                        &nbsp;&nbsp;<i class="cursor fa fa-close text-red" onclick="suppressionWithPassword('operation', <?= $operation->getId() ?>)"></i>
+                                    <?php } ?>
+
+                                    <span class="pull-right"><i class="fa fa-clock-o"></i> <?= datelong($operation->created) ?></span>
+                                </h6>
+                                <i><?= $operation->comment ?> ## <u style="font-size: 9px; font-style: italic;"><?= $operation->structure ?> - <?= $operation->numero ?></u></i>
+                            </td>
                                            <!--  <td width="110" class="text-center" style="padding: 0; border-right: 2px dashed grey">
                                              <?php if ($operation->etat_id == Home\ETAT::ENCOURS) { ?>
                                                  <button style="padding: 2px 6px;" onclick="valider(<?= $operation->getId() ?>)" class="cursor simple_tag"><i class="fa fa-file-text-o"></i> Valider</button><span style="display: none">en attente</span>

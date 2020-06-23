@@ -54,54 +54,30 @@
                                 <div role="tabpanel" id="pan-0" class="tab-pane">
                                     <div class="panel-body">
                                         <div class="row">
-                                            <div class="col-md-3">
-                                                <ul class="list-group text-left clear-list m-t">
-                                                    <?php $total =0;
-                                                    foreach (Home\PRIX::getAll() as $key => $prix) { 
-                                                        $vendu = $prix->vendu(dateAjoute(-$id), dateAjoute()); ?>
-                                                        <li class="list-group-item">
-                                                            <i class="fa fa-flask"></i>&nbsp;&nbsp;&nbsp; <?= $prix->price() ?> <?= $params->devise ?>       
-                                                            <span class="float-right">
-                                                                <small class=""><?= money($vendu * $prix->price) ?> <?= $params->devise ?></small>&nbsp;&nbsp;
-                                                                <span class="label label-default"><?= money($vendu) ?></span>
-                                                            </span>
-                                                        </li>
-                                                    <?php } ?>
-                                                    <li class="list-group-item"></li>
-                                                </ul>
-
-                                                <div class="ibox">
-                                                    <div class="ibox-content">
-                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
-                                                        <h1 class="no-margins">-200,100</h1>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-9 border-right border-left">
+                                            <div class="col-md-12 border-right border-left text-center">
                                                 <div class="row">
                                                     <div class="col-sm-6 border-right">
-                                                        <h5>Parfun le plus vendu</h5>
+                                                        <h5 class="text-uppercase">Parfun le plus vendu</h5>
                                                         <canvas id="myChart1"></canvas>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <h5>Prix le plus vendu</h5>
+                                                        <h5 class="text-uppercase">Emballage le plus vendu</h5>
                                                         <canvas id="myChart2"></canvas>
                                                     </div>
-                                                </div><br>
+                                                </div><hr>
 
-                                                <div class="row">
+                                                <div class="row text-center">
                                                     <div class="col-sm-4 border-right">
-                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
-                                                        <canvas id="myChart3"></canvas>
+                                                        <h5 class="text-uppercase">Vente directe des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart3" height="150px"></canvas>
                                                     </div>
                                                     <div class="col-sm-4 border-right">
-                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
-                                                        <canvas id="myChart4"></canvas>
+                                                        <h5 class="text-uppercase">Vente par prospection des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart4" height="150px"></canvas>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <h5>Vente globale des <?= $id ?> derniers jours</h5>
-                                                        <canvas id="myChart5"></canvas>
+                                                        <h5 class="text-uppercase">Livraison des <?= $id ?> derniers jours</h5>
+                                                        <canvas id="myChart5" height="150px"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -246,7 +222,7 @@
     $(document).ready(function() {
 
         <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
-           new Chartist.Bar('#ct-chart-<?= $produit->getId() ?>', {
+         new Chartist.Bar('#ct-chart-<?= $produit->getId() ?>', {
             labels: [<?php foreach ($tableau[$produit->getId()] as $key => $data){ ?>"<?= $data->prix ?>", " ", " ",<?php } ?>],
             series: [
             [<?php foreach ($tableau[$produit->getId()] as $key => $data){ ?><?= $data->stock ?>, 0, 0,<?php } ?>],
@@ -254,8 +230,8 @@
             [<?php foreach ($tableau[$produit->getId()] as $key => $data){ ?>0, <?= $data->commande ?>, 0,<?php } ?>],
             ]
         }, {
-           stackBars: true,
-           axisX: {
+         stackBars: true,
+         axisX: {
             labelInterpolationFnc: function(value) {
                 if (value >= 1000) {
                     return (value / 1000) + 'k';            
@@ -272,7 +248,7 @@
     });
 
 
-           <?php foreach ($tableau[$produit->getId()] as $key => $pdv) { ?>
+         <?php foreach ($tableau[$produit->getId()] as $key => $pdv) { ?>
             var sparklineCharts = function(){
                 $("#sparkline-<?= $pdv->id ?>").sparkline([<?php foreach ($pdv->tab as $i){ echo $i.", "; } ?>], {
                     type: 'line',
@@ -301,12 +277,10 @@
 
     // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [<?php foreach (Home\PRODUIT::getAll() as $key => $prod) { echo "'".$prod->name()."', "; } ?>],
         datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45]
+            label: 'Parfum le plus vendu',
+            data: [<?php foreach (Home\PRODUIT::getAll() as $key => $prod) { echo "'".$prod->vendu(dateAjoute(-31), dateAjoute())."', "; } ?>]
         }]
     },
 
@@ -323,9 +297,9 @@
 
     // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [<?php foreach (Home\QUANTITE::getAll() as $key => $prod) { echo "'".$prod->name()."', "; } ?>],
         datasets: [{
-            label: 'My First dataset',
+            label: 'Emballage le plus vendu',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
             data: [0, 10, 5, 2, 20, 30, 45]
@@ -344,7 +318,7 @@
 
     // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [<?php foreach (Home\PRODUIT::getAll() as $key => $prod) { echo "'".$prod->name()."', "; } ?>],
         datasets: [{
             label: 'My First dataset',
             backgroundColor: 'rgb(255, 99, 132)',
@@ -366,7 +340,7 @@
 
     // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [<?php foreach (Home\PRODUIT::getAll() as $key => $prod) { echo "'".$prod->name()."', "; } ?>],
         datasets: [{
             label: 'My First dataset',
             backgroundColor: 'rgb(255, 99, 132)',
@@ -380,14 +354,14 @@
 });
 
 
-        var ctx = document.getElementById('myChart5').getContext('2d');
+    var ctx = document.getElementById('myChart5').getContext('2d');
     var chart = new Chart(ctx, {
     // The type of chart we want to create
     type: 'line',
 
     // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [<?php foreach (Home\PRODUIT::getAll() as $key => $prod) { echo "'".$prod->name()."', "; } ?>],
         datasets: [{
             label: 'My First dataset',
             backgroundColor: 'rgb(255, 99, 132)',

@@ -14,8 +14,8 @@ class APPROVISIONNEMENT extends TABLE
 	public $montant = 0;
 	public $avance = 0;
 	public $reste = 0;
-	public $operation_id = 0;
-	public $fournisseur_id = 1;
+	public $reglementfournisseur_id ;
+	public $fournisseur_id;
 	public $employe_id;
 	public $etat_id;
 	public $employe_id_reception;

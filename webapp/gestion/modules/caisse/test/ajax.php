@@ -74,6 +74,12 @@ if ($action == "filtrer") {
 }
 
 
+if ($action == "changer") {
+	$rooter = new ROOTER;
+	$data->url = $rooter->url("gestion", "caisse", "test", $id);
+	echo json_encode($data);
+}
+
 
 if ($action == "valider") {
 	$datas = EMPLOYE::findBy(["id = "=>getSession("employe_connecte_id")]);
