@@ -84,8 +84,8 @@
                         <hr><hr class="mp0"><br>
 
                         <div class="row">
-                            <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
-                                <div class="col-md-2 col-sm-4 border-right">
+                            <?php foreach (Home\PRODUIT::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $produit) { ?>
+                                <div class="col-md border-right">
                                     <h6 class="text-uppercase text-center gras" style="color: <?= $produit->couleur; ?>">Stock de <?= $produit->name() ?></h6>
                                     <ul class="list-group clear-list m-t">
                                         <?php foreach ($tableau[$produit->getId()] as $key => $pdv) { ?>

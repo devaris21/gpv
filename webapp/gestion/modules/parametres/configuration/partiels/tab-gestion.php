@@ -126,60 +126,35 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <?php $i =0; foreach (Home\QUANTITE::findBy([]) as $key => $qte) {  ?>
-                                        <td class="gras text-center"><?= $qte->name(); ?></td>
+                                    <?php $i =0; foreach (Home\PRIX::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $prix) {  ?>
+                                        <td class="gras text-center"><?= $prix->price(); ?> <?= $params->devise ?></td>
                                     <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $produit) { ?>
+                                <?php $i =0; foreach (Home\PRODUIT::findBy(["isActive ="=>Home\TABLE::OUI], [], ["name"=>"ASC"]) as $key => $produit) { ?>
                                     <tr>
                                         <td class="gras"><?= $produit->name(); ?></td>
-                                        <?php foreach (Home\QUANTITE::findBy([]) as $key => $qte) { 
-                                            $datas = $qte->fourni("prixdevente", ["produit_id ="=>$produit->getId()]);
-                                            if (count($datas) > 0) {
-                                                $pz = $datas[0]; $pz->actualise(); ?>
-                                                <?php if ($pz->isActive == Home\TABLE::OUI) { ?>
-                                                    <td class="text-center">
-                                                        <div class="switch" style="display: inline-block;">
-                                                            <div class="onoffswitch">
-                                                                <input type="checkbox" class="onoffswitch-checkbox" id="pz<?= $qte->getId() ?>">
-                                                                <label class="onoffswitch-label" for="pz<?= $qte->getId() ?>">
-                                                                    <span class="onoffswitch-inner"></span>
-                                                                    <span class="onoffswitch-switch"></span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display: inline-block; width: 100px; margin: 0%">
-                                                            <?php Native\BINDING::html("select", "prix", $pz, "prix_id")  ?>
-                                                        </div>
-                                                    </td>
-                                                <?php }else{ ?>
-                                                    <td class="text-center">
-                                                        <div class="switch" style="display: inline-block;">
-                                                            <div class="onoffswitch">
-                                                                <input type="checkbox" class="onoffswitch-checkbox" id="pz<?= $qte->getId() ?>">
-                                                                <label class="onoffswitch-label" for="pz<?= $qte->getId() ?>">
-                                                                    <span class="onoffswitch-inner"></span>
-                                                                    <span class="onoffswitch-switch"></span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                <?php } ?>
-                                            <?php }else{ ?>
-                                                <td class="text-center">
-                                                    <div class="switch" style="display: inline-block;">
-                                                        <div class="onoffswitch">
-                                                            <input type="checkbox" class="onoffswitch-checkbox" id="pz<?= $qte->getId() ?>">
-                                                            <label class="onoffswitch-label" for="pz<?= $qte->getId() ?>">
-                                                                <span class="onoffswitch-inner"></span>
-                                                                <span class="onoffswitch-switch"></span>
-                                                            </label>
-                                                        </div>
+                                        <?php foreach (Home\PRIX::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $prix) { 
+                                            $datas = $prix->fourni("prixdevente", ["produit_id ="=>$produit->getId()]);
+                                            $pz = $datas[0]; $pz->actualise(); ?>
+
+                                            <td class="text-center">
+                                                <div class="switch" style="display: inline-block;">
+                                                    <div class="onoffswitch">
+                                                        <input type="checkbox" <?= ($pz->isActive())?"checked":""  ?> onchange='changeActive("prixdevente", <?= $pz->getId() ?>)' class="onoffswitch-checkbox" id="pz<?= $pz->getId() ?>">
+                                                        <label class="onoffswitch-label" for="pz<?= $pz->getId() ?>">
+                                                            <span class="onoffswitch-inner"></span>
+                                                            <span class="onoffswitch-switch"></span>
+                                                        </label>
                                                     </div>
-                                                </td>
-                                            <?php } ?> 
+                                                </div>
+                                                <?php if ($pz->isActive()) { ?>
+                                                    <div style="display: inline-block; width: 100px; margin: 0%">
+                                                        <?php Native\BINDING::html("select", "quantite", $pz, "quantite_id")  ?>
+                                                    </div>
+                                                <?php } ?>
+                                            </td>
 
                                         <?php } ?>
                                     </tr>
@@ -202,16 +177,16 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <?php $i =0; foreach (Home\QUANTITE::findBy([]) as $key => $qte) {  ?>
+                                    <?php $i =0; foreach (Home\QUANTITE::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $qte) {  ?>
                                         <td class="gras text-center"><?= $qte->name(); ?></td>
                                     <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $produit) { ?>
+                                <?php $i =0; foreach (Home\PRODUIT::findBy(["isActive ="=>Home\TABLE::OUI], [], ["name"=>"ASC"]) as $key => $produit) { ?>
                                     <tr>
                                         <td class="gras"><?= $produit->name(); ?></td>
-                                        <?php foreach (Home\QUANTITE::findBy([]) as $key => $qte) { 
+                                        <?php foreach (Home\QUANTITE::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $qte) { 
                                             $datas = $qte->fourni("prixdevente", ["produit_id ="=>$produit->getId()]);
                                             if (count($datas) > 0) {
                                                 $pz = $datas[0]; ?>

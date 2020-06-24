@@ -6,7 +6,7 @@ $datas = ["Caisse courante"];
 foreach ($datas as $key => $value) {
 	$item = new COMPTEBANQUE();
 	$item->name = $value;
-	$item->initial = 700000;
+	$item->initial = 0;
 	$item->setProtected(1);
 	$item->save();
 }
@@ -15,7 +15,7 @@ $datas = ["Fonds de commerce"];
 foreach ($datas as $key => $value) {
 	$item = new COMPTEBANQUE();
 	$item->name = $value;
-	$item->initial = 5000000;
+	$item->initial = 4274000;
 	$item->setProtected(1);
 	$item->save();
 }
@@ -24,11 +24,10 @@ $datas = ["Caisse d'approvisionnement"];
 foreach ($datas as $key => $value) {
 	$item = new COMPTEBANQUE();
 	$item->name = $value;
-	$item->initial = 300000;
+	$item->initial = 0;
 	$item->setProtected(1);
 	$item->save();
 }
-
 
 
 $datas = ["Dépôt", "Retrait"];
@@ -115,6 +114,16 @@ foreach ($datas as $key => $value) {
 
 
 
+$datas = [0.25, 0.33, 0.50, 1];
+foreach ($datas as $key => $value) {
+	$item = new QUANTITE();
+	$item->name = $value;
+	$item->isActive = TABLE::OUI;
+	$item->setProtected(1);
+	$item->save();
+}
+
+
 //ajustement 
 foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::VENTE]) as $key => $ope) {
 	$reglementclient = new REGLEMENTCLIENT();
@@ -132,6 +141,34 @@ foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::VENTE
 			$commande->save();
 			$ope->delete();
 		}
+		$ope->delete();
+	}
+}
+
+
+
+
+foreach (OPERATION::findBy(["categorieoperation_id ="=>4]) as $key => $ope) {
+	$pay = new MOUVEMENT();
+	$pay->cloner($ope);
+	$pay->comptebanque_id = COMPTEBANQUE::COURANT;
+	$pay->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+	$pay->setId(null);
+	$data = $pay->enregistre();
+	if ($data->status) {
+		$ope->delete();
+	}
+}
+
+foreach (OPERATION::findBy(["categorieoperation_id ="=>19]) as $key => $ope) {
+	$pay = new MOUVEMENT();
+	$pay->cloner($ope);
+	$pay->comptebanque_id = COMPTEBANQUE::COURANT;
+	$pay->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+	$pay->setId(null);
+	$data = $pay->enregistre();
+	if ($data->status) {
+		$ope->delete();
 	}
 }
 
@@ -151,6 +188,22 @@ foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::APPRO
 }
 
 
+foreach (OPERATION::findBy(["categorieoperation_id ="=> 10]) as $key => $ope) {
+	$pay = new MOUVEMENT();
+	$pay->cloner($ope);
+	$pay->comptebanque_id = COMPTEBANQUE::COURANT;
+	$pay->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+	$pay->setId(null);
+	if ($ope->montant >= 100000) {
+		$pay->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+	}
+	$data = $pay->enregistre();
+	if ($data->status && $ope->montant >= 100000) {
+		$ope->delete();
+	}
+}
+
+
 foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::PAYE]) as $key => $ope) {
 	$pay = new PAYE();
 	$pay->cloner($ope);
@@ -162,25 +215,38 @@ foreach (OPERATION::findBy(["categorieoperation_id ="=>CATEGORIEOPERATION::PAYE]
 }
 
 
-foreach (OPERATION::findBy(["categorieoperation_id >="=>15, "categorieoperation_id <="=>17]) as $key => $ope) {
-	$pay = new MOUVEMENT();
-	$pay->cloner($ope);
-	$pay->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
-	$pay->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
-	$pay->setId(null);
-	$data = $pay->enregistre();
-	var_dump($data);
+foreach (OPERATION::findBy(["categorieoperation_id >="=>14, "categorieoperation_id <="=>17]) as $key => $ope) {
+	if ($ope->montant >= 350000) {
+		$immobilisation = new IMMOBILISATION();
+		$immobilisation->cloner($ope);
+		$immobilisation->setId(null);
+		$immobilisation->typeimmobilisation_id = TYPEIMMOBILISATION::CORPORELLE;
+		$immobilisation->typeamortissement_id = TYPEAMORTISSEMENT::LINEAIRE;
+		$immobilisation->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+		$immobilisation->duree = 3;
+		$data = $immobilisation->enregistre();
+	}else{
+		$pay = new MOUVEMENT();
+		$pay->cloner($ope);
+		$pay->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+		$pay->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+		$pay->setId(null);
+		$data = $pay->enregistre();
+	}
 	if ($data->status) {
 		$ope->delete();
 	}
 }
 
+
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 1 WHERE prix_id <= 3");
-QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 4 ");
-QUANTITE::query("UPDATE prixdevente SET quantite_id = 4 WHERE prix_id > 4 ");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 2 WHERE prix_id = 4 OR prix_id = 8 ");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 8 ");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 4 WHERE prix_id > 4 AND  prix_id < 8 ");
 
 PRODUIT::query("UPDATE produit SET isActive = 1");
 QUANTITE::query("UPDATE quantite SET isActive = 1");
+PRIX::query("UPDATE prix SET isActive = 1");
 //QUANTITE::query("DELETE FROM prixdevente WHERE isActive = 0 ");
 
 

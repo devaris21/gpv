@@ -25,7 +25,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["name"=>"ASC"]) as $key => $item) {
+                                <?php $i =0; foreach (Home\PRODUIT::findBy([], [], ["isActive"=>"DESC", "name"=>"ASC"]) as $key => $item) {
                                     $i++; ?>
                                     <tr>
                                         <td><?= $i ?></td>
@@ -36,7 +36,7 @@
                                         <td>
                                             <div class="switch">
                                                 <div class="onoffswitch">
-                                                    <input type="checkbox" class="onoffswitch-checkbox" id="example<?= $item->getId() ?>">
+                                                    <input type="checkbox" <?= ($item->isActive())?"checked":""  ?> onchange='changeActive("produit", <?= $item->getId() ?>)' class="onoffswitch-checkbox" id="example<?= $item->getId() ?>">
                                                     <label class="onoffswitch-label" for="example<?= $item->getId() ?>">
                                                         <span class="onoffswitch-inner"></span>
                                                         <span class="onoffswitch-switch"></span>
@@ -119,13 +119,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i =0; foreach (Home\QUANTITE::findBy([], [], ["name"=>"ASC"]) as $key => $item) { ?>
+                                <?php $i =0; foreach (Home\QUANTITE::findBy([], [], ["isActive"=>"DESC", "name"=>"ASC"]) as $key => $item) { ?>
                                     <tr>
                                         <td class="gras"><?= $item->name(); ?></td>
                                         <td>
                                             <div class="switch">
                                                 <div class="onoffswitch">
-                                                    <input type="checkbox" class="onoffswitch-checkbox" id="qte<?= $item->getId() ?>">
+                                                    <input type="checkbox" <?= ($item->isActive())?"checked":""  ?> onchange='changeActive("quantite", <?= $item->getId() ?>)' class="onoffswitch-checkbox" id="qte<?= $item->getId() ?>">
                                                     <label class="onoffswitch-label" for="qte<?= $item->getId() ?>">
                                                         <span class="onoffswitch-inner"></span>
                                                         <span class="onoffswitch-switch"></span>
@@ -150,7 +150,7 @@
                     <div class="ibox-title">
                         <h5 class="text-uppercase">Les prix de ventes</h5>
                         <div class="ibox-tools">
-                            <a class="btn_modal" data-toggle="modal" data-target="#modal-zonedevente">
+                            <a class="btn_modal" data-toggle="modal" data-target="#modal-prix">
                                 <i class="fa fa-plus"></i> Ajouter
                             </a>
                         </div>
@@ -166,13 +166,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i =0; foreach (Home\PRIX::findBy([]) as $key => $item) { ?>
+                                <?php $i =0; foreach (Home\PRIX::findBy([], [], ["isActive"=>"DESC"]) as $key => $item) { ?>
                                     <tr>
                                         <td class="gras"><?= $item->price(); ?> <?= $params->devise ?></td>
                                         <td>
                                             <div class="switch">
                                                 <div class="onoffswitch">
-                                                    <input type="checkbox" class="onoffswitch-checkbox" id="prix<?= $item->getId() ?>">
+                                                    <input type="checkbox" <?= ($item->isActive())?"checked":""  ?> onchange='changeActive("prix", <?= $item->getId() ?>)' class="onoffswitch-checkbox" id="prix<?= $item->getId() ?>">
                                                     <label class="onoffswitch-label" for="prix<?= $item->getId() ?>">
                                                         <span class="onoffswitch-inner"></span>
                                                         <span class="onoffswitch-switch"></span>

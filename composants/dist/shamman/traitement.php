@@ -76,6 +76,31 @@ if ($action === "enable") {
 
 
 
+//disponiblité des elements
+if ($action === "changeActive") {
+	$class = TABLE::fullyClassName($table);
+	if (class_exists($class)) {
+		$datas = $class::findBy(["id ="=>$id]);
+		if (count($datas) == 1) {
+			$element = $datas[0];
+			$element->actualise();
+			if ($element->isActive == TABLE::OUI) {
+				$element->isActive = TABLE::NON;
+			}else{
+				$element->isActive = TABLE::OUI;
+			}
+			$data = $element->save();
+		}		
+	}else{
+		$data->status = false;
+		$data->message = "Erreur lors du changement de disponiblité de l'element !";
+	}
+	echo json_encode($data);
+}
+
+
+
+
 
 //modification des elements
 if ($action == "get_data") {

@@ -1,15 +1,12 @@
 $(function(){
-	$("select[name=exercicecomptable_id]").change(function(event) {
-		var url = "../../webapp/gestion/modules/caisse/test/ajax.php";
-		var val = $(this).val();
-		var formdata = new FormData();
-		formdata.append('id', val);
-		formdata.append('action', "changer");
+	filtrer = function(){
+		var url = "../../webapp/gestion/modules/caisse/caisse/ajax.php";
+		var formdata = new FormData($("#formFiltrer")[0]);
+		formdata.append('action', "filtrer");
 		$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
-			location.href = data.url;
+			window.location.href = data.url;
 		}, 'json')
-	});
-
+	}
 
 	$("#top-search").on("keyup", function() {
 		var value = $(this).val().toLowerCase();
@@ -28,7 +25,7 @@ $(function(){
 
 
 	valider = function(id){
-		var url = "../../webapp/gestion/modules/caisse/tresorerie/ajax.php";
+		var url = "../../webapp/gestion/modules/caisse/caisse/ajax.php";
 		alerty.confirm("Confirmez-vous être maintenant en possession effective de ladite somme ?", {
 			title: "Validation de l'opération",
 			cancelLabel : "Non",
@@ -80,29 +77,5 @@ $(function(){
 			})
 		})
 	}
-
-
-
-	$("#formCloture").submit(function(event) {
-		var url = "../../webapp/gestion/modules/caisse/test/ajax.php";
-		alerty.confirm("Voulez-vous vraiment clôturer l'exercice comptable en cours ?", {
-			title: "Clôture de l'exercice comptable",
-			cancelLabel : "Non",
-			okLabel : "OUI, clôturer",
-		}, function(){
-			var formdata = new FormData($("#formCloture")[0]);
-			formdata.append('action', "cloturer");
-			Loader.start();
-			$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
-				if (data.status) {
-					window.location.reload();
-				}else{
-					Alerter.error('Erreur !', data.message);
-				}
-			}, 'json')
-		})
-		return false;
-	});
-
 
 })

@@ -74,7 +74,7 @@ class PROSPECTION extends TABLE
 	public static function programmee(String $date){
 		$array = static::findBy(["DATE(dateretour) ="=>$date]);
 		$array1 = static::findBy(["etat_id ="=>ETAT::ENCOURS]);
-		return array_merge($array1, $array);
+		return array_uintersect($array1, $array);
 	}
 
 
@@ -192,25 +192,25 @@ class PROSPECTION extends TABLE
 						$tva = ($montant * $params->tva) / 100;
 						$total = $montant + $tva;
 
-						$payement = new OPERATION();
-						$payement->hydrater($post);
-						$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
-						$payement->montant = $total;
-						$payement->comment = "Réglement de la vente ".$vente->typevente->name()." N°".$vente->reference;
-						$payement->files = [];
-						$payement->setId(null);
-						$data = $payement->enregistre();
+						$reglement = new REGLEMENTCLIENT();
+						$reglement->hydrater($post);
+						$reglement->montant = $total;
+						$reglement->comment = "Réglement de la vente ".$vente->typevente->name()." N°".$vente->reference;
+						$reglement->files = [];
+						$reglement->setId(null);
+						$data = $reglement->enregistre();
 						if ($data->status) {
-							$vente->operation_id = $data->lastid;
+							$vente->reglementclient_id = $data->lastid;
 							$data = $vente->save();
 						}
+
+						$this->vente_id = $vente->getId();
 					}
 				}
 				
 				if ($this->commercial_id != null) {
 					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
 				}
-				$this->vente_id = $vente->getId();
 				$this->commercial->save();
 			}
 		}else{
@@ -254,6 +254,7 @@ class PROSPECTION extends TABLE
 		}
 		return $total;
 	}
+
 
 
 	public function payer(int $montant, Array $post){

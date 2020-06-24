@@ -47,7 +47,7 @@ class VENTE extends TABLE
 		$tva = ($montant * $params->tva) / 100;
 		$total = $montant + $tva;
 
-		$payement = new OPERATION();
+		$payement = new REGLEMENTCLIENT();
 		$payement->hydrater($post);
 		$payement->montant = $total;
 		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;

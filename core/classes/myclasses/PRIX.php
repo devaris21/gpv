@@ -10,6 +10,7 @@ class PRIX extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $price;
+	public $isActive = TABLE::OUI;
 
 	public function enregistre(){
 		$data = new RESPONSE;

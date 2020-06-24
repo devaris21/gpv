@@ -3,7 +3,6 @@ namespace Home;
 use Faker\Factory;
 $faker = Factory::create();
 
-
 if ($this->getId() != "") {
 	$tab = explode("@", $this->getId());
 	$date1 = $tab[0];

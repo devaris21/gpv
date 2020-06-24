@@ -109,7 +109,7 @@
                                                 <?php if ($commande->operation_id == 0) { ?>
                                                     <small>Réglement par prélèvement sur acompte</small>
                                                 <?php }else{ ?>
-                                                    <small>Réglement par <?= $commande->operation->modepayement->name() ?></small>
+                                                    <small>Réglement par <?= $commande->reglementclient->modepayement->name() ?></small>
                                                 <?php } ?>
                                                 
                                             </td>

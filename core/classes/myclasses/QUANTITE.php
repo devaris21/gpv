@@ -10,6 +10,7 @@ class QUANTITE extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $name;
+	public $isActive = TABLE::OUI;
 
 	public function enregistre(){
 		$data = new RESPONSE;

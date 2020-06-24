@@ -55,6 +55,9 @@ class OPERATION extends TABLE
 							$mouvement = new MOUVEMENT();
 							$mouvement->montant = $this->montant;
 							$mouvement->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+							if ($cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::SORTIE) {
+								$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+							}
 							$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
 							$data = $mouvement->enregistre();
 							if ($data->status) {

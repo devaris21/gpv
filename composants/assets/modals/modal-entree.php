@@ -22,7 +22,7 @@
                             </div>
                         </div>   
                         <div class="col-sm-4">
-                            <label>Mode de payement</label>
+                            <label>Mode d'encaissement</label>
                             <div class="form-group">
                                 <?php Native\BINDING::html("select", "modepayement"); ?>
                             </div>
@@ -30,13 +30,13 @@
                     </div><br>
 
                     <div class="modepayement_facultatif row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label>Structure d'encaissement <span style="color: red">*</span> </label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-bank"></i></span><input type="text" name="structure" class="form-control">
                             </div>
                         </div><br>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label>N° numero dédié <span style="color: red">*</span> </label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span><input type="text" name="numero" class="form-control">

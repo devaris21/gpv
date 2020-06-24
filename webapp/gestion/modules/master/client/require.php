@@ -33,7 +33,7 @@ if ($this->getId() != null) {
 		usort($flux, "comparerDateCreated2");
 
 
-		$fluxcaisse = $client->fourni("operation");
+		$fluxcaisse = $client->fourni("reglementclient");
 		usort($fluxcaisse, "comparerDateCreated2");
 
 		$title = "GPV | ".$client->name();

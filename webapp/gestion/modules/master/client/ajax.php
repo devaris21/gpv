@@ -34,8 +34,8 @@ if ($action == "newproduit") {
 				<?php foreach ($produit->prixdeventes as $key => $pdv) {
 					if ($pdv->enBoutique(dateAjoute()) > 0) {
 						$pdv->actualise(); ?>
-						<td width="80">
-							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
+						<td width="80" class="text-center">
+							<label><?= $pdv->quantite->name() ?></label>
 							<input type="text" data-pdv="<?= $pdv->getId() ?>" number class="form-control text-center gras" style="padding: 3px">
 						</td>
 					<?php } } ?>				
@@ -72,8 +72,8 @@ if ($action == "newproduit") {
 				</td>
 				<?php foreach ($produit->prixdeventes as $key => $pdv) {
 					$pdv->actualise(); ?>
-						<td width="80">
-							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
+						<td width="80" class="text-center">
+							<label><?= $pdv->quantite->name() ?></label>
 							<input type="text" data-pdv="<?= $pdv->getId() ?>" number class="form-control text-center gras" style="padding: 3px">
 						</td>
 					<?php } ?>				
@@ -363,7 +363,7 @@ if ($action == "newproduit") {
 									$payement->comment = "Réglement de la facture pour la commande N°".$commande->reference;
 									$lot = $payement->enregistre();
 
-									$commande->operation_id = $lot->lastid;
+									$commande->reglementclient_id = $lot->lastid;
 
 									$client->actualise();
 									$payement->acompteClient = $client->acompte;

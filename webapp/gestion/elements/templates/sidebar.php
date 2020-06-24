@@ -43,7 +43,7 @@
                 <li class="" id="commerciaux">
                     <a href="<?= $this->url("gestion", "master", "commerciaux") ?>"><i class="fa fa-bicycle"></i> <span class="nav-label">Liste des commerciaux</span></a>
                 </li>
-                 <li class="" id="rechercher">
+                <li class="" id="rechercher">
                     <a href="<?= $this->url("gestion", "master", "rechercher") ?>"><i class="fa fa-search"></i> <span class="nav-label">Rechercher</span></a>
                 </li>
                 <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
@@ -69,6 +69,21 @@
 
                     <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
+                    <li class="" id="comptedujour">
+                        <a href="<?= $this->url("gestion", "caisse", "comptedujour") ?>"><i class="fa fa-calendar"></i> <span class="nav-label">Rapport du Jour</span></a>
+                    </li>
+
+                    <li class="groupe">
+                        <a href="#"><i class="fa fa-file-text-o"></i> <span class="nav-label">Etats récapitulatifs</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li id="etatclients"><a href="<?= $this->url("gestion", "caisse", "etatclients", "$datea@$dateb") ?>">... des clients</a></li>
+                            <li id="etatproduction"><a href="<?= $this->url("gestion", "caisse", "etatproduction", "$datea@$dateb") ?>">... de production</a></li>
+                            <li id="etatcomptes"><a href="<?= $this->url("gestion", "caisse", "etatcomptes", "$datea@$dateb") ?>">... des comptes</a></li>
+                            <!--  <li id="etatpersonnel"><a href="<?= $this->url("gestion", "caisse", "etatpersonnel", "$datea@$dateb") ?>">... du personnel</a></li> -->
+                        </ul>
+                    </li>
+
+                    <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
                     <li class="" id="rapportproduction">
                         <a href="<?= $this->url("gestion", "production", "rapportproduction", "$datea@$dateb") ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de production</span></a>
@@ -109,36 +124,21 @@
 
 
                 <?php if ($employe->isAutoriser("caisse")) { ?>
-                 <li class="" id="comptedujour">
-                    <a href="<?= $this->url("gestion", "caisse", "comptedujour") ?>"><i class="fa fa-calendar"></i> <span class="nav-label">Rapport du Jour</span></a>
-                </li>
-                <li class="" id="operation">
-                    <a href="<?= $this->url("gestion", "master", "operation") ?>"><i class="fa fa-money"></i> <span class="nav-label">Conmpte de caisse</span></a>
-                </li>
-                <li class="" id="tresorerie">
-                    <a href="<?= $this->url("gestion", "caisse", "tresorerie") ?>"><i class="fa fa-money"></i> <span class="nav-label">Trésorerie & compta</span></a>
-                </li>
-                <li class="" id="tresorerie">
-                    <a href="<?= $this->url("gestion", "caisse", "test", $exercicecomptable->getId()) ?>"><i class="fa fa-money"></i> <span class="nav-label">Test</span></a>
-                </li>
-                <li class="groupe">
-                    <a href="#"><i class="fa fa-file-text-o"></i> <span class="nav-label">Etats récapitulatifs</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                        <li id="etatclients"><a href="<?= $this->url("gestion", "caisse", "etatclients", "$datea@$dateb") ?>">... des clients</a></li>
-                        <li id="etatproduction"><a href="<?= $this->url("gestion", "caisse", "etatproduction", "$datea@$dateb") ?>">... de production</a></li>
-                        <li id="etatcomptes"><a href="<?= $this->url("gestion", "caisse", "etatcomptes", "$datea@$dateb") ?>">... des comptes</a></li>
-                        <!--  <li id="etatpersonnel"><a href="<?= $this->url("gestion", "caisse", "etatpersonnel", "$datea@$dateb") ?>">... du personnel</a></li> -->
-                    </ul>
-                </li>
-                <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
+                    <li class="" id="caisse">
+                        <a href="<?= $this->url("gestion", "caisse", "caisse") ?>"><i class="fa fa-money"></i> <span class="nav-label">La caisse</span></a>
+                    </li>
+                    <li class="" id="tresorerie">
+                        <a href="<?= $this->url("gestion", "caisse", "tresorerie", $exercicecomptable->getId()) ?>"><i class="fa fa-money"></i> <span class="nav-label">Trésorerie générale</span></a>
+                    </li>
+                    <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
-            <?php } ?>
+                <?php } ?>
 
-            
-            <?php if ($employe->isAutoriser("parametres")) { ?>
-                <li class="" id="configuration">
-                    <a href="<?= $this->url("gestion", "parametres", "configuration") ?>"><i class="fa fa-gears"></i> <span class="nav-label">Configuration</span></a>
-                </li>
+
+                <?php if ($employe->isAutoriser("parametres")) { ?>
+                    <li class="" id="configuration">
+                        <a href="<?= $this->url("gestion", "parametres", "configuration") ?>"><i class="fa fa-gears"></i> <span class="nav-label">Configuration</span></a>
+                    </li>
               <!--   <li class="" id="historiques">
                     <a href="<?= $this->url("gestion", "parametres", "historiques") ?>"><i class="fa fa-clock-o"></i> <span class="nav-label">Historiques</span></a>
                 </li>
@@ -156,6 +156,6 @@
 
 <style type="text/css">
     li.dropdown-divider{
-       !important;
-   }
+     !important;
+ }
 </style>

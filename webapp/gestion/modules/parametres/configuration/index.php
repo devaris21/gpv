@@ -30,7 +30,7 @@
                             <div class="tabs-container">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li class=""><a class="nav-link active" data-toggle="tab" href="#tab-general"><i class="fa fa-info"></i> Infos Générales</a></li>
-                                    <li class=""><a class="nav-link " data-toggle="tab" href="#tab-production"><i class="fa fa-th-large"></i> Paramètres & Production </a></li>
+                                    <li class=""><a class="nav-link " data-toggle="tab" href="#tab-production"><i class="fa fa-th-large"></i> Elements & Production </a></li>
                                     <li class=""><a class="nav-link " data-toggle="tab" href="#tab-gestion"><i class="fa fa-th-large"></i> Gestion & Production </a></li>
                                     <li class=""><a class="nav-link " data-toggle="tab" href="#tabpersonnel"><i class="fa fa-male"></i> Personnel & Exte </a></li>
                                     <li class=""><a class="nav-link " data-toggle="tab" href="#tabvehicules"><i class="fa fa-car"></i> Véhicules & Machines </a></li>
