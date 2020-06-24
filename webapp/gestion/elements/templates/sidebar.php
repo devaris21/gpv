@@ -63,18 +63,18 @@
                         <a href="<?= $this->url("gestion", "ventes", "livraisons") ?>"><i class="fa fa-truck"></i> <span class="nav-label">Livraisons en cours</span> <?php if (count($livraisons__) > 0) { ?> <span class="label label-warning float-right"><?= count($livraisons__) ?></span> <?php } ?></a>
                     </li>
                     <li class="" id="rapportvente">
-                        <a href="<?= $this->url("gestion", "ventes", "rapportvente", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de vente</span></a>
+                        <a href="<?= $this->url("gestion", "ventes", "rapportvente", "$datea@$dateb") ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de vente</span></a>
                     </li>
 
 
                     <li style="margin: 3% auto"><hr class="mp0" style="background-color: #000; "></li>
 
 
-                    <li class="" id="production">
-                        <a href="<?= $this->url("gestion", "production", "production", 7) ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de production</span></a>
+                    <li class="" id="rapportproduction">
+                        <a href="<?= $this->url("gestion", "production", "rapportproduction", "$datea@$dateb") ?>"><i class="fa fa-file-text-o"></i> <span class="nav-label">Rapport de production</span></a>
                     </li>
-                    <li class="" id="miseenboutique">
-                        <a href="<?= $this->url("gestion", "production", "miseenboutique") ?>"><i class="fa fa-home"></i> <span class="nav-label">Entrepôts & boutiques</span></a>
+                    <li class="" id="entrepots">
+                        <a href="<?= $this->url("gestion", "production", "entrepots") ?>"><i class="fa fa-home"></i> <span class="nav-label">Entrepôts & boutiques</span></a>
                     </li>
                     <li class="" id="miseenboutique">
                         <a href="<?= $this->url("gestion", "production", "miseenboutique") ?>"><i class="fa fa-reply"></i> <span class="nav-label">Mise en boutique</span></a>

@@ -28,6 +28,15 @@ class QUANTITE extends TABLE
 	}
 
 
+	public function production(string $date1 = "2020-06-01", string $date2){
+		$requette = "SELECT SUM(production) as production  FROM productionjour, ligneproductionjour, prixdevente, quantite WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND ligneproductionjour.productionjour_id = productionjour.id AND prixdevente.quantite_id = quantite.id AND quantite.id = ? AND productionjour.etat_id != ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY quantite.id";
+		$item = LIGNEPRODUCTIONJOUR::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
+		if (count($item) < 1) {$item = [new LIGNEPRODUCTIONJOUR()]; }
+		return $item[0]->production;
+	}
+
+
+
 	public function enBoutique(string $date){
 		$total = 0;
 		foreach ($this->fourni("prixdevente") as $key => $value) {

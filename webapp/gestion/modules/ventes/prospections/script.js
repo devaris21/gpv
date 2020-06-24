@@ -84,6 +84,7 @@ $(function(){
 
     $(".formValiderProspection").submit(function(event) {
         Loader.start();
+        $(this).find("input.vendus").last().change();
         var url = "../../webapp/gestion/modules/ventes/prospections/ajax.php";
         var formdata = new FormData($(this)[0]);
         var tableau = new Array();

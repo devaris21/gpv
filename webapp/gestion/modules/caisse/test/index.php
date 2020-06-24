@@ -107,8 +107,6 @@
 
             var data3 = [<?php foreach ($stats as $key => $lot) { ?>[gd(<?= $lot->year ?>, <?= $lot->month ?>, <?= $lot->day ?>), <?= $lot->marge ?>], <?php } ?> ];
 
-
-
             var dataset = [
             {
                 label: "Chiffre d'affaire",

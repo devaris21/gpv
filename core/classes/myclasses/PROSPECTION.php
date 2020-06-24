@@ -17,12 +17,13 @@ class PROSPECTION extends TABLE
 	public $commercial_id      = COMMERCIAL::MAGASIN;
 	public $etat_id            = ETAT::ENCOURS;
 	public $employe_id         = null;
-
-	public $vente_id         = null;
+	
+	public $vente_id           = null;
 	
 	public $montant            = 0;
 	public $vendu              = 0;
-	public $monnaie              = 0;
+	public $monnaie            = 0;
+	public $transport          = 0;
 	public $comment;
 
 	public $nom_receptionniste;
@@ -232,7 +233,6 @@ class PROSPECTION extends TABLE
 				if ($this->commercial_id != null) {
 					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
 				}
-				$this->vente_id = $vente->getId();
 				$this->commercial->save();
 			}
 		}else{

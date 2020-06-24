@@ -47,13 +47,13 @@ if ($action == "validerLivraison") {
 		$livraison->fourni("ligneprospection");
 
 		$produits = explode(",", $tableau);
-		if (count($produits) > 0) {
+		$produits1 = explode(",", $tableau1);
 
-			$produits1 = explode(",", $tableau1);
-		foreach ($produits1 as $key => $value) {
-			$lot = explode("-", $value);
-			$array1[$lot[0]] = end($lot);
-		}
+		if (count($produits) > 0) {
+			foreach ($produits1 as $key => $value) {
+				$lot = explode("-", $value);
+				$array1[$lot[0]] = end($lot);
+			}
 
 			$tests = $produits;
 			foreach ($tests as $key => $value) {
@@ -62,7 +62,7 @@ if ($action == "validerLivraison") {
 				$qte = end($lot);
 
 				foreach ($livraison->ligneprospections as $cle => $lgn) {
-					if (($lgn->getId() == $id) && ($lgn->quantite >= $qte) && ($lgn->quantite >= ($qte + $array1[$key])) ) {
+					if (($lgn->getId() == $id) && ($lgn->quantite >= $qte) && ($lgn->quantite >= ($qte + $array1[$id])) ) {
 						unset($tests[$key]);
 					}
 				}

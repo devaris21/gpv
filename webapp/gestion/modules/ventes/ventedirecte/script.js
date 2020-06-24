@@ -19,7 +19,7 @@ $(function(){
 
     $("#top-search").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $("table.table-prospection tr:not(.no)").filter(function() {
+        $("table.table-vente tr:not(.no)").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });

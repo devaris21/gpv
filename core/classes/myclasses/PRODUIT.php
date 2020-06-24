@@ -92,6 +92,14 @@ class PRODUIT extends TABLE
 	}
 
 
+	public function quantiteProduite(string $date1 = "2020-06-01", string $date2){
+		$requette = "SELECT SUM(quantite.name * ligneproductionjour.production) as name  FROM productionjour, ligneproductionjour, prixdevente, quantite, produit WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND ligneproductionjour.productionjour_id = productionjour.id AND prixdevente.produit_id = produit.id AND prixdevente.quantite_id = quantite.id AND produit.id = ? AND productionjour.etat_id != ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY prixdevente.id";
+		$item = QUANTITE::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
+		if (count($item) < 1) {$item = [new QUANTITE()]; }
+		return $item[0]->name;
+	}
+
+
 
 	public function vendu(string $date1 = "2020-06-01", string $date2){
 		$total = 0;

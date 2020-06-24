@@ -214,6 +214,37 @@ class VENTE extends TABLE
 		return $item[0]->montant;
 	}
 
+
+
+	public static function stats(string $date1 = "2020-04-01", string $date2){
+		$tableaux = [];
+		$nb = ceil(dateDiffe($date1, $date2) / 12);
+		$index = $date1;
+		while ( $index <= $date2 ) {
+			$debut = $index;
+			$fin = dateAjoute1($index, ceil($nb/2));
+
+			$data = new \stdclass;
+			$data->year = date("Y", strtotime($index));
+			$data->month = date("m", strtotime($index));
+			$data->day = date("d", strtotime($index));
+			$data->nb = $nb;
+			////////////
+
+			$data->direct = comptage(VENTE::direct($debut, $fin), "vendu", "somme");
+			$data->prospection = comptage(VENTE::prospection($debut, $fin), "vendu", "somme");
+			$data->marge = 0 ;
+
+			$tableaux[] = $data;
+			///////////////////////
+			
+			$index = $fin;
+		}
+		return $tableaux;
+	}
+
+
+
 	public function sentenseCreate(){}
 	public function sentenseUpdate(){}
 	public function sentenseDelete(){}

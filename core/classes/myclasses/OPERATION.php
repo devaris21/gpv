@@ -13,6 +13,7 @@ class OPERATION extends TABLE
 	public $reference;
 	public $montant;
 	public $categorieoperation_id;
+	public $mouvement_id;
 	public $modepayement_id;
 	public $employe_id;
 	public $etat_id = ETAT::VALIDEE;
@@ -53,10 +54,11 @@ class OPERATION extends TABLE
 						if (intval($this->montant) > 0) {
 							$mouvement = new MOUVEMENT();
 							$mouvement->montant = $this->montant;
-							$mouvement->typemouvement_id == TYPEMOUVEMENT::DEPOT;
+							$mouvement->typemouvement_id = TYPEMOUVEMENT::DEPOT;
 							$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
 							$data = $mouvement->enregistre();
 							if ($data->status) {
+								$this->mouvement_id = $mouvement->getId();
 								$data = $this->save();
 								if ($data->status) {
 									if (!(isset($this->files) && is_array($this->files))) {
@@ -79,11 +81,11 @@ class OPERATION extends TABLE
 				}				
 			}else{
 				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 1 !!";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 2 !!";
 		}
 		return $data;
 	}

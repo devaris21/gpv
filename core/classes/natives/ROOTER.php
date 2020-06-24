@@ -14,7 +14,7 @@ use Home\MYCOMPTE;
 class ROOTER extends PATH
 {
 
-    private $url;
+    public $url;
     private $language = "fr";
     public $section = "devaris21";
     public $module = "start";

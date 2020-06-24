@@ -83,6 +83,11 @@ if ($action == "validerProspection") {
 		}
 
 		if (count($produits) > 0) {
+			foreach ($array as $key => $value) {
+				if (!is_numeric($value)) {
+					$array[$key] = 0;
+				}
+			}
 			$tests = $array;
 			foreach ($tests as $key => $value) {
 				foreach ($prospection->ligneprospections as $cle => $lgn) {
@@ -94,6 +99,9 @@ if ($action == "validerProspection") {
 			}
 			if (count($tests) == 0) {
 				foreach ($array as $key => $value) {
+					if (!is_numeric($array1[$key])) {
+						$array1[$key] = 0;
+					}
 					foreach ($prospection->ligneprospections as $cle => $lgn) {
 						if ($lgn->getId() == $key) {
 							$lgn->quantite_vendu = $value;

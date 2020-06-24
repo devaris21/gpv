@@ -177,7 +177,6 @@ if ($action == "newproduit") {
 										$lignedevente->vente_id = $vente->getId();
 										$lignedevente->prixdevente_id = $id;
 										$lignedevente->quantite = intval($qte);
-									//$lignedevente->price =  $pdv->prix->price * $qte;
 										$lignedevente->enregistre();	
 									}
 								}

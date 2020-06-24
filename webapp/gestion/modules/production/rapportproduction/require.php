@@ -13,10 +13,13 @@ if ($this->getId() != "") {
 	$date2 = dateAjoute();
 }
 
-$produits = PRODUIT::getAll();
+$id = dateDiffe($date1, $date2);
+
+$produits = PRODUIT::findBy(["isActive ="=>TABLE::OUI]);
+$quantites = QUANTITE::findBy(["isActive ="=>TABLE::OUI]);
 
 $tableau = [];
-foreach (PRODUIT::findBy(["isActive ="=>TABLE::OUI]) as $key => $produit) {
+foreach ($produits as $key => $produit) {
 	$tab = [];
 	foreach ($produit->fourni('prixdevente', ["isActive ="=>TABLE::OUI], [], ["quantite_id"=>"ASC"]) as $key => $pdv) {
 		$pdv->actualise();
@@ -37,14 +40,11 @@ foreach (PRODUIT::findBy(["isActive ="=>TABLE::OUI]) as $key => $produit) {
 	$tableau[$produit->getId()] = $tab;
 }
 
-$id = dateDiffe($date1, $date2);
-
-$stats = VENTE::stats($date1, $date2);
 
 $productionjours = PRODUCTIONJOUR::findBy([],[],["ladate"=>"DESC"], $id);
 usort($productionjours, 'comparerLadate');
 
-$title = "GPV | Stock de la production ";
+$title = "GPV | Rapport de la production ";
 
 $lots = [];
 ?>

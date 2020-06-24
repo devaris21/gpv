@@ -53,6 +53,13 @@
                                     </div>
                                 </div><br>
 
+                                 <div>
+                                    <label>Transport pour la prospection </label>                           
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" number name="transport">
+                                    </div>
+                                </div><br>
+
                                 <div>
                                     <label>Monnaie pour la prospection </label>                           
                                     <div class="input-group">

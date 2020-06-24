@@ -178,6 +178,9 @@ foreach (OPERATION::findBy(["categorieoperation_id >="=>15, "categorieoperation_
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 1 WHERE prix_id <= 3");
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 4 ");
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 4 WHERE prix_id > 4 ");
+
+PRODUIT::query("UPDATE produit SET isActive = 1");
+QUANTITE::query("UPDATE quantite SET isActive = 1");
 //QUANTITE::query("DELETE FROM prixdevente WHERE isActive = 0 ");
 
 

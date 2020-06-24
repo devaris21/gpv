@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="ibox-content" style="min-height: 300px">
-                <table class="table table-hover table-vente">
+                <table class="table table-hover table-prospection">
                     <tbody>
                         <?php foreach ($prospections as $key => $prospection) {
                             $prospection->actualise(); 

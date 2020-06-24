@@ -47,15 +47,15 @@ class MOUVEMENT extends TABLE
 					}
 				}else{
 					$data->status = false;
-					$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+					$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 5!!";
 				}	
 			}else{
 				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 6!!";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 7!!";
 		}
 		return $data;
 	}
