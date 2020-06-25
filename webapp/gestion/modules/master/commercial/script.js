@@ -32,25 +32,13 @@ $(function(){
 	});
 
 
-	$("form#filtrer").submit(function(event) {
+	filtrer = function(){
 		var url = "../../webapp/gestion/modules/master/commercial/ajax.php";
-		var formdata = new FormData($(this)[0]);
+		var formdata = new FormData($("#formFiltrer")[0]);
 		formdata.append('action', "filtrer");
-		Loader.start();
 		$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
-			$(".tableau").html(data)
-			Loader.stop();
-		}, 'html')
-		return false;
-	});
-
-
-
-
-	$('.input-group.date').datepicker({
-		autoclose: true,
-		format: "dd MM yyyy",
-		language: "fr"
-	});
+			window.location.reload();
+		})
+	}
 
 })

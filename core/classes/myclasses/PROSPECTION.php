@@ -41,9 +41,21 @@ class PROSPECTION extends TABLE
 				$this->employe_id = getSession("employe_connecte_id");
 				$this->reference = "BSO/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
 				$data = $this->save();
-				if ($this->commercial_id != COMMERCIAL::MAGASIN) {
-					$commercial->disponibilite_id = DISPONIBILITE::MISSION;
-					$commercial->save();
+				if ($data->status) {
+					if ($this->commercial_id != COMMERCIAL::MAGASIN) {
+						$commercial->disponibilite_id = DISPONIBILITE::MISSION;
+						$commercial->save();
+					}
+
+					if ($this->transport > 0) {
+						$this->actualise();
+						$mouvement = new MOUVEMENT();
+						$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
+						$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+						$mouvement->montant = $this->transport;
+						$mouvement->comment = "Transport du commercial ".$this->commercial->name()." pour la prospection N° ".$this->reference;
+						$data = $mouvement->enregistre();
+					}
 				}
 			}else{
 				$data->status = false;
@@ -74,7 +86,7 @@ class PROSPECTION extends TABLE
 	public static function programmee(String $date){
 		$array = static::findBy(["DATE(dateretour) ="=>$date]);
 		$array1 = static::findBy(["etat_id ="=>ETAT::ENCOURS]);
-		return array_uintersect($array1, $array);
+		return array_merge($array1, $array);
 	}
 
 

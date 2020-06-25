@@ -21,6 +21,7 @@ class COMMERCIAL extends PERSONNE
 	public $sexe_id = SEXE::HOMME;
 	public $contact;
 	public $salaire = 0;
+	public $objectif = 0;
 	public $image = "default.png";
 	
 	public $disponibilite_id = DISPONIBILITE::LIBRE;
@@ -103,6 +104,40 @@ class COMMERCIAL extends PERSONNE
 	public static function mission(){
 		return static::findBy(["disponibilite_id =" => DISPONIBILITE::MISSION, 'visibility ='=>1]);
 	}
+
+
+
+	public function vendu(string $date1 = "2020-06-01", string $date2){
+		return PROSPECTION::findBy(["commercial_id ="=>$this->getId(), "etat_id !="=>ETAT::ANNULEE, "DATE(prospection.created) >="=>$date1, "DATE(prospection.created) <="=>$date2]);
+	}
+
+
+
+	public function stats(string $date1 = "2020-04-01", string $date2){
+		$tableaux = [];
+		$nb = ceil(dateDiffe($date1, $date2) / 30);
+		$index = $date1;
+		while ( $index <= $date2 ) {
+			$debut = $index;
+			$fin = dateAjoute1($index, 1);
+
+			$data = new \stdclass;
+			$data->year = date("Y", strtotime($index));
+			$data->month = date("m", strtotime($index));
+			$data->day = date("d", strtotime($index));
+			$data->nb = $nb;
+			////////////
+
+			$data->vendu = comptage($this->vendu($debut, $fin), "vendu", "somme");
+
+			$tableaux[] = $data;
+			///////////////////////
+			
+			$index = $fin;
+		}
+		return $tableaux;
+	}
+
 
 
 	public function sentenseCreate(){

@@ -132,6 +132,28 @@ class PRIXDEVENTE extends TABLE
 	}
 
 
+	public function vendeDirecte(string $date1 = "2020-06-01", string $date2){
+		$total = 0;
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, prixdevente, vente WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND prixdevente.id = ? AND  vente.etat_id != ? AND vente.typevente_id = ? AND  DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY prixdevente.id";
+		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, TYPEVENTE::DIRECT, $date1, $date2]);
+		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
+		$total += $item[0]->quantite;
+
+		return $total;
+	}
+
+
+	public function vendeProspection(string $date1 = "2020-06-01", string $date2){
+		$total = 0;
+		$requette = "SELECT SUM(quantite) as quantite  FROM lignedevente, prixdevente, vente WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND prixdevente.id = ? AND  vente.etat_id != ? AND vente.typevente_id = ? AND  DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY prixdevente.id";
+		$item = LIGNEDEVENTE::execute($requette, [$this->getId(), ETAT::ANNULEE, TYPEVENTE::PROSPECTION, $date1, $date2]);
+		if (count($item) < 1) {$item = [new LIGNEDEVENTE()]; }
+		$total += $item[0]->quantite;
+
+		return $total;
+	}
+
+
 
 	public function commandee(){
 		$total = 0;

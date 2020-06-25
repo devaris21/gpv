@@ -13,7 +13,6 @@ class COMPTEBANQUE extends TABLE
 
 	const COURANT = 1;
 	const FONDCOMMERCE = 2;
-	const APPROVISIONNEMENT = 3;
 
 	public $name;
 	public $initial = 0;

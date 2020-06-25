@@ -48,6 +48,13 @@
                                 <input type="text" class="form-control" name="salaire">
                             </div>
                         </div>
+
+                         <div class="col-md-4 col-sm-6 unmodified">
+                            <label>Objectif journalier <span1>*</span1></label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="objectif">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row">

@@ -17,6 +17,14 @@
         <div class="row white-bg dashboard-header">
             <div class="col-md-3">
                 <ul class="list-group clear-list">
+                    <li class="list-group-item">
+                        Total Actif
+                        <span class="float-right">145 000 Fcfa</span>
+                    </li>
+                    <li class="list-group-item">
+                        Total passif
+                        <span class="float-right">145 000 Fcfa</span>
+                    </li><br>
                     <li class="list-group-item fist-item">
                         Solde prévisionnel
                         <span class="float-right">154 015 000</span>
@@ -26,7 +34,7 @@
                         <span class="float-right">
                             10:16 am
                         </span>
-                    </li>
+                    </li><br>
                     <li class="list-group-item">
                         Masse salariale
                         <span class="float-right">
@@ -38,15 +46,7 @@
                         <span class="float-right">
                             11:06 pm
                         </span>
-                    </li>
-                    <li class="list-group-item">
-                        Dette de fournisseurs
-                        <span class="float-right">145 000 Fcfa</span>
-                    </li>
-                    <li class="list-group-item">
-                        Dette de fournisseurs
-                        <span class="float-right">145 000 Fcfa</span>
-                    </li>
+                    </li>                    
                     <li class="list-group-item">
                         Dette de fournisseurs
                         <span class="float-right">145 000 Fcfa</span>

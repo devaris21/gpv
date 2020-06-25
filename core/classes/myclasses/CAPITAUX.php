@@ -14,13 +14,27 @@ class CAPITAUX extends TABLE
 	public $montant;
 	public $comment;
 
-
+	public $comptebanque_id;
 
 	public function enregistre(){
 		$data = new RESPONSE;
 		if ($this->name != "") {
 			if ($this->montant > 0) {
-				$data = $this->save();
+				$datas = COMPTEBANQUE::findBy(["id ="=>$this->comptebanque_id]);
+				if (count($datas) == 1) {
+					$data = $this->save();
+					if ($data->status) {
+						$mouvement = new MOUVEMENT();
+						$mouvement->comptebanque_id = $this->comptebanque_id;
+						$mouvement->montant = $this->montant;
+						$mouvement->comment = "Nouveau capital : ".$this->name;
+						$mouvement->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+						$data = $mouvement->enregistre();
+					}
+				}else{
+					$data->status = false;
+					$data->message = "Une erreur est survenue lors de l'opération, veuillez reessayer !";
+				}
 			}else{
 				$data->status = false;
 				$data->message = "Veuillez à bien renseigner le montant du nouveau capital!";

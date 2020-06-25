@@ -1,26 +1,9 @@
 <?php 
 namespace Home;
 
+
 //mise en place de compte courant
 $datas = ["Caisse courante"];
-foreach ($datas as $key => $value) {
-	$item = new COMPTEBANQUE();
-	$item->name = $value;
-	$item->initial = 0;
-	$item->setProtected(1);
-	$item->save();
-}
-
-$datas = ["Fonds de commerce"];
-foreach ($datas as $key => $value) {
-	$item = new COMPTEBANQUE();
-	$item->name = $value;
-	$item->initial = 4274000;
-	$item->setProtected(1);
-	$item->save();
-}
-
-$datas = ["Caisse d'approvisionnement"];
 foreach ($datas as $key => $value) {
 	$item = new COMPTEBANQUE();
 	$item->name = $value;
@@ -192,15 +175,24 @@ foreach (OPERATION::findBy(["categorieoperation_id ="=> 10]) as $key => $ope) {
 	$pay = new MOUVEMENT();
 	$pay->cloner($ope);
 	$pay->comptebanque_id = COMPTEBANQUE::COURANT;
-	$pay->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+	$pay->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
 	$pay->setId(null);
 	if ($ope->montant >= 100000) {
 		$pay->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
 	}
 	$data = $pay->enregistre();
-	if ($data->status && $ope->montant >= 100000) {
-		$ope->delete();
-	}
+	$ope->delete();
+}
+
+
+foreach (OPERATION::findBy(["categorieoperation_id ="=> 18]) as $key => $ope) {
+	$pay = new MOUVEMENT();
+	$pay->cloner($ope);
+	$pay->comptebanque_id = COMPTEBANQUE::COURANT;
+	$pay->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+	$pay->setId(null);
+	$data = $pay->enregistre();
+	$ope->delete();
 }
 
 
@@ -220,6 +212,7 @@ foreach (OPERATION::findBy(["categorieoperation_id >="=>14, "categorieoperation_
 		$immobilisation = new IMMOBILISATION();
 		$immobilisation->cloner($ope);
 		$immobilisation->setId(null);
+		$immobilisation->name = $ope->comment;
 		$immobilisation->typeimmobilisation_id = TYPEIMMOBILISATION::CORPORELLE;
 		$immobilisation->typeamortissement_id = TYPEAMORTISSEMENT::LINEAIRE;
 		$immobilisation->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
@@ -239,15 +232,46 @@ foreach (OPERATION::findBy(["categorieoperation_id >="=>14, "categorieoperation_
 }
 
 
+foreach (OPERATION::findBy(["categorieoperation_id ="=>12]) as $key => $ope) {
+	$immobilisation = new IMMOBILISATION();
+	$immobilisation->cloner($ope);
+	$immobilisation->setId(null);
+	$immobilisation->name = $ope->comment;
+	$immobilisation->typeimmobilisation_id = TYPEIMMOBILISATION::CORPORELLE;
+	$immobilisation->typeamortissement_id = TYPEAMORTISSEMENT::LINEAIRE;
+	$immobilisation->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+	$immobilisation->duree = 3;
+	$data = $immobilisation->enregistre();
+	if ($data->status) {
+		$ope->delete();
+	}
+}
+
+
+foreach (OPERATION::findBy(["categorieoperation_id >="=>13]) as $key => $ope) {
+	$immobilisation = new IMMOBILISATION();
+	$immobilisation->cloner($ope);
+	$immobilisation->setId(null);
+	$immobilisation->name = $ope->comment;
+	$immobilisation->typeimmobilisation_id = TYPEIMMOBILISATION::FINANCIERE;
+	$immobilisation->typeamortissement_id = TYPEAMORTISSEMENT::LINEAIRE;
+	$immobilisation->comptebanque_id = COMPTEBANQUE::FONDCOMMERCE;
+	$immobilisation->duree = 3;
+	$data = $immobilisation->enregistre();
+	if ($data->status) {
+		$ope->delete();
+	}
+}
+
+
+
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 1 WHERE prix_id <= 3");
-QUANTITE::query("UPDATE prixdevente SET quantite_id = 2 WHERE prix_id = 4 OR prix_id = 8 ");
+QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 4 OR prix_id = 8 ");
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 3 WHERE prix_id = 8 ");
 QUANTITE::query("UPDATE prixdevente SET quantite_id = 4 WHERE prix_id > 4 AND  prix_id < 8 ");
 
 PRODUIT::query("UPDATE produit SET isActive = 1");
 QUANTITE::query("UPDATE quantite SET isActive = 1");
 PRIX::query("UPDATE prix SET isActive = 1");
-//QUANTITE::query("DELETE FROM prixdevente WHERE isActive = 0 ");
-
 
 ?>

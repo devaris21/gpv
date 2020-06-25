@@ -22,6 +22,14 @@
                             </div>
                         </div>                        
                     </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <label>Compte à approvisionnement <span1>*</span1></label>
+                            <div class="form-group">
+                                <?php Native\BINDING::html("select", "comptebanque") ?>
+                            </div>
+                        </div>                       
+                    </div>
                     <div class="">
                         <label>Ajouter un commentaire </label>
                         <textarea class="form-control" name="comment" rows="4"></textarea>

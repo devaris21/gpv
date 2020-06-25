@@ -24,13 +24,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <label>Etablissement si banque <span1>*</span1></label>
+                            <label>Etablissement si banque</label>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="etablissement" uppercase>
                             </div>
                         </div>  
                         <div class="col-sm-6">
-                            <label>N° de compte <span1>*</span1></label>
+                            <label>N° de compte</label>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="numero" uppercase>
                             </div>

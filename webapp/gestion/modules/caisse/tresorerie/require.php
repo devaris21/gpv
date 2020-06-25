@@ -1,6 +1,7 @@
 <?php 
 namespace Home;
 
+
 if ($this->getId() != null) {
 	$datas = EXERCICECOMPTABLE::findBy(["id ="=> $this->getId()]);
 	if (count($datas) > 0) {

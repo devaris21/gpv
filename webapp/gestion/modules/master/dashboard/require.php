@@ -18,6 +18,7 @@ foreach (PRODUIT::getAll() as $key => $produit) {
 		$data = new \stdclass();
 		$data->name = $pdv->produit->name()." // ".$pdv->prix->price()/*." ".$params->devise*/;
 		$data->prix = $pdv->prix->price()." ".$params->devise;
+		$data->quantite = $pdv->quantite->name();
 		$data->boutique = $pdv->enBoutique(dateAjoute());
 		$data->stock = $pdv->enEntrepot(dateAjoute());
 		$data->commande = $pdv->commandee();

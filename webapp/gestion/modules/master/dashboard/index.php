@@ -90,7 +90,7 @@
                                     <ul class="list-group clear-list m-t">
                                         <?php foreach ($tableau[$produit->getId()] as $key => $pdv) { ?>
                                             <li class="list-group-item">
-                                                <i class="fa fa-flask" style="color: <?= $produit->couleur; ?>"></i> <small><?= $pdv->prix ?></small>          
+                                                <i class="fa fa-flask" style="color: <?= $produit->couleur; ?>"></i> <small><?= $pdv->quantite ?></small>          
                                                 <span class="float-right">
                                                     <span title="en boutique" class="gras text-<?= ($pdv->boutique > 0)?"green":"danger" ?>"><?= money($pdv->boutique) ?></span>&nbsp;|&nbsp;
                                                     <span title="en entrepôt" class=""><?= money($pdv->stock) ?></span>

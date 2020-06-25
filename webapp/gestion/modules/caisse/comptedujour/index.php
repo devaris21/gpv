@@ -48,43 +48,77 @@
                         <div class="row">
                             <div class="col-sm-9" style="border-right: 2px solid black">
 
-                               <?php if ($employe->isAutoriser("production")) { ?>
+                             <?php if ($employe->isAutoriser("production")) { ?>
 
-                                <div class="">
-                                    <div class="ibox ">
-                                        <div class="ibox-title">
-                                            <h5>Programme de prospection du jour</h5>
-                                            <div class="ibox-tools">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="ibox ">
+                                            <div class="ibox-title">
+                                                <h5 class="text-uppercase">Vente par prospection du jour</h5>
+                                                <div class="ibox-tools">
 
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="ibox-content table-responsive">
-                                            <table class="table table-hover no-margins">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Commercial</th>
-                                                        <th class="">Heure de sortie</th>
-                                                        <th class="">Total</th>
-                                                        <th class="">vendu</th>
-                                                        <th class="">heure de retour</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach (Home\PROSPECTION::programmee($date) as $key => $prospection) {
-                                                        $prospection->actualise(); ?>
+                                            <div class="ibox-content table-responsive">
+                                                <table class="table table-hover no-margins">
+                                                    <thead>
                                                         <tr>
-                                                            <td><?= $prospection->commercial->name()  ?></td>
-                                                            <td><?= heurecourt($prospection->created)  ?></td>
-                                                            <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
-                                                            <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>
-                                                            <td><?= heurecourt($prospection->dateretour)  ?></td>
+                                                            <th>Commercial</th>
+                                                            <th class="">Total</th>
+                                                            <th class="">vendu</th>
+                                                            <th class="">Aller - Retour</th>
                                                         </tr>
-                                                    <?php } ?>
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach (Home\PROSPECTION::programmee($date) as $key => $prospection) {
+                                                            $prospection->actualise(); ?>
+                                                            <tr>
+                                                                <td><?= $prospection->commercial->name()  ?></td>
+                                                                <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
+                                                                <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>
+                                                                <td><?= heurecourt($prospection->created)  ?> - <?= heurecourt($prospection->dateretour)  ?></td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
+
+                                    <div class="col-sm-6">
+                                        <div class="ibox ">
+                                            <div class="ibox-title">
+                                                <h5 class="text-uppercase">Vente directe du jour</h5>
+                                                <div class="ibox-tools">
+
+                                                </div>
+                                            </div>
+                                            <div class="ibox-content table-responsive">
+                                                <table class="table table-hover no-margins">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <?php foreach (Home\QUANTITE::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $qte) { ?>
+                                                                <th><?= $qte->name()  ?></th>
+                                                            <?php } ?>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach (Home\PRODUIT::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $produit) {
+                                                            $datas = $produit->fourni("prixdevente", ["isActive ="=>Home\TABLE::OUI]); ?>
+                                                            <tr>
+                                                                <td><?= $produit->name()  ?></td>
+                                                                <?php foreach ($datas as $key => $pdv) { ?>
+                                                                    <td><?= $pdv->vendeDirecte($date, $date); ?></td>
+                                                                <?php } ?>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <hr>
@@ -160,18 +194,18 @@
                                                             <tr>
                                                                 <?php foreach ($livraison->lignelivraisons as $key => $ligne) {
                                                                     if ($ligne->quantite > 0) { ?>
-                                                                     <td data-toogle="tooltip" title="effectivement livré" class="text-center text-green"><?= $ligne->quantite_livree ?></td>
-                                                                     <td data-toogle="tooltip" title="perte" class="text-center text-red"><?= $ligne->quantite - $ligne->quantite_livree  ?></td>
-                                                                 <?php   } 
-                                                             } ?>
-                                                         </tr>
-                                                     </tbody>
-                                                 </table>
-                                                 <h6 class="mp0 pull-right"><span>Véhicule :</span> <span class="text-uppercase"><?= $livraison->vehicule->name() ?></span></h6>
-                                                 <hr>
-                                             <?php } ?>
-                                         </div>
-                                     <?php }else{ ?>
+                                                                       <td data-toogle="tooltip" title="effectivement livré" class="text-center text-green"><?= $ligne->quantite_livree ?></td>
+                                                                       <td data-toogle="tooltip" title="perte" class="text-center text-red"><?= $ligne->quantite - $ligne->quantite_livree  ?></td>
+                                                                   <?php   } 
+                                                               } ?>
+                                                           </tr>
+                                                       </tbody>
+                                                   </table>
+                                                   <h6 class="mp0 pull-right"><span>Véhicule :</span> <span class="text-uppercase"><?= $livraison->vehicule->name() ?></span></h6>
+                                                   <hr>
+                                               <?php } ?>
+                                           </div>
+                                       <?php }else{ ?>
                                         <p class="text-center text-muted italic">Aucune livraison ce jour </p>
                                     <?php } ?>
                                 </div>
