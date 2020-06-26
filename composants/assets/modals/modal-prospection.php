@@ -53,17 +53,17 @@
                                     </div>
                                 </div><br>
 
-                                 <div>
+                                <div>
                                     <label>Transport pour la prospection </label>                           
                                     <div class="input-group">
-                                        <input type="number" class="form-control" number name="transport">
+                                        <input value="0" type="number" class="form-control" number name="transport">
                                     </div>
                                 </div><br>
 
                                 <div>
                                     <label>Monnaie pour la prospection </label>                           
                                     <div class="input-group">
-                                        <input type="number" class="form-control" number name="monnaie">
+                                        <input value="0" type="number" class="form-control" number name="monnaie">
                                     </div>
                                 </div><br>
 

@@ -39,8 +39,7 @@ if ($this->getId() != null) {
 		$stats = $commercial->stats($date1, $date2);
 
 
-		$fluxcaisse = $commercial->fourni("operation");
-		usort($fluxcaisse, "comparerDateCreated2");
+		$payes = $commercial->fourni("paye", [], [], ["created"=>"DESC"]);
 
 		
 		

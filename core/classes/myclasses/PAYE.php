@@ -18,11 +18,12 @@ class PAYE extends TABLE
 	public $modepayement_id;
 	public $structure;
 	public $numero;
-	public $date_approbation;
+	public $started;
+	public $bonus = 0;
+	public $finished;
 	public $isModified = 0;
 	public $employe_id;
 
-	public $image;
 	public $montant;
 	public $comptebanque_id;
 
