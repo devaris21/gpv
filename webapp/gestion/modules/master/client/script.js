@@ -117,7 +117,7 @@ $(function(){
 	}
 
 
-	$("body").on("change", "select[name=zonelivraison_id], input[data-pdv]", function(){
+	$("body").on("change", "select[name=zonelivraison_id], input[data-pdv], input[name=recu]", function(){
 		calcul()
 	})
 
@@ -142,10 +142,12 @@ $(function(){
 			}			
 		});
 		formdata.append('prixdeventes', tableau);
+		formdata.append('recu', $("input[name=recu]").val());
 
 		formdata.append('action', "calcul");
 		$.post({url:url, data:formdata, contentType:false, processData:false}, function(data){
 			$(".total").html(data.total);
+			$(".rendu").html(data.rendu);
 		}, 'json')
 		
 		$("#actualise").hide(200);

@@ -32,10 +32,10 @@ if ($action == "newproduit") {
 					<h4 class="mp0 text-uppercase"><?= $produit->name() ?></h4>
 				</td>
 				<?php foreach ($produit->prixdeventes as $key => $pdv) {
-					if ($pdv->enBoutique() > 0) {
+					if ($pdv->enBoutique(dateAjoute()) > 0) {
 						$pdv->actualise(); ?>
-						<td width="80">
-							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
+						<td width="80" class="text-center">
+							<label><?= $pdv->quantite->name() ?></label>
 							<input type="text" data-pdv="<?= $pdv->getId() ?>" number class="form-control text-center gras" style="padding: 3px">
 						</td>
 					<?php } } ?>				
@@ -72,8 +72,8 @@ if ($action == "newproduit") {
 				</td>
 				<?php foreach ($produit->prixdeventes as $key => $pdv) {
 					$pdv->actualise(); ?>
-						<td width="80">
-							<label><?=money( $pdv->prix->price) ?> <small><?= $params->devise ?></small></label>
+						<td width="80" class="text-center">
+							<label><?= $pdv->quantite->name() ?></label>
 							<input type="text" data-pdv="<?= $pdv->getId() ?>" number class="form-control text-center gras" style="padding: 3px">
 						</td>
 					<?php } ?>				
@@ -117,9 +117,12 @@ if ($action == "newproduit") {
 			}
 		}
 		session("total", $montant);
+		session("recu", $recu);
+		session("rendu", intval($recu) - $montant);
 
 		$data = new \stdclass();
 		$data->total = money(getSession("total"))." ".$params->devise;
+		$data->rendu = money(getSession("rendu"))." ".$params->devise;
 		echo json_encode($data);
 	}
 
@@ -142,7 +145,7 @@ if ($action == "newproduit") {
 					$datas = PRIXDEVENTE::findBy(["id ="=> $id]);
 					if (count($datas) == 1) {
 						$pdv = $datas[0];
-						if ($pdv->enBoutique() < $qte) {
+						if ($pdv->enBoutique(dateAjoute()) < $qte) {
 							$test = false;
 							break;
 						}	
@@ -150,12 +153,14 @@ if ($action == "newproduit") {
 				}
 
 				if ($test) {
-					if (getSession("total") > 0) {
+					if (getSession("total") > 0 && getSession("rendu") >= 0) {
 						if ($modepayement_id != MODEPAYEMENT::PRELEVEMENT_ACOMPTE ) {
 
 							$vente = new VENTE();
 							$vente->hydrater($_POST);
 							$vente->montant = $vente->vendu = getSession("total");
+							$vente->recu = getSession("recu");
+							$vente->rendu = getSession("rendu");
 							$data = $vente->enregistre();
 							if ($data->status) {
 								foreach ($prixdeventes as $key => $value) {
@@ -172,7 +177,6 @@ if ($action == "newproduit") {
 										$lignedevente->vente_id = $vente->getId();
 										$lignedevente->prixdevente_id = $id;
 										$lignedevente->quantite = intval($qte);
-									//$lignedevente->price =  $pdv->prix->price * $qte;
 										$lignedevente->enregistre();	
 									}
 								}
@@ -185,7 +189,7 @@ if ($action == "newproduit") {
 						}
 					}else{
 						$data->status = false;
-						$data->message = "Veuillez verifier le montant de la commande !";
+						$data->message = "Veuillez verifier le montant de la vente et/ou de la monnaie!";
 					}
 				}else{
 					$data->status = false;
@@ -193,7 +197,7 @@ if ($action == "newproduit") {
 				}				
 			}else{
 				$data->status = false;
-				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la commande !";
+				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la vente !";
 			}
 		}else{
 			$data->status = false;
@@ -222,7 +226,7 @@ if ($action == "newproduit") {
 							$qte = end($lot);
 							$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
 							$pdv->actualise();
-							if ($qte > 0 && $pdv->enBoutique() >= $qte ) {
+							if ($qte > 0 && $pdv->enBoutique(dateAjoute()) >= $qte ) {
 								unset($tests[$key]);
 							}
 						}
@@ -263,7 +267,7 @@ if ($action == "newproduit") {
 						}						
 					}else{
 						$data->status = false;
-						$data->message = "Veuillez verifier le montant de la commande !";
+						$data->message = "Veuillez verifier le montant total de la prospection !";
 					}
 				}else{
 					$data->status = false;
@@ -271,11 +275,11 @@ if ($action == "newproduit") {
 				}
 			}else{
 				$data->status = false;
-				$data->message = "Veuillez selectionner des produits et leur quantité pour passer la commande !";
+				$data->message = "Veuillez selectionner des produits et leur quantité pour valider la prospection !";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Erreur lors de la validation de la commande, veuillez recommencer !";
+			$data->message = "Erreur lors de la validation de la prospection, veuillez recommencer !";
 		}
 		echo json_encode($data);
 	}
@@ -352,15 +356,14 @@ if ($action == "newproduit") {
 										$client->dette($total - intval($avance));
 									}
 
-									$payement = new OPERATION();
+									$payement = new REGLEMENTCLIENT();
 									$payement->hydrater($_POST);
-									$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 									$payement->montant = $commande->avance;
 									$payement->client_id = $client_id;
 									$payement->comment = "Réglement de la facture pour la commande N°".$commande->reference;
 									$lot = $payement->enregistre();
 
-									$commande->operation_id = $lot->lastid;
+									$commande->reglementclient_id = $lot->lastid;
 
 									$client->actualise();
 									$payement->acompteClient = $client->acompte;
@@ -456,7 +459,7 @@ if ($action == "newproduit") {
 						$qte = end($lot);
 						$pdv = PRIXDEVENTE::findBy(["id ="=>$id])[0];
 						$pdv->actualise();
-						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->enBoutique()) {
+						if ($qte > 0 && $groupecommande->reste($pdv->getId()) >= $qte && $qte <= $pdv->enBoutique(dateAjoute())) {
 							unset($tests[$key]);
 						}
 					}
@@ -483,7 +486,6 @@ if ($action == "newproduit") {
 								if (count($datas) > 0) {
 									$pdv = $datas[0];
 									$pdv->actualise();
-									//$pdv->produit->livrer($qte);
 
 									// $paye = $produit->coutProduction("livraison", $qte);
 									// if (isset($chargement_manoeuvre) && $chargement_manoeuvre == "on") {
@@ -524,7 +526,7 @@ if ($action == "newproduit") {
 							// 			}
 
 							// 			$livraison->actualise();
-							// 			$payement = new OPERATION();
+							// 			$payement = new REGLEMENTCLIENT();
 							// 			$payement->hydrater($_POST);
 							// 			$payement->categorieoperation_id = CATEGORIEOPERATION::LOCATION_VENTE;
 							// 			$payement->montant = $avance;
@@ -601,7 +603,6 @@ if ($action == "newproduit") {
 									$datas = PRODUIT::findBy(["id="=>$id]);
 									if (count($datas) > 0) {
 										$produit = $datas[0];
-										$produit->livrer($qte);
 
 										$lignecommande = new LIGNEDEVENTE;
 										$lignecommande->livraison_id = $livraison->getId();

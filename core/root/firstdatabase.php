@@ -12,6 +12,17 @@ foreach ($datas as $key => $value) {
 	$item->save();
 }
 
+$item = new BOUTIQUE();
+$item->name = "Boutique principal";
+$item->setProtected(1);
+$item->save();
+
+$item = new ENTREPOT();
+$item->name = "Entrepôt principal";
+$item->setProtected(1);
+$item->save();
+
+
 $datas = ["Directe", "Par Prospection/livraison"];
 foreach ($datas as $key => $value) {
 	$item = new TYPEVENTE();
@@ -19,6 +30,7 @@ foreach ($datas as $key => $value) {
 	$item->setProtected(1);
 	$item->save();
 }
+
 
 $datas = ["Prospection par commercial", "livraison de commande"];
 foreach ($datas as $key => $value) {
@@ -44,6 +56,101 @@ foreach ($datas as $key => $value) {
 	$item->setProtected(1);
 	$item->save();
 }
+
+
+
+
+$item = new TYPEBIEN();
+$item->name = "Magasin / Entrepot / Usine";
+$item->min = 15;
+$item->max = 50;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name = "Meubles / Mobiliers";
+$item->min = 5;
+$item->max = 10;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name = "Véhicules";
+$item->min = 3;
+$item->max = 5;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name = "Materiels industriels / Outillages";
+$item->min = 5;
+$item->max = 10;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name = "Materiels informatiques";
+$item->min = 2;
+$item->max = 5;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name = "Brevets";
+$item->min = 3;
+$item->max = 5;
+$item->setProtected(1);
+$item->save();
+
+
+$item = new TYPEBIEN();
+$item->name ="Logiciels / Sites internet";
+$item->min = 2;
+$item->max = 3;
+$item->setProtected(1);
+$item->save();
+
+
+
+$datas = ["Immobilisation corporelle", "Immobilisation incorporelle", "Immobilisation financière"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEIMMOBILISATION();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+
+$datas = ["Dépôt", "Retrait"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEMOUVEMENT();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+
+$datas = ["Caisse courante"];
+foreach ($datas as $key => $value) {
+	$item = new COMPTEBANQUE();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
+$datas = ["Amortissement linéaire", "Amortissement dégressif"];
+foreach ($datas as $key => $value) {
+	$item = new TYPEAMORTISSEMENT();
+	$item->name = $value;
+	$item->setProtected(1);
+	$item->save();
+}
+
 
 $datas = ["Accrochage", "Crevaison", "Autre"];
 foreach ($datas as $key => $value) {
@@ -107,7 +214,7 @@ $item->save();
 
 
 
-$datas = ["master", "production", "caisse", "parametres", "paye des manoeuvre", "modifier-supprimer", "archives"];
+$datas = ["master", "production", "ventes", "approvisionnement", "caisse", "parametres", "paye des manoeuvre", "modifier-supprimer", "archives"];
 foreach ($datas as $key => $value) {
 	$item = new ROLE();
 	$item->name = $value;
@@ -122,6 +229,7 @@ $item->email = "info@devaris21.com";
 $item->devise = "Fcfa";
 $item->tva = 0;
 $item->seuilCredit = 0;
+$item->minImmobilisation = 350000;
 $item->setProtected(1);
 $item->enregistre();
 
@@ -338,26 +446,6 @@ foreach (ROLE::getAll() as $key => $value) {
 }
 
 
-$item = new APPROVISIONNEMENT();
-$item->etat_id = ETAT::VALIDEE;
-$item->operation_id = 0;
-$item->employe_id = 0;
-$item->reference = "INITIAL";
-$item->fournisseur_id = FOURNISSEUR::FOURNISSEURSYSTEME;
-$item->comment = "approvisionnemnt initial, système !";
-$item->visibility = 0;
-$item->setProtected(1);
-$item->save();
-
-
-$item = new PRODUCTIONJOUR();
-$item->ladate = PARAMS::DATE_DEFAULT;
-$item->comment = "production initial, système !";
-$item->etat_id = ETAT::VALIDEE;
-$item->setProtected(1);
-$item->save();
-
-
 $datas = [200, 250, 300, 500, 1000, 1500, 2000];
 foreach ($datas as $key => $value) {
 	$item = new PRIX();
@@ -367,61 +455,58 @@ foreach ($datas as $key => $value) {
 }
 
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus de passion";
-$item->description = "Hourdis";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus de passion";
+// $item->description = "Hourdis";
+// $item->enregistre();
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus d'orange";
-$item->description = "AC 15";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus d'orange";
+// $item->description = "AC 15";
+// $item->enregistre();
 
-$item = new PRODUIT();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Jus de bissap";
-$item->description = "AP 15";
-$item->enregistre();
+// $item = new PRODUIT();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Jus de bissap";
+// $item->description = "AP 15";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "EAU";
+// $item->class = "Sac";
+// $item->abbr = "Sacs";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Orange";
+// $item->class = "unités";
+// $item->abbr = "Chgs";
+// $item->enregistre();
 
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Sucre";
+// $item->class = "Tonne";
+// $item->abbr = "T";
+// $item->enregistre();
 
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "EAU";
-$item->class = "Sac";
-$item->abbr = "Sacs";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Orange";
-$item->class = "unités";
-$item->abbr = "Chgs";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Sucre";
-$item->class = "Tonne";
-$item->abbr = "T";
-$item->enregistre();
-
-$item = new RESSOURCE();
-$item->files = [];
-$item->stock = 100;
-$item->name = "Bidons";
-$item->class = "Tonne";
-$item->abbr = "T";
-$item->enregistre();
+// $item = new RESSOURCE();
+// $item->files = [];
+// $item->stock = 100;
+// $item->name = "Bidons";
+// $item->class = "Tonne";
+// $item->abbr = "T";
+// $item->enregistre();
 
 
 $datas = ["standart"];

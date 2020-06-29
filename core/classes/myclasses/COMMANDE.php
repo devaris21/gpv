@@ -16,7 +16,7 @@ class COMMANDE extends TABLE
 	public $lieu;
 	public $taux_tva = 0;
 	public $tva = 0;
-	public $operation_id = 0;
+	public $reglementclient_id = 0;
 	public $montant = 0;
 	public $avance = 0;
 	public $reste = 0;

@@ -30,6 +30,7 @@
                                         </div>
                                         <div class="col-9">
                                             <h5 class="gras text-uppercase text-orange"><?= $params->societe ?></h5>
+                                            <h5 class="mp0"><?= $params->adresse ?></h5>
                                             <h5 class="mp0"><?= $params->postale ?></h5>
                                             <h5 class="mp0">Tél: <?= $params->contact ?></h5>
                                             <h5 class="mp0">Email: <?= $params->email ?></h5>
@@ -48,11 +49,13 @@
                                 <div class="col-6">
                                     <h5><span>Date :</span> <span class="text-uppercase"><?= datecourt($prospection->created) ?></span></h5> 
                                     <h5><span>Heure de depart :</span> <span class="text-uppercase"><?= heurecourt($prospection->created) ?></span></h5>     
+                                    <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $prospection->zonedevente->name() ?></span></h5>  
                                 </div>
 
                                 <div class="col-6 text-right">
                                     <h5><span>Commercial :</span> <span class="text-uppercase"><?= $prospection->commercial->name() ?></span></h5>
-                                    <h5><span>Zone de livraison :</span> <span class="text-uppercase"><?= $prospection->zonedevente->name() ?></span></h5>   
+                                    <h5><span>Monnaie de prospection :</span> <span class="text-uppercase"><?= money($prospection->monnaie) ?> <?= $params->devise ?></span></h5> 
+                                    <h5><span>Transport pour la prospection :</span> <span class="text-uppercase"><?= money($prospection->transport) ?> <?= $params->devise ?></span></h5> 
                                 </div>
                             </div><br><br>
 

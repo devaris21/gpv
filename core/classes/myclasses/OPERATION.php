@@ -13,6 +13,7 @@ class OPERATION extends TABLE
 	public $reference;
 	public $montant;
 	public $categorieoperation_id;
+	public $mouvement_id;
 	public $modepayement_id;
 	public $employe_id;
 	public $etat_id = ETAT::VALIDEE;
@@ -51,9 +52,23 @@ class OPERATION extends TABLE
 						}
 						
 						if (intval($this->montant) > 0) {
-							$data = $this->save();
+							$mouvement = new MOUVEMENT();
+							$mouvement->montant = $this->montant;
+							$mouvement->typemouvement_id = TYPEMOUVEMENT::DEPOT;
+							if ($cat->typeoperationcaisse_id == TYPEOPERATIONCAISSE::SORTIE) {
+								$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
+							}
+							$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
+							$data = $mouvement->enregistre();
 							if ($data->status) {
-								$this->uploading($this->files);
+								$this->mouvement_id = $mouvement->getId();
+								$data = $this->save();
+								if ($data->status) {
+									if (!(isset($this->files) && is_array($this->files))) {
+										$this->files = [];
+									}
+									$this->uploading($this->files);
+								}
 							}
 						}else{
 							$data->status = false;
@@ -69,11 +84,11 @@ class OPERATION extends TABLE
 				}				
 			}else{
 				$data->status = false;
-				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+				$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 1 !!";
 			}
 		}else{
 			$data->status = false;
-			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer !!";
+			$data->message = "Une erreur s'est produite lors de l'opération, veuillez recommencer 2 !!";
 		}
 		return $data;
 	}
@@ -112,6 +127,11 @@ class OPERATION extends TABLE
 	}
 
 
+	public function annuler(){
+		return $this->supprime();
+	}
+
+
 
 	public static function entree(string $date1 = "2020-04-01", string $date2){
 		$requette = "SELECT SUM(montant) as montant  FROM operation, categorieoperation WHERE operation.categorieoperation_id = categorieoperation.id AND categorieoperation.typeoperationcaisse_id = ? AND operation.valide = 1 AND DATE(operation.created) >= ? AND DATE(operation.created) <= ?";
@@ -138,7 +158,7 @@ class OPERATION extends TABLE
 
 
 	public static function versements(string $date1 = "2020-04-01", string $date2){
-		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? ";
+		$requette = "SELECT SUM(montant) as montant  FROM operation WHERE operation.categorieoperation_id = ? AND operation.valide = 1 AND operation.client_id = ? AND DATE(operation.created) >= ? AND DATE(operation.created) <= ? AND operation.valide = 1";
 		$item = OPERATION::execute($requette, [CATEGORIEOPERATION::VENTE, CLIENT::ANONYME, $date1, $date2]);
 		if (count($item) < 1) {$item = [new OPERATION()]; }
 		return $item[0]->montant;
@@ -195,7 +215,7 @@ class OPERATION extends TABLE
 		$index = $date1;
 		while ( $index <= $date2 ) {
 			$debut = $index;
-			$fin = dateAjoute1($index, 1);
+			$fin = dateAjoute1($index, ceil($nb/2));
 
 			$data = new \stdclass;
 			$data->year = date("Y", strtotime($index));
@@ -204,9 +224,12 @@ class OPERATION extends TABLE
 			$data->nb = $nb;
 			////////////
 
+			$data->ca = OPERATION::entree($debut, $fin);
 			$data->sortie = OPERATION::sortie($debut, $fin);
-			$data->entree = OPERATION::entree($debut, $fin);
-			$data->resultat = OPERATION::resultat($debut, $fin);
+			$data->marge = 0 ;
+			if ($data->ca != 0) {
+				$data->marge = (OPERATION::resultat($debut, $fin) / $data->ca) *100;
+			}
 
 			$tableaux[] = $data;
 			///////////////////////

@@ -5,7 +5,7 @@ use Home\ROLE;
 use Home\EMPLOYE;
 use Home\UTILISATEUR;
 use Home\PRODUCTIONJOUR;
-use Home\PRESTATAIRE;
+use Home\EXERCICECOMPTABLE;
 use Home\PARAMS;
 use Home\MYCOMPTE;
 /**
@@ -14,7 +14,7 @@ use Home\MYCOMPTE;
 class ROOTER extends PATH
 {
 
-    private $url;
+    public $url;
     private $language = "fr";
     public $section = "devaris21";
     public $module = "start";
@@ -76,6 +76,8 @@ class ROOTER extends PATH
 
 
                 if ($mycompte->expired >= dateAjoute()) {
+                    $exercicecomptable = EXERCICECOMPTABLE::encours();
+
                        //pour les etats recaps
                     $datea = dateAjoute(-30);
                     $dateb = dateAjoute(1);

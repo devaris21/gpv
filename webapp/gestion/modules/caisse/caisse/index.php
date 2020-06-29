@@ -25,7 +25,7 @@
                         </div>
                         <div class="ibox-content">
                             <h1 class="no-margins"><?= money(Home\COMMANDE::CA(date("Y")."-01-01" , dateAjoute())) ?></h1>
-                             <div class="stat-percent font-bold text-warning"><?= money(Home\CLIENT::dettes()) ?></div>
+                            <div class="stat-percent font-bold text-warning"><?= money(Home\CLIENT::dettes()) ?></div>
                             <small>Dette des clients</small>
                         </div>
                     </div>
@@ -83,10 +83,10 @@
                                 </div><hr>
                                 <div class="row stat-list text-center">
                                     <div class="col-4">
-                                       <h3 class="no-margins text-green"><?= money(Home\OPERATION::entree(dateAjoute() , dateAjoute(+1))) ?> <?= $params->devise ?> </h3>
-                                       <small>Entrées du jour</small>
+                                     <h3 class="no-margins text-green"><?= money(Home\OPERATION::entree(dateAjoute() , dateAjoute(+1))) ?> <?= $params->devise ?> </h3>
+                                     <small>Entrées du jour</small>
 
-                                       <div class="progress progress-mini" style="margin-top: 5%;">
+                                     <div class="progress progress-mini" style="margin-top: 5%;">
                                         <div class="progress-bar" style="width: 100%; background-color: #dedede"></div>
                                     </div><br>
 
@@ -127,20 +127,20 @@
                         <h5 class="text-uppercase">résultats 3 derniers jours</h5>
                     </div>
                     <?php $i = -2;  while ($i <= 0) {
-                        $date1 = dateAjoute($i-1);
-                        $date2 = dateAjoute($i);
-                        $ouv = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , $date1);
-                        $ferm = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , $date2);
+                        $datea = dateAjoute($i-1);
+                        $dateb = dateAjoute($i);
+                        $ouv = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , $datea);
+                        $ferm = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , $dateb);
 
                         $taux = 0;
                         if ($ouv > 0) {
-                         $taux = (($ferm - $ouv) / $ouv);
-                     }
-                     ?>
-                     <div class="ibox-content text-center">
+                           $taux = (($ferm - $ouv) / $ouv);
+                       }
+                       ?>
+                       <div class="ibox-content text-center">
                         <div class="row">
                             <div class="col-4">
-                                <small class="stats-label">Ouverture <?= datecourt2($date2)  ?></small>
+                                <small class="stats-label">Ouverture <?= datecourt2($dateb)  ?></small>
                                 <h4><?= money($ouv) ?> <small><?= $params->devise ?></small></h4>
                             </div>
                             <div class="col-4">
@@ -148,7 +148,7 @@
                                 <h4 class="text-<?= ($taux > 0)?"green":"red"  ?>"><?= round(($taux * 100), 2) ?>%</h4>
                             </div>
                             <div class="col-4">
-                                <small class="stats-label">Cloture <?= datecourt2($date2)  ?></small>
+                                <small class="stats-label">Cloture <?= datecourt2($dateb)  ?></small>
                                 <h4><?= money($ferm) ?> <small><?= $params->devise ?></small></h4>
                             </div>
                         </div>
@@ -176,12 +176,19 @@
                 <div class="ibox-title">
                     <h5 class="text-uppercase">Tableau des compte</h5>
                     <div class="ibox-tools">
-                        <div data-toggle="buttons" class="btn-group btn-group-toggle">
-                            <label jour="-7" class="btn btn-sm btn-white active"><i class="fa fa-calendar"></i> Semaine </label>
-                            <label jour="-30" class="btn btn-sm btn-white"><i class="fa fa-calendar"></i> Mois </label>
-                            <label jour="-90" class="btn btn-sm btn-white"><i class="fa fa-calendar"></i> Trimestre </label>
-                            <label jour="-360" class="btn btn-sm btn-white"><i class="fa fa-calendar"></i> Année </label>
-                        </div>
+                        <form id="formFiltrer" method="POST">
+                            <div class="row" style="margin-top: -1%">
+                                <div class="col-5">
+                                    <input type="date" value="<?= $date1 ?>" class="form-control input-sm" name="date1">
+                                </div>
+                                <div class="col-5">
+                                    <input type="date" value="<?= $date2 ?>" class="form-control input-sm" name="date2">
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" onclick="filtrer()" class="btn btn-sm btn-white"><i class="fa fa-search"></i> Filtrer</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -199,10 +206,10 @@
                                     </thead>
                                     <tbody class="tableau">
                                         <tr>
-                                            <td colspan="2">Repport du solde de la veille (<?= datecourt(dateAjoute(-8)) ?>) </td>
+                                            <td colspan="2">Repport du solde (<?= datecourt($date1) ?>) </td>
                                             <td class="text-center">-</td>
                                             <td class="text-center">-</td>
-                                            <td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , dateAjoute(-8))) ?> <?= $params->devise ?></td>
+                                            <td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , dateAjoute1($date1, -1))) ?> <?= $params->devise ?></td>
                                         </tr>
                                         <?php foreach ($operations as $key => $operation) {  ?>
                                             <tr>
@@ -284,10 +291,10 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">Liste des versements en attentes</h4>
                 <div class="offset-md-4 col-md-4">
-                   <input type="text" id="search" class="form-control text-center" placeholder="Rechercher un versements"> 
-               </div>
-           </div>
-           <div class="modal-body">
+                 <input type="text" id="search" class="form-control text-center" placeholder="Rechercher un versements"> 
+             </div>
+         </div>
+         <div class="modal-body">
             <table class="table table-bordered table-hover table-operation">
                 <tbody class="tableau-attente">
                     <?php foreach (Home\OPERATION::enAttente() as $key => $operation) {

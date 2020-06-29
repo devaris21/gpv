@@ -61,6 +61,13 @@ abstract class TABLE
         return json_encode($this);
     }
 
+    public function isActive(){
+        if ($this->isActive == TABLE::OUI) {
+            return true;
+        }
+        return false;
+    }
+
 
     public function isProtected(){
         if ($this->getProtected() == 1) {
@@ -108,17 +115,17 @@ abstract class TABLE
     public function setCreated($date = null){
         $this->created = $date;
         if ($date == null) {
-         $this->created = date("Y-m-d H:i:s");
-     }
-     return $this;
- }
- 
- public function setModified($date = null){
+           $this->created = date("Y-m-d H:i:s");
+       }
+       return $this;
+   }
+
+   public function setModified($date = null){
     $this->modified = $date;
     if ($date == null) {
-       $this->modified = date("Y-m-d H:i:s");
-   }
-   return $this;
+     $this->modified = date("Y-m-d H:i:s");
+ }
+ return $this;
 }
 
 
@@ -208,56 +215,56 @@ public function save(){
         $data->mode ="insert";
             //c'est un ajout (insert)
         if ($this->created == null) {
-          $this->setCreated();
-      }
-      if ($this->modified == null) {
-        $this->setModified();
+            $this->setCreated();
+        }
+        if ($this->modified == null) {
+            $this->setModified();
+        }
+        
+        
+        $requette = "INSERT INTO $table SET $setter";
     }
-    
-    
-    $requette = "INSERT INTO $table SET $setter";
-}
         //liste des proprietes de la classe
-$table2 = $this->getProperties();
-$table1 = array_intersect_key($table2, $tab);
-unset($table1["id"]);
+    $table2 = $this->getProperties();
+    $table1 = array_intersect_key($table2, $tab);
+    unset($table1["id"]);
 
-$req = $bdd->prepare($requette);
-foreach ($table1 as $key => $value) {
-    if (!is_array($value)) {
-        $req->bindValue(":$key", $value);
-    }else{
-        $req->bindValue(":$key", "");
+    $req = $bdd->prepare($requette);
+    foreach ($table1 as $key => $value) {
+        if (!is_array($value)) {
+            $req->bindValue(":$key", $value);
+        }else{
+            $req->bindValue(":$key", "");
+        }
     }
-}
-$resultat = $req->execute();
+    $resultat = $req->execute();
 
-if ($resultat) {
-    $data->status = true;
-    $data->message = "Données enregistrées avec succes !";
-    if ($data->mode == "insert") {
+    if ($resultat) {
+        $data->status = true;
+        $data->message = "Données enregistrées avec succes !";
+        if ($data->mode == "insert") {
         //recuperer le lastid
-        $class = self::fullyClassName($table);
-        $temp = $class::findLastId();
-        $id = $temp->getId();
-        $data->lastid = $id;
-        $this->setId($id);
-    }else{
-        $data->lastid = $this->getId();
-    }
+            $class = self::fullyClassName($table);
+            $temp = $class::findLastId();
+            $id = $temp->getId();
+            $data->lastid = $id;
+            $this->setId($id);
+        }else{
+            $data->lastid = $this->getId();
+        }
 
-    if ($this::$tableName != self::fullyClassName("history") ) {
+        if ($this::$tableName != self::fullyClassName("history") ) {
         //L'historque
-        $class = self::fullyClassName($table);
-        $element = new $class();
-        $element->cloner($this);
-        HISTORY::createHistory($element, $data->mode);
+            $class = self::fullyClassName($table);
+            $element = new $class();
+            $element->cloner($this);
+            HISTORY::createHistory($element, $data->mode);
+        }
+    }else{
+        $data->status = false;
+        $data->message = "Une erreur s'est produite lors du save()";
     }
-}else{
-    $data->status = false;
-    $data->message = "Une erreur s'est produite lors du save()";
-}
-return $data;
+    return $data;
 }
 
 
@@ -340,30 +347,62 @@ public static function findLastId(){
 
 
     //les fonctions "findBy" et "findLike" spour rechercher a partir de n'importe quelle colonne
-public static function findLike(String $search, Array $proprietes=["name"], int $limit=0){
+public static function findLike(String $search, Array $proprietes=["name"], Array $params=[], Array $group =[], Array $order = [], int $limit=0, $conn="AND"){
     extract(static::tableName());
         //les conditions
-    $where = ""; $i = 1;
+    $where = $groupe = $orders =""; $i =1;
     $j = count($proprietes);
     foreach ($proprietes as $key => $value) {
         if ($i == $j) {
-            $where .= "$value LIKE '%$search%'";
+            $where .= "LOWER($value) LIKE '%$search%'";
         }else{
-            $where .= "$value LIKE '%$search%' OR ";
+            $where .= "LOWER($value) LIKE '%$search%' OR ";
         }
         $i++;
     }
     
+      //les conditions
+    $i =0;
+    foreach ($params as $key => $value) {
+        $i++;
+        $where .= "$conn $key :$i ";
+    }
+        //les group
+    if (count($group) > 0) {
+        $groupe ="GROUP BY ";
+        if (count($group) > 0) {
+            $groupe .= implode(", ", $group);
+        }
+    }
+        //les orders
+    if (count($order) > 0) {
+        $i =0;
+        $orders ="ORDER BY ";
+        foreach ($order as $key => $value) {
+            $i++;
+            if (count($order) == $i) {
+                $orders .= "$key $value ";
+            }else{
+                $orders .= "$key $value, ";
+            }
+        }
+    }
+
         //limite
     $lim ="";
     if ($limit > 0) {
         $lim ="LIMIT $limit";
     }
 
-    $requette = "SELECT * FROM $table WHERE valide = 1 AND $where $lim";
+    $requette = "SELECT * FROM $table WHERE valide = 1 AND $where $groupe $orders $lim";
     $req = $bdd->prepare($requette);
+    $i =0;
+    foreach ($params as $key => $value) {
+        $i++;
+        $req->bindValue(":$i", $value);
+    }
     $req->execute();
-    return $req->fetchAll(PDO::FETCH_CLASS, "$tableClass");         
+    return $req->fetchAll(PDO::FETCH_CLASS, "$tableClass");           
 }
 
 

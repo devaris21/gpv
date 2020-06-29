@@ -46,6 +46,20 @@
                                     </div>
                                 </div><br>
 
+                                <div>
+                                    <label>Transport pour la prospection </label>                           
+                                    <div class="input-group">
+                                        <input value="0" type="number" class="form-control" number name="transport">
+                                    </div>
+                                </div><br>
+
+                                <div>
+                                    <label>Monnaie pour la prospection </label>                           
+                                    <div class="input-group">
+                                        <input value="0" type="number" class="form-control" number name="monnaie">
+                                    </div>
+                                </div><br>
+
                                 <input type="hidden" name="client_id" value="<?= Home\CLIENT::ANONYME ?>">
                             </form><br>
                             <h2 class="font-bold total text-right total">0 Fcfa</h2>

@@ -11,14 +11,16 @@ class VENTE extends TABLE
 
 	public $reference;
 	public $typevente_id;
-	public $groupecommande_id = null;
+	public $groupecommande_id  = null;
 	public $zonedevente_id;
-	public $commercial_id     = COMMERCIAL::MAGASIN;
-	public $etat_id           = ETAT::ENCOURS;
-	public $employe_id        = null;
-	public $operation_id      = null;
+	public $commercial_id      = COMMERCIAL::MAGASIN;
+	public $etat_id            = ETAT::ENCOURS;
+	public $employe_id         = null;
+	public $reglementclient_id = null;
 	
-	public $montant           = 0;
+	public $montant            = 0;
+	public $rendu              = 0;
+	public $recu               = 0;
 	public $comment;
 
 	
@@ -45,23 +47,22 @@ class VENTE extends TABLE
 		$tva = ($montant * $params->tva) / 100;
 		$total = $montant + $tva;
 
-		$payement = new OPERATION();
+		$payement = new REGLEMENTCLIENT();
 		$payement->hydrater($post);
-		$payement->categorieoperation_id = CATEGORIEOPERATION::VENTE;
 		$payement->montant = $total;
 		$payement->comment = "Réglement de la vente ".$this->typevente->name()." N°".$this->reference;
+		$payement->files = [];
+		$payement->setId(null);
 		$data = $payement->enregistre();
 		if ($data->status) {
-			$this->operation_id = $data->lastid;
+			$this->reglementclient_id = $data->lastid;
 			$data = $this->save();
 		}
-							// $data->url1 = $data->setUrl("gestion", "fiches", "boncaisse", $lot->lastid);
-							// $data->url2 = $data->setUrl("gestion", "fiches", "boncommande", $data->lastid);
 		return $data;
 	}
 
-	public static function today(){
-		return static::findBy(["DATE(created) ="=>dateAjoute(), "etat_id !="=>ETAT::ANNULEE]);
+	public static function todayDirect(){
+		return static::findBy(["DATE(created) ="=>dateAjoute(), "typevente_id="=>TYPEVENTE::DIRECT, "etat_id !="=>ETAT::ANNULEE]);
 	}
 
 
@@ -106,22 +107,13 @@ class VENTE extends TABLE
 
 	public function annuler(){
 		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
+		if ($this->etat_id != ETAT::ANNULEE) {
 			$this->etat_id = ETAT::ANNULEE;
 			$this->historique("La vente en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
-				$this->groupecommande->etat_id = ETAT::ENCOURS;
-				$this->groupecommande->save();
-
-				if ($this->chauffeur_id > 0) {
-					$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
-					$this->chauffeur->save();
-				}
-
-				$this->vehicule->etat_id = ETATVEHICULE::RAS;
-				$this->vehicule->save();
+				$this->operation->annuler();
 			}
 		}else{
 			$data->status = false;
@@ -203,6 +195,54 @@ class VENTE extends TABLE
 		}
 		return $data;
 	}
+
+
+	public static function direct(string $date1, string $date2){
+		return static::findBy(["typevente_id ="=>TYPEVENTE::DIRECT, "DATE(created) >="=>$date1, "DATE(created) <="=>$date2, "etat_id !="=>ETAT::ANNULEE]);
+	}
+
+	public static function prospection(string $date1, string $date2){
+		return static::findBy(["typevente_id ="=>TYPEVENTE::PROSPECTION, "DATE(created) >="=>$date1, "DATE(created) <="=>$date2, "etat_id !="=>ETAT::ANNULEE]);
+	}
+
+
+
+	public static function entree(string $date1 = "2020-04-01", string $date2){
+		$requette = "SELECT SUM(montant) as montant  FROM operation, categorieoperation WHERE operation.categorieoperation_id = categorieoperation.id AND categorieoperation.typeoperationcaisse_id = ? AND operation.valide = 1 AND DATE(operation.created) >= ? AND DATE(operation.created) <= ?";
+		$item = OPERATION::execute($requette, [TYPEOPERATIONCAISSE::ENTREE, $date1, $date2]);
+		if (count($item) < 1) {$item = [new OPERATION()]; }
+		return $item[0]->montant;
+	}
+
+
+
+	public static function stats(string $date1 = "2020-04-01", string $date2){
+		$tableaux = [];
+		$nb = ceil(dateDiffe($date1, $date2) / 12);
+		$index = $date1;
+		while ( $index <= $date2 ) {
+			$debut = $index;
+			$fin = dateAjoute1($index, ceil($nb/2));
+
+			$data = new \stdclass;
+			$data->year = date("Y", strtotime($index));
+			$data->month = date("m", strtotime($index));
+			$data->day = date("d", strtotime($index));
+			$data->nb = $nb;
+			////////////
+
+			$data->direct = comptage(VENTE::direct($debut, $fin), "vendu", "somme");
+			$data->prospection = comptage(VENTE::prospection($debut, $fin), "vendu", "somme");
+			$data->marge = 0 ;
+
+			$tableaux[] = $data;
+			///////////////////////
+			
+			$index = $fin;
+		}
+		return $tableaux;
+	}
+
 
 
 	public function sentenseCreate(){}

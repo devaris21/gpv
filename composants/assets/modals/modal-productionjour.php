@@ -40,7 +40,7 @@
 
                                 <div class="row">
                                     <?php foreach (Home\RESSOURCE::getAll() as $key => $ressource) { ?>
-                                        <div class="col-md col-sm">
+                                        <div class="col-sm-3">
                                             <label class="text-muted gras"><?= $ressource->name() ?> (<?= $ressource->abbr ?>)</label>
                                             <input type="text" data-id="<?= $ressource->getId() ?>" data-toggle="tooltip" min=0 number class="gras form-control text-red text-center" name="conso-<?= $ressource->getId() ?>">
                                         </div>
