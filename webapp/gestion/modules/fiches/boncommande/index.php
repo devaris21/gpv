@@ -30,7 +30,6 @@
                                             </div>
                                             <div class="col-9">
                                                 <h5 class="gras text-uppercase text-orange"><?= $params->societe ?></h5>
-                                                <h5 class="mp0"><?= $params->adresse ?></h5>
                                                 <h5 class="mp0"><?= $params->postale ?></h5>
                                                 <h5 class="mp0">Tél: <?= $params->contact ?></h5>
                                                 <h5 class="mp0">Email: <?= $params->email ?></h5>
@@ -109,7 +108,7 @@
                                                 <?php if ($commande->operation_id == 0) { ?>
                                                     <small>Réglement par prélèvement sur acompte</small>
                                                 <?php }else{ ?>
-                                                    <small>Réglement par <?= $commande->reglementclient->modepayement->name() ?></small>
+                                                    <small>Réglement par <?= $commande->operation->modepayement->name() ?></small>
                                                 <?php } ?>
                                                 
                                             </td>

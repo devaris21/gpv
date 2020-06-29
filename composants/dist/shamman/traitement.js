@@ -47,18 +47,6 @@
         }
 
 
-        changeActive = function(table, id){
-            url = "../../composants/dist/shamman/traitement.php";
-            $.post(url, {action:"changeActive", table:table, id:id}, (data)=>{
-                if (data.status) {
-                    Alerter.success('Mise à jour !', "Modification effectuée avec succès !");
-                }else{
-                    Alerter.error('Erreur !', data.message);
-                }
-            },"json");
-        }
-
-
 
         modification = function(table, id){
             url = "../../composants/dist/shamman/traitement.php";

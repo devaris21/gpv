@@ -11,17 +11,6 @@
                     </div><hr>
 
                     <form id="formMiseenboutique" classname="miseenboutique">
-                        <div class="row">
-                            <div class="col-sm-6 col-md-4">
-                                <label>Entrepot de sortie</label>
-                                <?php Native\BINDING::html("select", "entrepot") ?>
-                            </div>
-
-                            <div class="col-sm-6 col-md-4">
-                                <label>Boutique de destination</label>
-                                <?php Native\BINDING::html("select", "boutique") ?>
-                            </div>
-                        </div><hr><br>
                         <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
                             <div class="row">
                                 <div class="col-md-3 col-md">
@@ -31,7 +20,7 @@
                                     <div class="row">
                                         <?php $produit->fourni("prixdevente", ["isActive ="=>Home\TABLE::OUI]);
                                         foreach ($produit->prixdeventes as $key => $prixdv) {
-                                            $stock = $prixdv->enEntrepot(dateAjoute());
+                                            $stock = $prixdv->enStock();
                                             if ($stock > 0) {
                                                 $prixdv->actualise(); ?>
                                                 <div class="col-sm-3">
@@ -44,14 +33,7 @@
                                 </div><hr>
                             <?php } ?>
 
-                            <hr><br>
-
-                            <div class="row">
-                                <div class="col-sm-6 col-md-4">
-                                    <label>Ajouter une note</label>
-                                    <textarea class="form-control" name="comment" rows="4"></textarea>
-                                </div>
-                            </div>
+                            <hr>
 
                             <div class="">
                                 <button class="btn pull-right dim btn-primary" ><i class="fa fa-check"></i> Valider la mise en boutique</button>

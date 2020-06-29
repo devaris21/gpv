@@ -11,38 +11,36 @@ $data = new RESPONSE;
 
 if ($action === "productionjour") {
 //	if ($manoeuvres != "" || (isset($groupemanoeuvre_id) && $groupemanoeuvre_id != "")) {
-	$productionjour = PRODUCTIONJOUR::today();
-	$test = true;
-	foreach (RESSOURCE::getAll() as $key => $ressource) {
-		$datas = $productionjour->fourni("ligneconsommationjour", ["ressource_id ="=>$ressource->getId()]);
-		if (count($datas) == 1) {
-			$ligne = $datas[0];
-			if (intval($_POST["conso-".$ressource->getId()]) > ($ressource->stock(dateAjoute()) + $ligne->consommation) ) {
-				$test = false;
-				break;
+		$productionjour = PRODUCTIONJOUR::today();
+		$test = true;
+		foreach (RESSOURCE::getAll() as $key => $ressource) {
+			$datas = $productionjour->fourni("ligneconsommationjour", ["ressource_id ="=>$ressource->getId()]);
+			if (count($datas) == 1) {
+				$ligne = $datas[0];
+				if (intval($_POST["conso-".$ressource->getId()]) > ($ressource->stock(dateAjoute()) + $ligne->consommation) ) {
+					$test = false;
+					break;
+				}
 			}
 		}
-	}
 
-	if ($test) {
-		$montant = 0;
-		$productionjour->fourni("ligneproductionjour");
-		foreach ($productionjour->ligneproductionjours as $cle => $ligne) {
-			if (isset($_POST["prod-".$ligne->prixdevente_id])) {
+		if ($test) {
+			$montant = 0;
+			$productionjour->fourni("ligneproductionjour");
+			foreach ($productionjour->ligneproductionjours as $cle => $ligne) {
 				$ligne->production = intval($_POST["prod-".$ligne->prixdevente_id]);
-				$ligne->save();
-			}
 				//$ligne->perte = intval($_POST["perte-".$ligne->produit_id]);
+				$ligne->save();
 
 				//$ligne->actualise();
 				//$montant += $ligne->prixdevente->coutProduction("production", $ligne->production);
-		}
+			}
 
-		$productionjour->fourni("ligneconsommationjour");
-		foreach ($productionjour->ligneconsommationjours as $cle => $ligne) {
-			$ligne->consommation = intval($_POST["conso-".$ligne->ressource_id]);
-			$ligne->save();
-		}
+			$productionjour->fourni("ligneconsommationjour");
+			foreach ($productionjour->ligneconsommationjours as $cle => $ligne) {
+				$ligne->consommation = intval($_POST["conso-".$ligne->ressource_id]);
+				$ligne->save();
+			}
 
 
 			// $datas = $productionjour->fourni("manoeuvredujour");
@@ -70,15 +68,15 @@ if ($action === "productionjour") {
 			// 	}
 			// }
 
-		$productionjour->hydrater($_POST);
-		$productionjour->etat_id = ETAT::PARTIEL;
-		$productionjour->total_production = $montant;
-		$productionjour->employe_id = getSession("employe_connecte_id");
-		$data = $productionjour->save();
-	}else{
-		$data->status = false;
-		$data->message = "Vous ne pouvez pas consommé plus de quantité d'une ressource que ce que vous n'en possédez !";
-	}
+			$productionjour->hydrater($_POST);
+			$productionjour->etat_id = ETAT::PARTIEL;
+			$productionjour->total_production = $montant;
+			$productionjour->employe_id = getSession("employe_connecte_id");
+			$data = $productionjour->save();
+		}else{
+			$data->status = false;
+			$data->message = "Vous ne pouvez pas consommé plus de quantité d'une ressource que ce que vous n'en possédez !";
+		}
 	// }else{
 	// 	$data->status = false;
 	// 	$data->message = "Veuillez définir les manoeuvres qui ont travaillé aujourd'hui !";

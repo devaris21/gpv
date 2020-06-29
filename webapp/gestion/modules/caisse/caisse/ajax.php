@@ -18,14 +18,14 @@ if ($action == "filtrer") {
 
 	?>
 	<tr>
-		<td colspan="2">Repport du solde (<?= datecourt($date1) ?>)</td>
+		<td colspan="2">Repport du solde </td>
 		<td class="text-center">-</td>
 		<td class="text-center">-</td>
-		<td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = OPERATION::resultat($date1 , $date2)) ?> <?= $params->devise ?></td>
+		<td style="background-color: #fafafa" class="text-center"><?= money($repport = $last = OPERATION::resultat(PARAMS::DATE_DEFAULT , dateAjoute($jour-1))) ?> <?= $params->devise ?></td>
 	</tr>
 	<?php
 	$entrees = $depenses = [];
-	$operations = OPERATION::findBy(["DATE(created) >= "=> $date1, "DATE(created) <= "=> $date2]);
+	$operations = OPERATION::findBy(["DATE(created) >= "=> dateAjoute(intval($jour))]);
 	foreach ($operations as $key => $operation) {
 		$operation->actualise(); 
 		if ($operation->categorieoperation->typeoperationcaisse_id == TYPEOPERATIONCAISSE::ENTREE) {

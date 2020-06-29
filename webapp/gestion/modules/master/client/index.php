@@ -118,12 +118,12 @@
                                                                     <td><h5 class="text-<?= ($transaction->type == "livraison")? "orange":"green" ?> text-center"> <?= start0(($transaction->type == "livraison")? $ligne->quantite_livree: $ligne->quantite) ?> </h5></td>
                                                                 <?php  } ?>
 
-                                                                <?php if ($transaction->type == "commande" && $transaction->reglementclient_id != 0) { ?>
+                                                                <?php if ($transaction->type == "commande" && $transaction->operation_id != 0) { ?>
                                                                     <td>
                                                                         <small>Montant de la commande</small>
                                                                         <h4 class="mp0 text-uppercase" style="margin-top: -1.5%;"><?= money($transaction->montant) ?> <?= $params->devise  ?> 
-                                                                        <?php if ($transaction->reglementclient_id != 0) { ?>
-                                                                            <small style="font-weight: normal;;" data-toggle="tooltip" title="Payement par <?= $transaction->reglementclient->modepayement->name();  ?>">(<?= $transaction->reglementclient->modepayement->initial;  ?>)</small>
+                                                                        <?php if ($transaction->operation_id != 0) { ?>
+                                                                            <small style="font-weight: normal;;" data-toggle="tooltip" title="Payement par <?= $transaction->operation->modepayement->name();  ?>">(<?= $transaction->operation->modepayement->initial;  ?>)</small>
                                                                         <?php } ?>   
                                                                     </h4>
                                                                 </td>
@@ -160,8 +160,8 @@
                                     <div class="col-10 content">
                                         <p>
                                             <span class="">Bon de caisse N°<strong><?= $transaction->reference ?></strong></span>
-                                            <span class="pull-right text-right text-green">
-                                                <span class="gras" style="font-size: 16px"><?= money($transaction->mouvement->montant) ?> <?= $params->devise ?> <?= ($transaction->etat_id == Home\ETAT::ENCOURS)?"*":"" ?></span> <br>
+                                            <span class="pull-right text-right <?= ($transaction->categorieoperation->typeoperationcaisse_id == Home\TYPEOPERATIONCAISSE::ENTREE)?"text-green":"text-red" ?>">
+                                                <span class="gras" style="font-size: 16px"><?= money($transaction->montant) ?> <?= $params->devise ?> <?= ($transaction->etat_id == Home\ETAT::ENCOURS)?"*":"" ?></span> <br>
                                                 <small>Par <?= $transaction->modepayement->name() ?></small><br>
                                                 <a href="<?= $this->url("gestion", "fiches", "boncaisse", $transaction->getId())  ?>" target="_blank" class="simple_tag"><i class="fa fa-file-text-o"></i> Bon de caisse</a>
                                             </span>

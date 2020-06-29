@@ -12,11 +12,10 @@ class PRODUIT extends TABLE
 	public static $namespace = __NAMESPACE__;
 
 	public $name;
-	public $isActive = TABLE::OUI;
 	public $description = "";
-	public $image       = "default.png";
-	public $couleur     = "";
-	public $initial     = "";
+	public $image = "default.png";
+
+	public $stock = 0;
 
 
 	public function enregistre(){
@@ -92,23 +91,9 @@ class PRODUIT extends TABLE
 	}
 
 
-	public function quantiteProduite(string $date1 = "2020-06-01", string $date2){
-		$requette = "SELECT SUM(quantite.name * ligneproductionjour.production) as name  FROM productionjour, ligneproductionjour, prixdevente, quantite, produit WHERE ligneproductionjour.prixdevente_id = prixdevente.id AND ligneproductionjour.productionjour_id = productionjour.id AND prixdevente.produit_id = produit.id AND prixdevente.quantite_id = quantite.id AND produit.id = ? AND productionjour.etat_id != ? AND DATE(ligneproductionjour.created) >= ? AND DATE(ligneproductionjour.created) <= ? GROUP BY prixdevente.id";
-		$item = QUANTITE::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
-		if (count($item) < 1) {$item = [new QUANTITE()]; }
-		return $item[0]->name;
-	}
-
-
-
-	public function vendu(string $date1 = "2020-06-01", string $date2){
-		$total = 0;
-		$requette = "SELECT SUM(quantite.name) as name FROM lignedevente, prixdevente, vente, quantite, produit WHERE lignedevente.prixdevente_id = prixdevente.id AND lignedevente.vente_id = vente.id AND prixdevente.id = ? AND vente.etat_id != ? AND prixdevente.quantite_id = quantite.id AND prixdevente.produit_id = produit.id AND DATE(lignedevente.created) >= ? AND DATE(lignedevente.created) <= ? GROUP BY prixdevente.id";
-		$item = QUANTITE::execute($requette, [$this->getId(), ETAT::ANNULEE, $date1, $date2]);
-		if (count($item) < 1) {$item = [new QUANTITE()]; }
-		$total += $item[0]->name;
-
-		return $total;
+	public function livrer(int $quantite){
+		$this->stock -= $quantite;
+		$data = $this->save();	
 	}
 
 

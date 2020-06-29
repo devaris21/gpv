@@ -12,9 +12,5 @@ foreach ($operations as $key => $value) {
 }
 $statistiques = OPERATION::statistiques();
 
-$date1 = dateAjoute(-3);
-$date2 = dateAjoute();
-
 $title = "GPV | Compte de caisse";
-
 ?>

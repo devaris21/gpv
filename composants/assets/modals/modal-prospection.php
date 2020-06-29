@@ -38,11 +38,11 @@
                         </div>
                         <div class="ibox-content"  style="background-color: #fafafa">
                             <form id="formProspection">
-
+                                
                                 <div>
-                                    <label>Choisissez le commercial <span style="color: red">*</span> </label>                               
+                                    <label>Choisissez le commercial <span style="color: red">*</span> </label>                                
                                     <div class="input-group">
-                                        <?php Native\BINDING::html("select", "commercial"); ?>
+                                        <?php Native\BINDING::html("select-tableau", Home\COMMERCIAL::libres(), null, "commercial_id"); ?>
                                     </div>
                                 </div><br>
 
@@ -50,20 +50,6 @@
                                     <label>Zone de vente <span style="color: red">*</span> </label>                                
                                     <div class="input-group">
                                         <?php Native\BINDING::html("select", "zonedevente"); ?>
-                                    </div>
-                                </div><br>
-
-                                <div>
-                                    <label>Transport pour la prospection </label>                           
-                                    <div class="input-group">
-                                        <input value="0" type="number" class="form-control" number name="transport">
-                                    </div>
-                                </div><br>
-
-                                <div>
-                                    <label>Monnaie pour la prospection </label>                           
-                                    <div class="input-group">
-                                        <input value="0" type="number" class="form-control" number name="monnaie">
                                     </div>
                                 </div><br>
 

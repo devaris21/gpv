@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Formulaire des employés</h4>
+                <h4 class="modal-title">employe du parc AMB</h4>
                 <small class="font-bold">Renseigner ces champs pour enregistrer le employe</small>
             </div>
             <form method="POST" class="formShamman" classname="employe">

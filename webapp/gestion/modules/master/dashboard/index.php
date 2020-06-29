@@ -16,133 +16,214 @@
 
           <div class="wrapper wrapper-content">
             <div class="animated fadeInRightBig">
-
-                <div class=" border-bottom white-bg dashboard-header">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <img src="<?= $this->stockage("images", "societe", $params->image) ?>" style="height: 60px;" alt=""><br>
-                            <h2 class="text-uppercase"><?= $params->societe ?></h2>
-                            <small>Tableau de bord général </small>
-                            <ul class="list-group clear-list m-t">
-                                <li class="list-group-item fist-item">
-                                    Commandes en cours <span class="label label-success float-right"><?= start0(count($groupes__)); ?></span> 
-                                </li>
-                                <li class="list-group-item">
-                                    Livraisons en cours <span class="label label-success float-right"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typeprospection_id ="=>Home\TYPEPROSPECTION::LIVRAISON]))); ?></span> 
-                                </li>
-                                <li class="list-group-item">
-                                    Prospections en cours <span class="label label-success float-right"><?= start0(count($prospections__)); ?></span> 
-                                </li>
-                                <li class="list-group-item"></li>
-                            </ul>
-                            <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Nouvelle vente directe</button>
-
-                            <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="flot-chart dashboard-chart">
-                                <div class="flot-chart-content" id="flot-dashboard-chart" style="height: 250px; margin-top: -4%"></div>
-                            </div><hr style="margin-top: 14%">
-                            <div class="row text-center">
-                                <div class="col">
-                                    <div class="">
-                                        <span class="h5 font-bold block"><?= money(comptage(Home\VENTE::todayDirect(), "vendu", "somme")); ?> <small><?= $params->devise ?></small></span>
-                                        <small class="text-muted block">Ventes directes</small>
-                                    </div>
-                                </div>
-                                <div class="col border-right border-left">
-                                    <span class="h5 font-bold block"><?= money(comptage(Home\PROSPECTION::effectuee(dateAjoute()), "vendu", "somme")); ?> <small><?= $params->devise ?></small></span>
-                                    <small class="text-muted block">Ventes par prospection</small>
-                                </div>
-                                <div class="col text-danger">
-                                    <span class="h5 font-bold block"><?= money(Home\OPERATION::sortie(dateAjoute() , dateAjoute(+1))) ?> <small><?= $params->devise ?></small></span>
-                                    <small class="text-muted block">Dépense du jour</small>
-                                </div>
+                <div class="row" >
+                    <div class="col-lg-3">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Vendu aujourd'hui</h5>
                             </div>
-                        </div>
-                        <div class="col-md-3 border-left">
-                            <div class="statistic-box" style="margin-top: 0%">
-                                <div class="ibox">
-                                    <div class="ibox-content">
-                                        <h5>Courbe des ventes</h5>
-                                        <div id="sparkline2"></div>
-                                    </div>
-
-                                    <div class="ibox-content">
-                                        <h5>Dette chez les clients</h5>
-                                        <h2 class="no-margins"><?= start0(Home\CLIENT::Dettes()); ?> <?= $params->devise  ?></h2>
-                                    </div>
-
-                                    <div class="ibox-content">
-                                        <h5>En rupture de Stock</h5>
-                                        <h2 class="no-margins"><?= start0(count(Home\PRIXDEVENTE::rupture())) ?> produit(s)</h1>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="ibox-content">
+                                <h2 class="no-margins"><?= money(comptage(Home\VENTE::today(), "montant", "somme")); ?> <?= $params->devise ?></h2>
                             </div>
-                        </div>
-                        <hr><hr class="mp0"><br>
-
-                        <div class="row">
-                            <?php foreach (Home\PRODUIT::findBy(["isActive ="=>Home\TABLE::OUI]) as $key => $produit) { ?>
-                                <div class="col-md border-right">
-                                    <h6 class="text-uppercase text-center gras" style="color: <?= $produit->couleur; ?>">Stock de <?= $produit->name() ?></h6>
-                                    <ul class="list-group clear-list m-t">
-                                        <?php foreach ($tableau[$produit->getId()] as $key => $pdv) { ?>
-                                            <li class="list-group-item">
-                                                <i class="fa fa-flask" style="color: <?= $produit->couleur; ?>"></i> <small><?= $pdv->quantite ?></small>          
-                                                <span class="float-right">
-                                                    <span title="en boutique" class="gras text-<?= ($pdv->boutique > 0)?"green":"danger" ?>"><?= money($pdv->boutique) ?></span>&nbsp;|&nbsp;
-                                                    <span title="en entrepôt" class=""><?= money($pdv->stock) ?></span>
-                                                </span>
-                                            </li>
-                                        <?php } ?>
-                                        <li class="list-group-item"></li>
-                                    </ul>
-                                </div>
-                            <?php } ?>
                         </div>
                     </div>
-
-
-                    <br>
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="ibox ">
-                                <div class="ibox-title">
-                                    <h5>Programme de prospection du jour</h5>
-                                    <div class="ibox-tools">
-                                        <a href="<?= $this->url("gestion", "production", "programmes") ?>" data-toggle="tooltip" title="Modifier le programme">
-                                            <i class="fa fa-calendar"></i> Modifier le programme
-                                        </a>
+                    <div class="col-lg-3">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Prospections du jour</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row text-center">
+                                    <div class="col-sm-6 border-right">
+                                        <h2 class="no-margins"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::ENCOURS, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h2 class="no-margins text-green"><?= start0(count(Home\PROSPECTION::findBy(["etat_id ="=>Home\ETAT::VALIDEE, "typeprospection_id ="=>Home\TYPEPROSPECTION::PROSPECTION]))); ?></h2>
                                     </div>
                                 </div>
-                                <div class="ibox-content table-responsive">
-                                    <table class="table table-hover no-margins">
-                                        <thead>
-                                            <tr>
-                                                <th>Commercial</th>
-                                                <th class="">Heure de sortie</th>
-                                                <th class="">Total</th>
-                                                <th class="">vendu</th>
-                                                <th class="">heure de retour</th>
-                                                <th class="">statut</th>
-                                                <th class="">Action</th>
-                                            </tr>
-                                        </thead>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Dettes chez clients</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="text-center">
+                                    <h2 class="no-margins"><?= start0(Home\CLIENT::Dettes()); ?> <?= $params->devise  ?></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>En rupture de stock</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class=" text-center">
+                                    <h2 class="no-margins"><?= start0(count(Home\PRIXDEVENTE::rupture())) ?> produit(s)</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="border-bottom white-bg dashboard-header">
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h3 class="text-uppercase">Stock des produits</h3>
+                            <ul class="list-group clear-list m-t">
+                                <?php foreach ($tableau as $key => $pdv) { ?>
+                                    <li class="list-group-item">
+                                        <i class="fa fa-cubes"></i>&nbsp;&nbsp;&nbsp; <?= $pdv->name ?>
+                                        <span class="float-right">
+                                            <span class="label label-<?= ($pdv->boutique>0)?"success":"danger" ?>"><?= money($pdv->boutique) ?></span>
+                                            <small class=""><?= money($pdv->stock) ?></small>
+                                        </span>
+                                    </li>
+                                <?php } ?>
+                                <li class="list-group-item"></li>
+                            </ul>
+
+                            <button data-toggle=modal data-target="#modal-vente" class="btn btn-warning dim btn-block"> <i class="fa fa-file-text-o"></i> Nouvelle vente directe</button>
+
+                        </div>
+                        <div class="col-md-6 border-right border-left">
+                            <div class="" style="margin-top: 0%">
+                                <div id="ct-chart" style="height: 270px;"></div>
+                            </div>
+                            <h6 class="text-uppercase text-center">Courbe représentative du stock de produits en fonction des commandes actuelles</h6>
+                            <hr class="">
+
+                            <?php if ($employe->isAutoriser("caisse")) { ?>
+                               <!--  <div class="row stat-list">
+                                    <div class="col-4">
+                                        <h2 class="no-margins gras"><?= money(Home\OPERATION::resultat(Home\PARAMS::DATE_DEFAULT , dateAjoute())) ?></h2>
+                                        <small>En caisse actuellement</small>
+                                        <div class="progress progress-mini">
+                                            <div class="progress-bar bg-black" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <h3 class="no-margins text-green"><?= money(Home\OPERATION::entree(dateAjoute() , dateAjoute(+1))) ?></h3>
+                                        <small>Entrées du jour</small>
+                                        <div class="progress progress-mini">
+                                            <div class="progress-bar bg-primary" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <h3 class="no-margins text-red"><?= money(Home\OPERATION::sortie(dateAjoute() , dateAjoute(+1))) ?></h3>
+                                        <small>Dépenses du jour</small>
+                                        <div class="progress progress-mini">
+                                            <div class="progress-bar bg-danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            <?php } ?>
+
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h3 class="text-uppercase">Stock des ressources</h3>
+                            <ul class="list-group  text-left clear-list m-t">
+                                <?php foreach (Home\RESSOURCE::getAll() as $key => $ressource) { ?>
+                                    <li class="list-group-item">
+                                        <i class="fa fa-truck"></i>&nbsp;&nbsp;&nbsp; <?= $ressource->name() ?>
+                                        <span class="float-right">
+                                            <span class="label label-primary"><?= money($ressource->stock(dateAjoute())) ?> <?= $ressource->abbr ?></span>
+                                        </span>
+                                    </li>
+                                <?php } ?>
+                                <li class="list-group-item"></li>
+                            </ul>
+
+                            <?php if ($employe->isAutoriser("production")) { ?>
+                                <button data-toggle="modal" data-target="#modal-prospection" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Nouvelle prospection</button>
+                                <!-- <button data-toggle="modal" data-target="#modal-miseenboutique" class="btn btn-primary dim btn-block"><i class="fa fa-cubes"></i> Mise en boutique</button> -->
+                            <?php } ?>
+                            
+
+                            
+                            <!-- <h4 class="text-uppercase text-red"><i class="fa fa-car"></i> Véhicules en livraison</h4>
+                            <div>
+                                <?php 
+                                $vehicules = Home\VEHICULE::mission();
+                                if (count($vehicules) > 0) { ?>
+                                    <table class="table text-left">
                                         <tbody>
-                                            <?php foreach (Home\PROSPECTION::programmee(dateAjoute()) as $key => $prospection) {
-                                                $prospection->actualise(); ?>
-                                                <tr>
-                                                    <td><?= $prospection->commercial->name()  ?></td>
-                                                    <td><?= heurecourt($prospection->created)  ?></td>
-                                                    <td><?= money($prospection->montant) ?> <?= $params->devise ?></td>
-                                                    <td class="gras text-green"><?= money($prospection->vendu) ?> <?= $params->devise ?></td>
-                                                    <td><?= heurecourt($prospection->dateretour)  ?></td>
-                                                    <td class="text-center"><span class="label label-<?= $prospection->etat->class ?>"><?= $prospection->etat->name ?></span> </td>
+                                            <?php foreach ($vehicules as $key => $vehicule) {
+                                                $vehicule->actualise();
+                                                ?>
+                                                <tr>    
+                                                    <td>
+                                                        <img alt="image" style="width: 30px;" class="m-t-xs" src="<?= $this->stockage("images", "vehicules", $vehicule->image) ?>">
+                                                    </td>
+                                                    <td class="">
+                                                        <h5 class="text-uppercase gras"><?= $vehicule->marque->name() ?> <?= $vehicule->modele ?></h5>
+                                                        <h6 class=""><?= $vehicule->immatriculation ?></h6>
+                                                    </td>                                      
+                                                    <td class="project-status">
+                                                        <span class="pull-right label label-<?= $vehicule->etatvehicule->class ?>"></span>
+                                                    </td>   
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>    
+                                <?php }else{ ?>
+                                    <p class="text-center text-muted">Aucun pour le moment!</p>
+                                <?php } ?>                         
+                            </div> -->
+
+                        </div>
+                    </div>    
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Programme de livraison du jour</h5>
+                                <div class="ibox-tools">
+                                    <a href="<?= $this->url("gestion", "production", "programmes") ?>" data-toggle="tooltip" title="Modifier le programme">
+                                        <i class="fa fa-calendar"></i> Modifier le programme
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive">
+                                <table class="table table-hover no-margins">
+                                    <thead>
+                                        <tr>
+                                            <th>Client</th>
+                                            <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { ?>
+                                                <th class="text-center"><?= $produit->name() ?></th>
+                                            <?php } ?>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach (/*Home\VENTE::programmee(dateAjoute())*/ [] as $key => $livraison) {
+                                            $livraison->actualise();
+                                            $datas = $livraison->fourni("lignelivraison"); ?>
+                                            <tr>
+                                                <td><?= $livraison->groupecommande->client->name()  ?></td>
+                                                <?php foreach (Home\PRODUIT::getAll() as $key => $produit) { 
+                                                    $a = ""; ?>
+                                                    <?php foreach ($datas as $key => $ligne) { 
+                                                        if($ligne->produit_id == $produit->getId()){
+                                                            $a = $ligne->quantite;
+                                                            break;
+                                                        } } ?>
+                                                        <th class="text-center"><?= $a ?></th>
+                                                    <?php  } ?>
+                                                    <td class="text-center"><span class="label label-<?= $livraison->etat->class ?>"><?= $livraison->etat->name ?></span> </td>
                                                     <td class="text-center">
-                                                        <?php if ($prospection->etat_id == Home\ETAT::PARTIEL) { ?>
-                                                            <button onclick="validerProg(<?= $prospection->getId() ?>)" class="cursor simple_tag pull-right"><i class="fa fa-file-text-o"></i> Faire la prospection</button>
+                                                        <?php if ($livraison->etat_id == Home\ETAT::PARTIEL) { ?>
+                                                            <button onclick="validerProg(<?= $livraison->getId() ?>)" class="cursor simple_tag pull-right"><i class="fa fa-file-text-o"></i> Faire la livraison</button>
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
@@ -194,78 +275,35 @@
             }
 
 
+ // Stocked horizontal bar
 
-            var sparklineCharts = function(){
+ new Chartist.Bar('#ct-chart', {
+    labels: [<?php foreach ($tableau as $key => $data){ ?>"<?= $data->name ?>", " ", " ",<?php } ?>],
+    series: [
+    [<?php foreach ($tableau as $key => $data){ ?><?= $data->stock ?>, 0, 0,<?php } ?>],
+    [<?php foreach ($tableau as $key => $data){ ?><?= $data->boutique ?> , 0, 0,<?php } ?>],
+    [<?php foreach ($tableau as $key => $data){ ?>0, <?= $data->commande ?>, 0,<?php } ?>],
+    ]
+}, {
+   stackBars: true,
+   axisX: {
+    labelInterpolationFnc: function(value) {
+        if (value >= 1000) {
+            return (value / 1000) + 'k';            
+        }
+        return value;
+    }
+},
+reverseData:true,
+seriesBarDistance: 10,
+horizontalBars: true,
+axisY: {
+    offset: 80
+}
+});
 
-               $("#sparkline2").sparkline([24, 43, 43, 55, 44, 62, 44, 72], {
-                   type: 'line',
-                   width: '100%',
-                   height: '60',
-                   lineColor: '#1ab394',
-                   fillColor: "#ffffff"
-               });
-
-           };
-
-           var sparkResize;
-
-           $(window).resize(function(e) {
-            clearTimeout(sparkResize);
-            sparkResize = setTimeout(sparklineCharts, 500);
-        });
-
-           sparklineCharts();
-
-
-
-
-           var data1 = [
-           [0,4],[1,8],[2,5],[3,10],[4,4],[5,16],["hjk",5],[7,11],[8,6],[9,11],[10,30],[11,10],[12,13],[13,4],[14,3],[15,3],["jhdsk",6]
-           ];
-           var data2 = [
-           [0,1],[1,0],[2,2],[3,0],[4,1],[5,3],[6,1],[7,5],[8,2],[9,3],[10,2],[11,1],[12,0],[13,2],[14,8],[15,0],[16,0]
-           ];
-           $("#flot-dashboard-chart").length && $.plot($("#flot-dashboard-chart"), [
-            data1, data2
-            ],
-            {
-                series: {
-                    lines: {
-                        show: false,
-                        fill: true
-                    },
-                    splines: {
-                        show: true,
-                        tension: 0.4,
-                        lineWidth: 1,
-                        fill: 0.4
-                    },
-                    points: {
-                        radius: 0,
-                        show: true
-                    },
-                    shadowSize: 2
-                },
-                grid: {
-                    hoverable: true,
-                    clickable: true,
-                    tickColor: "#d5d5d5",
-                    borderWidth: 1,
-                    color: '#d5d5d5'
-                },
-                colors: ["#1ab394", "#1C84C6"],
-                xaxis:{
-                },
-                yaxis: {
-                    ticks: 4
-                },
-                tooltip: false
-            }
-            );
-
-
-       });
-   </script>
+});
+</script>
 
 
 </body>

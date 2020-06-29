@@ -1,16 +1,16 @@
-<div class="modal inmodal fade" id="modal-commercial-paye">
+<div class="modal inmodal fade" id="modal-fournisseur-rembourse">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title text-red">Paye</h4>
+                <h4 class="modal-title text-red">Remboursement</h4>
             </div>
             <form method="POST" id="formRembourser">
                 <div class="modal-body">
                     <div class="">
-                        <label>Montant à payer <span1>*</span1></label>
+                        <label>Montant à se faire rembourser <span1>*</span1></label>
                         <div class="form-group">
-                            <input type="text" value="<?= $commercial->salaireDuMois() + $commercial->bonus() ?>" number class="form-control" name="montant" required>
+                            <input type="text" number class="form-control" name="montant" required>
                         </div>
                     </div>   
                     <div>

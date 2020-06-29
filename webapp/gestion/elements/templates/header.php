@@ -10,7 +10,7 @@
             </div>
             <ul class="nav navbar-top-links navbar-right">
                  <li class="">
-                    <img src="<?= $this->stockage("images", "societe", $params->image) ?>" style="height: 60px; padding-right: 15%" alt="">
+                    <img src="<?= $this->stockage("images", "societe", $params->image) ?>" style="height: 60px; margin-right: 5%" alt="">
                 </li>
 
                 <li class="border-right gras <?= (isJourFerie(dateAjoute(1)))?"text-red":"text-muted" ?>">

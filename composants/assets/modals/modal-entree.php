@@ -1,5 +1,5 @@
 <div class="modal inmodal fade" id="modal-entree">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -22,7 +22,7 @@
                             </div>
                         </div>   
                         <div class="col-sm-4">
-                            <label>Mode d'encaissement</label>
+                            <label>Mode de payement</label>
                             <div class="form-group">
                                 <?php Native\BINDING::html("select", "modepayement"); ?>
                             </div>
@@ -30,13 +30,13 @@
                     </div><br>
 
                     <div class="modepayement_facultatif row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label>Structure d'encaissement <span style="color: red">*</span> </label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-bank"></i></span><input type="text" name="structure" class="form-control">
                             </div>
                         </div><br>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label>N° numero dédié <span style="color: red">*</span> </label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span><input type="text" name="numero" class="form-control">

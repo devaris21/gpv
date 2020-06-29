@@ -4,7 +4,6 @@ $(function(){
 	// });
 
 
-
 	$(".formPrix").submit(function(event) {
 		Loader.start();
 		var url = "../../webapp/gestion/modules/parametres/configuration/ajax.php";

@@ -18,12 +18,8 @@ class PROSPECTION extends TABLE
 	public $etat_id            = ETAT::ENCOURS;
 	public $employe_id         = null;
 	
-	public $vente_id           = null;
-	
 	public $montant            = 0;
 	public $vendu              = 0;
-	public $monnaie            = 0;
-	public $transport          = 0;
 	public $comment;
 
 	public $nom_receptionniste;
@@ -35,27 +31,15 @@ class PROSPECTION extends TABLE
 		$data = new RESPONSE;
 		$datas = ZONEDEVENTE::findBy(["id ="=>$this->zonedevente_id]);
 		if (count($datas) == 1) {
-			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id]);
+			$datas = COMMERCIAL::findBy(["id ="=>$this->commercial_id, "disponibilite_id ="=>DISPONIBILITE::LIBRE]);
 			if (count($datas) == 1) {
 				$commercial = $datas[0];
 				$this->employe_id = getSession("employe_connecte_id");
 				$this->reference = "BSO/".date('dmY')."-".strtoupper(substr(uniqid(), 5, 6));
 				$data = $this->save();
-				if ($data->status) {
-					if ($this->commercial_id != COMMERCIAL::MAGASIN) {
-						$commercial->disponibilite_id = DISPONIBILITE::MISSION;
-						$commercial->save();
-					}
-
-					if ($this->transport > 0) {
-						$this->actualise();
-						$mouvement = new MOUVEMENT();
-						$mouvement->comptebanque_id = COMPTEBANQUE::COURANT;
-						$mouvement->typemouvement_id = TYPEMOUVEMENT::RETRAIT;
-						$mouvement->montant = $this->transport;
-						$mouvement->comment = "Transport du commercial ".$this->commercial->name()." pour la prospection N° ".$this->reference;
-						$data = $mouvement->enregistre();
-					}
+				if ($this->commercial_id != COMMERCIAL::MAGASIN) {
+					$commercial->disponibilite_id = DISPONIBILITE::MISSION;
+					$commercial->save();
 				}
 			}else{
 				$data->status = false;
@@ -84,9 +68,7 @@ class PROSPECTION extends TABLE
 
 	//les livraions programmées du jour
 	public static function programmee(String $date){
-		$array = static::findBy(["DATE(dateretour) ="=>$date]);
-		$array1 = static::findBy(["etat_id ="=>ETAT::ENCOURS]);
-		return array_merge($array1, $array);
+		return static::findBy(["DATE(dateretour) ="=>$date, "etat_id !="=>ETAT::ANNULEE]);
 	}
 
 
@@ -137,31 +119,22 @@ class PROSPECTION extends TABLE
 
 	public function annuler(){
 		$data = new RESPONSE;
-		if ($this->etat_id != ETAT::ANNULEE) {
-
-			if ($this->etat_id == ETAT::VALIDEE) {
-				$this->actualise();
-				$data = $this->vente->annuler();
-			}
-			
+		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::ANNULEE;
 			$this->historique("La prospection en reference $this->reference vient d'être annulée !");
 			$data = $this->save();
 			if ($data->status) {
 				$this->actualise();
-				if ($this->typeprospection_id == TYPEPROSPECTION::LIVRAISON) {
-					$this->groupecommande->etat_id = ETAT::ENCOURS;
-					$this->groupecommande->save();
+				$this->groupecommande->etat_id = ETAT::ENCOURS;
+				$this->groupecommande->save();
 
-					if ($this->chauffeur_id > 0) {
-						$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
-						$this->chauffeur->save();
-					}
-
-					$this->vehicule->etat_id = ETATVEHICULE::RAS;
-					$this->vehicule->save();
+				if ($this->chauffeur_id > 0) {
+					$this->chauffeur->etatchauffeur_id = ETATCHAUFFEUR::RAS;
+					$this->chauffeur->save();
 				}
-				
+
+				$this->vehicule->etat_id = ETATVEHICULE::RAS;
+				$this->vehicule->save();
 			}
 		}else{
 			$data->status = false;
@@ -172,7 +145,7 @@ class PROSPECTION extends TABLE
 
 
 
-	public function terminer(Array $post){
+	public function terminer(){
 		$data = new RESPONSE;
 		if ($this->etat_id == ETAT::ENCOURS) {
 			$this->etat_id = ETAT::VALIDEE;
@@ -183,11 +156,9 @@ class PROSPECTION extends TABLE
 				if ($this->typeprospection_id == TYPEPROSPECTION::PROSPECTION) {
 					$vente = new VENTE();
 					$vente->cloner($this);
-					$vente->typevente_id = TYPEVENTE::PROSPECTION;
 					$vente->setId(null);
 					$data = $vente->enregistre();
 					if ($data->status) {
-						$vente->actualise();
 						$montant = 0;
 						$datas = $this->fourni("ligneprospection");
 						foreach ($datas as $key => $ligne) {
@@ -199,53 +170,14 @@ class PROSPECTION extends TABLE
 							$lgn->save();
 							$montant += $ligne->prixdevente->prix->price * $ligne->quantite_vendu;
 						}
-
-						$params = PARAMS::findLastId();
-						$tva = ($montant * $params->tva) / 100;
-						$total = $montant + $tva;
-
-						$reglement = new REGLEMENTCLIENT();
-						$reglement->hydrater($post);
-						$reglement->montant = $total;
-						$reglement->comment = "Réglement de la vente ".$vente->typevente->name()." N°".$vente->reference;
-						$reglement->files = [];
-						$reglement->setId(null);
-						$data = $reglement->enregistre();
-						if ($data->status) {
-							$vente->reglementclient_id = $data->lastid;
-							$data = $vente->save();
-						}
-
-						$this->vente_id = $vente->getId();
+						$vente->payement($montant, json_decode(json_encode($vente), true));
 					}
 				}
-				
+
 				if ($this->commercial_id != null) {
 					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
+					$this->commercial->save();
 				}
-				$this->commercial->save();
-			}
-		}else{
-			$data->status = false;
-			$data->message = "Vous ne pouvez plus faire cette opération sur cette prospection !";
-		}
-		return $data;
-	}
-
-
-
-	public function terminerLivraison(){
-		$data = new RESPONSE;
-		if ($this->etat_id == ETAT::ENCOURS) {
-			$this->etat_id = ETAT::VALIDEE;
-			$this->dateretour = date("Y-m-d H:i:s");
-			$this->historique("La livraion en reference $this->reference vient d'être terminé !");
-			$data = $this->save();
-			if ($data->status) {			
-				if ($this->commercial_id != null) {
-					$this->commercial->disponibilite_id = DISPONIBILITE::LIBRE;
-				}
-				$this->commercial->save();
 			}
 		}else{
 			$data->status = false;
@@ -266,7 +198,6 @@ class PROSPECTION extends TABLE
 		}
 		return $total;
 	}
-
 
 
 	public function payer(int $montant, Array $post){

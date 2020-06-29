@@ -21,7 +21,6 @@ class COMMERCIAL extends PERSONNE
 	public $sexe_id = SEXE::HOMME;
 	public $contact;
 	public $salaire = 0;
-	public $objectif = 0;
 	public $image = "default.png";
 	
 	public $disponibilite_id = DISPONIBILITE::LIBRE;
@@ -72,7 +71,7 @@ class COMMERCIAL extends PERSONNE
 
 
 
-	public function rapports($date1, $date2)
+	public function rapports($jours = 7)
 	{
 		$tableau = [];
 		for ($i=0; $i < $jours ; $i++) { 
@@ -104,78 +103,6 @@ class COMMERCIAL extends PERSONNE
 	public static function mission(){
 		return static::findBy(["disponibilite_id =" => DISPONIBILITE::MISSION, 'visibility ='=>1]);
 	}
-
-
-	public function salaireDuMois(){
-		$datas = $this->fourni('paye');
-		if (count($datas) > 0) {
-			$paye = $datas[0];
-			$date = date("Y-m-d", strtotime(dateAjoute1($paye->created, 1)));
-		}else{
-			$date = date("Y-m")."-01";
-		}
-		$vendu = comptage($this->vendu($date, dateAjoute()), "vendu", "somme");
-		$nombre = 0;
-		$index = $date;
-		while ($index <= dateAjoute()) {
-			if (!isJourFerie($index)) {
-				$nombre++;
-			}
-			$index = dateAjoute1($index, 1);
-		}
-
-		if ($nombre == 0) {
-			return 0;
-		}else{
-			if ($vendu >= ($nombre * $this->objectif)) {
-				return $this->salaire;
-			}else{
-				return round((($vendu * 0.1)), 2);
-			}
-		}
-	}
-
-
-	public function bonus(){
-		$salaire = $this->salaireDuMois();
-		if ($salaire > $this->salaire) {
-			return ($salaire - $this->salaire) * 0.1;
-		}
-		return 0;
-	}
-
-
-	public function vendu(string $date1 = "2020-06-01", string $date2){
-		return PROSPECTION::findBy(["commercial_id ="=>$this->getId(), "etat_id !="=>ETAT::ANNULEE, "DATE(prospection.created) >="=>$date1, "DATE(prospection.created) <="=>$date2]);
-	}
-
-
-
-	public function stats(string $date1 = "2020-04-01", string $date2){
-		$tableaux = [];
-		$nb = ceil(dateDiffe($date1, $date2) / 30);
-		$index = $date1;
-		while ( $index <= $date2 ) {
-			$debut = $index;
-			$fin = dateAjoute1($index, 1);
-
-			$data = new \stdclass;
-			$data->year = date("Y", strtotime($index));
-			$data->month = date("m", strtotime($index));
-			$data->day = date("d", strtotime($index));
-			$data->nb = $nb;
-			////////////
-
-			$data->vendu = comptage($this->vendu($fin, $fin), "vendu", "somme");
-
-			$tableaux[] = $data;
-			///////////////////////
-			
-			$index = $fin;
-		}
-		return $tableaux;
-	}
-
 
 
 	public function sentenseCreate(){
